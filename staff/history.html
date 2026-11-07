@@ -1,0 +1,947 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Token History & Municipal Audit Log - QueueEase OPS HUB</title>
+  <meta name="description" content="Municipal audit trail, token history, resolution analytics, and statutory registry logs for Officer Mark Jenkins." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+</head>
+<body class="dashboard-layout">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Navy Sidebar Navigation -->
+  <aside class="dashboard-sidebar" id="dashboard-sidebar" role="navigation" aria-label="Staff Operations Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/staff/dashboard.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box">
+          <span class="material-symbols-outlined" style="font-size:22px;">confirmation_number</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">PUBLIC SERVICE OS</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge">
+        <span style="width:6px; height:6px; border-radius:50%; background:#34D399;"></span>
+        <span>Staff Operations Hub</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/staff/dashboard.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/staff/console.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">groups</span>
+        <span>Queue Management</span>
+      </a>
+      <a href="/staff/history.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>Token History</span>
+      </a>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('settings-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">tune</span>
+        <span>Counter Settings</span>
+      </button>
+      <a href="/display/signage.html" class="dashboard-nav-link" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">tv</span>
+        <span>Live Signage Display</span>
+      </a>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:var(--font-weight-bold);">Desk Station Active</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Lat: 12ms • Sync OK</div>
+      </div>
+
+      <button type="button" class="btn btn--ghost btn-staff-logout" style="color:#F87171; width:100%; justify-content:flex-start; padding:8px 12px; font-size:13px;">
+        <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+        <span>Log Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="dashboard-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+
+        <div class="dashboard-topbar__search-wrap">
+          <span class="material-symbols-outlined dashboard-topbar__search-icon">search</span>
+          <input type="text" class="dashboard-topbar__search-input" placeholder="Search tokens, citizen names, reference IDs..." aria-label="Search records" />
+        </div>
+      </div>
+
+      <div class="dashboard-topbar__right">
+        <div class="status-pill status-pill--completed" style="font-size:11px; padding:4px 12px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+          <span>Counter 02 • Certificate Desk | ONLINE / ACTIVE</span>
+        </div>
+
+        <button type="button" class="btn btn--ghost" onclick="showToast('No new urgent dispatch alerts.')" aria-label="Notifications" style="position:relative; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">notifications</span>
+          <span style="position:absolute; top:8px; right:8px; width:7px; height:7px; background:#EF4444; border-radius:50%;"></span>
+        </button>
+
+        <div class="dashboard-user-badge">
+          <div style="text-align:right;" class="hide-mobile">
+            <div style="font-size:13px; font-weight:var(--font-weight-bold); color:var(--color-primary);">Officer Mark Jenkins</div>
+            <div style="font-size:11px; color:var(--color-text-secondary);">Senior Registrar</div>
+          </div>
+          <div class="avatar" style="width:36px; height:36px; background:#142D4E; color:#FFFFFF; font-weight:var(--font-weight-bold); font-size:13px;">
+            MJ
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- History Body -->
+    <main class="dashboard-body">
+      <!-- Header & Action Buttons -->
+      <section style="display:flex; align-items:flex-start; justify-content:space-between; gap:var(--space-4); flex-wrap:wrap;">
+        <div>
+          <div style="display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-secondary); letter-spacing:0.04em; margin-bottom:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#2563EB;"></span>
+            <span>MUNICIPAL REGISTRY SYSTEM • TIER 1</span>
+            <span style="color:#CBD5E1;">//</span>
+            <span style="color:#64748B;">Session Ref: #AUD-2025-1024</span>
+          </div>
+          <h1 style="font-size:clamp(1.5rem, 2.2vw, 2rem); font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0 0 4px;">
+            Token History & Municipal Audit Log
+          </h1>
+          <div style="font-size:var(--font-body-sm); color:var(--color-text-secondary); max-width:800px;">
+            Search, filter, and audit all processed, transferred, skipped, and cancelled tokens across civic service counters with real-time statutory event tracking.
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn--secondary" onclick="window.print()" style="padding:10px 14px; font-size:13px;">
+            <span class="material-symbols-outlined">print</span>
+            <span>Print Daily Ledger</span>
+          </button>
+          <button type="button" class="btn btn--primary" id="btn-export-csv" style="padding:10px 18px; font-size:13px; background:#0F234A;">
+            <span class="material-symbols-outlined">download</span>
+            <span>Export CSV / PDF Report</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- KPI Metric Cards Grid -->
+      <section class="dashboard-stats-grid" aria-label="Audit Indicators">
+        <!-- 1. Processed Today -->
+        <div class="stat-card-staff">
+          <div>
+            <div class="stat-card-staff__top">
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">PROCESSED TODAY</span>
+              <div style="width:32px; height:32px; border-radius:6px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:18px;">fact_check</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <span class="stat-card-staff__value">148</span>
+              <span style="font-size:12px; color:#10B981; font-weight:bold;">↑ +18.4%</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--color-text-secondary); margin-top:12px;">
+            Across 6 operational desks
+          </div>
+        </div>
+
+        <!-- 2. Avg Turnaround -->
+        <div class="stat-card-staff">
+          <div>
+            <div class="stat-card-staff__top">
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">AVG SERVICE TURNAROUND</span>
+              <div style="width:32px; height:32px; border-radius:6px; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:18px;">schedule</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <span class="stat-card-staff__value">08m 14s</span>
+              <span style="font-size:12px; color:#10B981; font-weight:bold;">↓ -1m 02s</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--color-text-secondary); margin-top:12px;">
+            Benchmark: 12m SLA Target
+          </div>
+        </div>
+
+        <!-- 3. Skipped / No-Shows -->
+        <div class="stat-card-staff">
+          <div>
+            <div class="stat-card-staff__top">
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">SKIPPED / NO-SHOWS</span>
+              <div style="width:32px; height:32px; border-radius:6px; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:18px;">person_off</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <span class="stat-card-staff__value" style="color:#D97706;">7</span>
+              <span style="font-size:12px; color:#D97706; font-weight:bold;">4.7% total</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--color-text-secondary); margin-top:12px;">
+            3 recalled & resolved
+          </div>
+        </div>
+
+        <!-- 4. Escalated / Transferred -->
+        <div class="stat-card-staff">
+          <div>
+            <div class="stat-card-staff__top">
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">ESCALATED / TRANSFERRED</span>
+              <div style="width:32px; height:32px; border-radius:6px; background:#FAF5FF; color:#9333EA; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span>
+              </div>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px;">
+              <span class="stat-card-staff__value" style="color:#9333EA;">5</span>
+              <span style="font-size:12px; color:#9333EA; font-weight:bold;">3.3% volume</span>
+            </div>
+          </div>
+          <div style="font-size:11px; color:var(--color-text-secondary); margin-top:12px;">
+            Route to Specialist Desk 06
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter Panel -->
+      <section class="card" style="padding:var(--space-4);">
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <!-- Top Row: Search & Date -->
+          <div style="display:flex; gap:12px; flex-wrap:wrap;">
+            <div style="flex:1; min-width:280px; position:relative;">
+              <input type="text" id="audit-search-input" placeholder="Search by token #, citizen name, ID, staff desk ID..." style="width:100%; height:42px; padding:0 12px 0 38px; border:1px solid var(--color-border); border-radius:var(--radius-control); font-size:13px;" />
+              <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94A3B8; font-size:18px;">search</span>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+              <button type="button" class="btn btn--secondary" style="height:42px; padding:0 14px; font-size:13px; display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-outlined" style="font-size:18px;">calendar_today</span>
+                <span>Today (Oct 24, 2026)</span>
+                <span class="material-symbols-outlined" style="font-size:18px;">expand_more</span>
+              </button>
+
+              <button type="button" class="btn btn--ghost" id="btn-reset-filters" style="height:42px; padding:0 12px; font-size:12px; color:var(--color-muted); border:1px solid var(--color-border);">
+                <span class="material-symbols-outlined" style="font-size:16px;">restart_alt</span>
+                <span>Reset</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Bottom Row: Dropdown Filters -->
+          <div style="display:grid; grid-template-columns:1fr; gap:12px;" class="grid-desktop-3col">
+            <div>
+              <label for="filter-service" style="display:block; font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase; margin-bottom:4px;">SERVICE CATEGORY</label>
+              <select id="filter-service" style="width:100%; height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+                <option value="all">All Services (6 Active)</option>
+                <option value="Certificate Application">Certificate Application</option>
+                <option value="Document Verification">Document Verification</option>
+                <option value="Public Enquiry">Public Enquiry</option>
+                <option value="Civil Registry">Civil Registry</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="filter-status" style="display:block; font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase; margin-bottom:4px;">QUEUE RESOLUTION STATUS</label>
+              <select id="filter-status" style="width:100%; height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+                <option value="all">All Statuses</option>
+                <option value="COMPLETED">Completed</option>
+                <option value="SKIPPED">Skipped (No-Show)</option>
+                <option value="CANCELLED">Cancelled</option>
+                <option value="TRANSFERRED">Transferred</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="filter-counter" style="display:block; font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase; margin-bottom:4px;">COUNTER ASSIGNMENT</label>
+              <select id="filter-counter" style="width:100%; height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+                <option value="cnt-2">Counter 02 (My Desk - Officer Jenkins)</option>
+                <option value="all">All Counters (Fleet Wide)</option>
+                <option value="cnt-1">Counter 01 (Officer Miller)</option>
+                <option value="cnt-3">Counter 03 (Express Desk)</option>
+                <option value="cnt-4">Counter 04 (Biometrics Desk)</option>
+                <option value="cnt-5">Counter 05 (Enquiry Desk)</option>
+                <option value="cnt-6">Counter 06 (Relief Desk)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Audit Log Data Table -->
+      <section class="card" style="padding:0; overflow:hidden;">
+        <div class="data-table-wrap" style="border:none; box-shadow:none;">
+          <table class="data-table data-table-responsive" id="audit-table">
+            <thead>
+              <tr>
+                <th>TOKEN #</th>
+                <th>CITIZEN NAME & ID</th>
+                <th>SERVICE</th>
+                <th>COUNTER & OFFICER</th>
+                <th>REGISTERED</th>
+                <th>CALLED</th>
+                <th>COMPLETED</th>
+                <th>TURNAROUND</th>
+                <th style="text-align:right;">FINAL STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1: A005 -->
+              <tr onclick="openReceiptModal('A005', 'Carlos Ramirez', 'Certificate Application', 'Desk 02', '10:36 AM')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <strong style="font-family:var(--font-family-mono); font-size:15px; color:var(--color-primary);">A005</strong>
+                    <div style="font-size:10px; color:#64748B;">Kiosk #01</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#EFF6FF; color:#2563EB; font-size:11px; font-weight:bold;">CR</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">Carlos Ramirez</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 894-3920-K</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Certificate Application</div>
+                    <div style="font-size:11px; color:#64748B;">Birth/Vital Record</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <div>
+                      <strong>Counter 02</strong>
+                      <div style="font-size:10px; color:#64748B;">Officer Jenkins</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">10:15 AM</td>
+                <td data-label="CALLED">10:30 AM</td>
+                <td data-label="COMPLETED">10:36 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:var(--color-primary);">6m 12s</strong>
+                    <div style="font-size:10px; color:#10B981;">-42% SLA</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--completed" style="font-size:11px;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#059669;"></span>
+                    <span>COMPLETED</span>
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Row 2: A004 -->
+              <tr onclick="openReceiptModal('A004', 'Sarah Lin', 'Document Verification', 'Desk 02', '10:28 AM')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <strong style="font-family:var(--font-family-mono); font-size:15px; color:var(--color-primary);">A004</strong>
+                    <div style="font-size:10px; color:#64748B;">Kiosk #02</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#F0FDF4; color:#16A34A; font-size:11px; font-weight:bold;">SL</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">Sarah Lin</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 610-8201-B</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Document Verification</div>
+                    <div style="font-size:11px; color:#64748B;">Residency Proof</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <div>
+                      <strong>Counter 02</strong>
+                      <div style="font-size:10px; color:#64748B;">Officer Jenkins</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">10:02 AM</td>
+                <td data-label="CALLED">10:14 AM</td>
+                <td data-label="COMPLETED">10:28 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:var(--color-primary);">14m 05s</strong>
+                    <div style="font-size:10px; color:#EF4444;">+17% SLA</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--completed" style="font-size:11px;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#059669;"></span>
+                    <span>COMPLETED</span>
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Row 3: A003 (Skipped) -->
+              <tr onclick="openNotesModal('A003', 'Robert Vance', 'No-Show after 3 chimes')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <strong style="font-family:var(--font-family-mono); font-size:15px; color:var(--color-primary);">A003</strong>
+                    <div style="font-size:10px; color:#64748B;">Kiosk #01</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#FEF3C7; color:#D97706; font-size:11px; font-weight:bold;">RV</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">Robert Vance</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 412-9908-J</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Certificate Application</div>
+                    <div style="font-size:11px; color:#64748B;">Marriage Affidavit</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <div>
+                      <strong>Counter 02</strong>
+                      <div style="font-size:10px; color:#64748B;">Officer Jenkins</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">09:45 AM</td>
+                <td data-label="CALLED">10:01 AM</td>
+                <td data-label="COMPLETED">10:05 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:#D97706;">4m 00s</strong>
+                    <div style="font-size:10px; color:#D97706;">Wait Exceeded</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--priority" style="font-size:11px; background:#FEF3C7; color:#D97706;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#D97706;"></span>
+                    <span>SKIPPED (No-Show)</span>
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Row 4: B011 (Cancelled) -->
+              <tr onclick="openNotesModal('B011', 'Emily Watson', 'Cancelled per citizen mobile app request')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <strong style="font-family:var(--font-family-mono); font-size:15px; color:#EF4444;">B011</strong>
+                    <div style="font-size:10px; color:#64748B;">Mobile App Appt</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#FEE2E2; color:#DC2626; font-size:11px; font-weight:bold;">EW</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">Emily Watson</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 559-1092-D</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Public Enquiry</div>
+                    <div style="font-size:11px; color:#64748B;">Zoning Guidance</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <div>
+                      <strong>Counter 01</strong>
+                      <div style="font-size:10px; color:#64748B;">Officer Miller</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">09:40 AM</td>
+                <td data-label="CALLED">09:55 AM</td>
+                <td data-label="COMPLETED">09:58 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:#EF4444;">3m 00s</strong>
+                    <div style="font-size:10px; color:#EF4444;">Early Release</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--skipped" style="font-size:11px;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#EF4444;"></span>
+                    <span>CANCELLED (Citizen Request)</span>
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Row 5: P001 (Priority) -->
+              <tr onclick="openReceiptModal('P001', 'James Thorne', 'Identity Verification', 'Desk 02', '09:34 AM')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                      <strong style="font-family:var(--font-family-mono); font-size:15px; color:#14B8A6;">P001</strong>
+                      <span class="material-symbols-outlined" style="font-size:15px; color:#14B8A6;">accessible</span>
+                    </div>
+                    <div style="font-size:10px; color:#14B8A6; font-weight:bold;">Priority Fast-Lane</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#CCFBF1; color:#0F766E; font-size:11px; font-weight:bold;">JT</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">James Thorne (Senior 65+)</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 201-4439-A</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Identity Verification</div>
+                    <div style="font-size:11px; color:#64748B;">Smart City Card Renewal</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <div>
+                      <strong>Counter 02</strong>
+                      <div style="font-size:10px; color:#64748B;">Officer Jenkins</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">09:20 AM</td>
+                <td data-label="CALLED">09:25 AM</td>
+                <td data-label="COMPLETED">09:34 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:var(--color-primary);">9m 00s</strong>
+                    <div style="font-size:10px; color:#14B8A6;">Priority Intercept</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--completed" style="font-size:11px; background:#CCFBF1; color:#0F766E; border-color:#99F6E4;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#0D9488;"></span>
+                    <span>COMPLETED (Priority)</span>
+                  </span>
+                </td>
+              </tr>
+
+              <!-- Row 6: A001 (Transferred) -->
+              <tr onclick="openTransferModal('A001', 'Elena Rostova', 'Desk 02 → Desk 06', 'Specialist Case Escalation')" style="cursor:pointer;">
+                <td data-label="TOKEN #">
+                  <div>
+                    <strong style="font-family:var(--font-family-mono); font-size:15px; color:#2563EB;">A001</strong>
+                    <div style="font-size:10px; color:#64748B;">Kiosk #03</div>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:28px; height:28px; background:#EFF6FF; color:#2563EB; font-size:11px; font-weight:bold;">ER</div>
+                    <div>
+                      <strong style="color:var(--color-primary);">Elena Rostova</strong>
+                      <div style="font-size:11px; color:#64748B;">ID: 994-5512-P</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div>
+                    <div style="font-weight:600;">Civil Registry</div>
+                    <div style="font-size:11px; color:#64748B;">Complex Naturalization</div>
+                  </div>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#3B82F6;"></span>
+                    <div>
+                      <strong>Counter 02 → 06</strong>
+                      <div style="font-size:10px; color:#64748B;">Re-routed to Desk 06</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="REGISTERED">08:50 AM</td>
+                <td data-label="CALLED">09:00 AM</td>
+                <td data-label="COMPLETED">09:12 AM</td>
+                <td data-label="TURNAROUND">
+                  <div>
+                    <strong style="color:#2563EB;">12m 00s</strong>
+                    <div style="font-size:10px; color:#64748B;">Transferred</div>
+                  </div>
+                </td>
+                <td data-label="FINAL STATUS" style="text-align:right;">
+                  <span class="status-pill status-pill--calling" style="font-size:11px; background:#DBEAFE; color:#1E40AF;">
+                    <span style="width:5px; height:5px; border-radius:50%; background:#2563EB;"></span>
+                    <span>TRANSFERRED (To Desk 06)</span>
+                  </span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Pagination Bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-top:1px solid #F1F5F9; font-size:12px; color:#64748B; flex-wrap:wrap; gap:12px;">
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span>Showing <strong>1-10</strong> of <strong>148</strong> processed tokens today</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <span>Page Size:</span>
+              <select style="height:30px; border:1px solid var(--color-border); border-radius:4px; font-size:11px; padding:0 6px;">
+                <option>10</option>
+                <option>25</option>
+                <option>50</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:4px;">
+            <button type="button" class="btn btn--ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--color-border);">‹</button>
+            <button type="button" class="btn btn--primary" style="padding:4px 10px; font-size:12px; min-width:32px; justify-content:center;">1</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">2</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">3</button>
+            <span style="padding:0 4px;">...</span>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">15</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--color-border);">›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Operational States Visual Reference Section -->
+      <section style="margin-top:var(--space-4);">
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-3); flex-wrap:wrap; gap:8px;">
+          <div>
+            <h2 style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+              Queue State Visual Reference & Operational States
+            </h2>
+            <div style="font-size:12px; color:var(--color-text-secondary);">
+              Live behavioral modes and emergency contingency cards for Hall B agent stations.
+            </div>
+          </div>
+
+          <span style="background:#F1F5F9; color:#475569; font-size:11px; font-weight:bold; padding:4px 10px; border-radius:4px; display:inline-flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:14px; color:#2563EB;">policy</span>
+            Ruleset V4.2 Compliant
+          </span>
+        </div>
+
+        <div class="operational-states-grid">
+          <!-- State A: Queue Clear -->
+          <div class="op-state-card" style="border-top:4px solid #10B981;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <span style="font-size:11px; font-weight:bold; color:#059669; letter-spacing:0.04em;">STATE A • QUEUE CLEAR</span>
+              <div style="width:24px; height:24px; border-radius:50%; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:14px;">check</span>
+              </div>
+            </div>
+
+            <div style="padding:14px 0;">
+              <div style="width:48px; height:48px; border-radius:50%; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+                <span class="material-symbols-outlined" style="font-size:26px;">sentiment_satisfied</span>
+              </div>
+              <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                All Caught Up!
+              </h3>
+              <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                No citizens are currently waiting in the <strong>Certificate Application</strong> queue. Desk station is idle.
+              </p>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid #F1F5F9; padding-top:12px; margin-top:12px; font-size:11px; color:#64748B;">
+              <span>Next appt: 11:00 AM</span>
+              <button type="button" class="btn btn--secondary" onclick="showToast('Requested overflow routing from Hall Supervisor.')" style="padding:4px 10px; font-size:11px;">
+                Request Overflow
+              </button>
+            </div>
+          </div>
+
+          <!-- State B: Temporary Recess -->
+          <div class="op-state-card" style="border-top:4px solid #F59E0B;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <span style="font-size:11px; font-weight:bold; color:#D97706; letter-spacing:0.04em;">STATE B • TEMPORARY RECESS</span>
+              <div style="width:24px; height:24px; border-radius:50%; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:14px;">pause</span>
+              </div>
+            </div>
+
+            <div style="padding:14px 0;">
+              <div style="width:48px; height:48px; border-radius:50%; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+                <span class="material-symbols-outlined" style="font-size:26px;">coffee</span>
+              </div>
+              <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                Counter 02 is PAUSED
+              </h3>
+              <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                Desk marked on recess by Officer Jenkins. Active tokens will be dynamically rerouted to <strong>Counters 01 and 04</strong>.
+              </p>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid #F1F5F9; padding-top:12px; margin-top:12px; font-size:11px;">
+              <span style="color:#D97706; font-weight:bold;">12 mins remaining</span>
+              <button type="button" class="btn btn--primary" onclick="showToast('Resumed desk duty. Dispatch online.', 'success')" style="padding:4px 10px; font-size:11px; background:#0F234A;">
+                Resume Desk Now
+              </button>
+            </div>
+          </div>
+
+          <!-- State C: Priority Override -->
+          <div class="op-state-card" style="border-top:4px solid #2563EB;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+              <span style="font-size:11px; font-weight:bold; color:#2563EB; letter-spacing:0.04em;">STATE C • PRIORITY OVERRIDE</span>
+              <div style="width:24px; height:24px; border-radius:50%; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:14px;">accessible</span>
+              </div>
+            </div>
+
+            <div style="padding:14px 0;">
+              <div style="width:48px; height:48px; border-radius:50%; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center; margin:0 auto 12px;">
+                <span class="material-symbols-outlined" style="font-size:26px;">bolt</span>
+              </div>
+              <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                Priority Intercept Active
+              </h3>
+              <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                Senior citizen & assisted lane tokens automatically jump to position #1. Normal FIFO queues are paused until served.
+              </p>
+            </div>
+
+            <div style="display:flex; align-items:center; justify-content:space-between; border-top:1px solid #F1F5F9; padding-top:12px; margin-top:12px; font-size:11px; color:#64748B;">
+              <span>1 Senior citizen in waiting</span>
+              <button type="button" class="btn btn--secondary" onclick="showToast('Priority routing policy: 65+, mobility, expectant mothers.')" style="padding:4px 10px; font-size:11px;">
+                View Priority Rule
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal 1: Receipt Slip Modal -->
+  <div class="sheet-backdrop" id="receipt-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="receipt-modal" role="dialog" aria-labelledby="receipt-title" aria-modal="true" aria-hidden="true" style="max-width:440px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <h3 id="receipt-title" style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+          Municipal Service Receipt Slip
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('receipt-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card); padding:16px; font-family:var(--font-family-mono); font-size:12px; margin-bottom:16px;">
+        <div style="text-align:center; padding-bottom:8px; border-bottom:1px dashed #CBD5E1; margin-bottom:10px;">
+          <strong style="font-size:14px; color:var(--color-primary);">METROPOLITAN CIVIC CENTER</strong>
+          <div style="font-size:10px; color:#64748B;">Official Statutory Service Receipt</div>
+        </div>
+
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>TOKEN NUMBER:</span>
+          <strong id="receipt-token-num" style="color:#2563EB;">A005</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>CITIZEN NAME:</span>
+          <strong id="receipt-citizen-name">Carlos Ramirez</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>SERVICE:</span>
+          <span id="receipt-service">Certificate Application</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>WORKSTATION:</span>
+          <span id="receipt-desk">Counter 02 (Room 104)</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span>OFFICER IN CHARGE:</span>
+          <span>Mark Jenkins (STF-4409)</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+          <span>COMPLETION TIME:</span>
+          <span id="receipt-time">10:36 AM</span>
+        </div>
+
+        <div style="text-align:center; padding-top:8px; border-top:1px dashed #CBD5E1; color:#059669; font-weight:bold;">
+          ★ TRANSACTION SEALED & VERIFIED ★
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--primary" onclick="window.print()" style="flex:1; justify-content:center;">
+          <span class="material-symbols-outlined">print</span>
+          <span>Print Receipt</span>
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('receipt-modal')">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Case Notes Modal -->
+  <div class="sheet-backdrop" id="notes-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="notes-modal" role="dialog" aria-labelledby="notes-title" aria-modal="true" aria-hidden="true" style="max-width:440px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <h3 id="notes-title" style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+          Caseworker Audit Note
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('notes-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); margin-bottom:12px;">
+        Audit log record for Token <strong id="notes-token-num" style="color:var(--color-primary);">A003</strong>:
+      </p>
+
+      <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-control); padding:12px; font-size:13px; line-height:1.5; margin-bottom:16px;" id="notes-content">
+        Citizen did not present at Counter 02 after 3 automated chime summons. Status transitioned to No-Show pursuant to Section 4B of Municipal Queue Regulations.
+      </div>
+
+      <button type="button" class="btn btn--secondary" onclick="closeModal('notes-modal')" style="width:100%; justify-content:center;">
+        Close Record
+      </button>
+    </div>
+  </div>
+
+  <!-- Modal 3: Transfer Record Modal -->
+  <div class="sheet-backdrop" id="transfer-log-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="transfer-log-modal" role="dialog" aria-labelledby="transfer-log-title" aria-modal="true" aria-hidden="true" style="max-width:440px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <h3 id="transfer-log-title" style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+          Desk Transfer Audit Route
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('transfer-log-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:var(--radius-card); padding:14px; margin-bottom:16px;">
+        <div style="font-size:11px; font-weight:bold; color:#1E40AF; text-transform:uppercase; margin-bottom:6px;">INTER-DESK ESCALATION LOG</div>
+        <div style="font-size:13px; color:var(--color-primary); font-weight:bold; margin-bottom:4px;" id="transfer-route-text">
+          Counter 02 (Officer Jenkins) → Counter 06 (Supervisor Hall)
+        </div>
+        <div style="font-size:12px; color:#475569;" id="transfer-reason-text">
+          Reason: Complex multi-jurisdictional residency proof requiring Tier 2 supervisor sign-off.
+        </div>
+      </div>
+
+      <button type="button" class="btn btn--secondary" onclick="closeModal('transfer-log-modal')" style="width:100%; justify-content:center;">
+        Dismiss
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initDashboardShell, exportTokensCSV } from '../assets/js/staff.js';
+    import { showToast, closeModal, openModal } from '../assets/js/ui.js';
+
+    // 1. Initialize Shell
+    initDashboardShell('history');
+
+    // 2. Export CSV button
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+      exportTokensCSV();
+    });
+
+    // 3. Modals for rows
+    window.openReceiptModal = function(token, name, srv, desk, time) {
+      document.getElementById('receipt-token-num').textContent = token;
+      document.getElementById('receipt-citizen-name').textContent = name;
+      document.getElementById('receipt-service').textContent = srv;
+      document.getElementById('receipt-desk').textContent = desk;
+      document.getElementById('receipt-time').textContent = time;
+      openModal('receipt-modal');
+    };
+
+    window.openNotesModal = function(token, name, notes) {
+      document.getElementById('notes-token-num').textContent = `${token} (${name})`;
+      document.getElementById('notes-content').textContent = notes;
+      openModal('notes-modal');
+    };
+
+    window.openTransferModal = function(token, name, route, reason) {
+      document.getElementById('transfer-route-text').textContent = route;
+      document.getElementById('transfer-reason-text').textContent = `Reason: ${reason}`;
+      openModal('transfer-log-modal');
+    };
+
+    // 4. Client Search & Filtering
+    const searchInput = document.getElementById('audit-search-input');
+    const serviceFilter = document.getElementById('filter-service');
+    const statusFilter = document.getElementById('filter-status');
+    const resetBtn = document.getElementById('btn-reset-filters');
+    const rows = document.querySelectorAll('#audit-table tbody tr');
+
+    function applyFilters() {
+      const q = searchInput.value.toLowerCase().trim();
+      const srv = serviceFilter.value;
+      const st = statusFilter.value;
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const matchesQuery = !q || text.includes(q);
+        const matchesSrv = srv === 'all' || text.includes(srv.toLowerCase());
+        const matchesStatus = st === 'all' || text.includes(st.toLowerCase());
+
+        row.style.display = (matchesQuery && matchesSrv && matchesStatus) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    serviceFilter.addEventListener('change', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+
+    resetBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      serviceFilter.value = 'all';
+      statusFilter.value = 'all';
+      applyFilters();
+      showToast('Filters reset.');
+    });
+  </script>
+</body>
+</html>

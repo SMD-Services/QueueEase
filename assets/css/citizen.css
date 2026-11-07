@@ -1,0 +1,1612 @@
+/* ==========================================================================
+   QueueEase Citizen Experience Styles
+   assets/css/citizen.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Live Status Header Bar & Pill Row
+   -------------------------------------------------------------------------- */
+.live-pill-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--space-4);
+  margin-bottom: var(--space-3);
+  gap: var(--space-2);
+}
+
+.civic-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  font-size: var(--font-label-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border: 1px solid var(--color-secondary-border);
+}
+
+.civic-status-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-tertiary);
+  animation: pulse-dot 1.8s infinite;
+}
+
+.desk-hours-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-label-xs);
+  color: var(--color-muted);
+  font-weight: var(--font-weight-medium);
+}
+.desk-hours-meta .material-symbols-outlined {
+  font-size: 15px;
+  color: var(--color-tertiary);
+}
+
+/* --------------------------------------------------------------------------
+   2. Page Headings
+   -------------------------------------------------------------------------- */
+.citizen-hero-header {
+  margin-bottom: var(--space-4);
+}
+
+.citizen-hero-header__title {
+  font-size: var(--font-headline-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.2;
+  margin-bottom: var(--space-1);
+}
+
+.citizen-hero-header__subtitle {
+  font-size: var(--font-body-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+/* --------------------------------------------------------------------------
+   3. Center Status Hub Card (3-Col Stats)
+   -------------------------------------------------------------------------- */
+.hub-status-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4) var(--space-4) var(--space-3);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--space-4);
+}
+
+.hub-status-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+
+.hub-status-card__location {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.hub-status-card__icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hub-status-card__icon-box .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.hub-status-card__title {
+  font-size: var(--font-body-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.hub-status-card__subtitle {
+  font-size: var(--font-label-xs);
+  color: var(--color-muted);
+}
+
+.hub-status-card__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-tertiary-surface);
+  color: var(--color-tertiary-dark);
+  font-size: var(--font-label-xs);
+  font-weight: var(--font-weight-bold);
+}
+
+.hub-status-card__metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+  text-align: center;
+}
+
+.hub-metric-col {
+  background-color: var(--color-background);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.hub-metric-col__label {
+  font-size: var(--font-label-xs);
+  color: var(--color-muted);
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 2px;
+}
+
+.hub-metric-col__value {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.1;
+  margin-bottom: 2px;
+}
+
+.hub-metric-col__sub {
+  font-size: 11px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.hub-metric-col__sub--speed {
+  color: var(--color-success);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* --------------------------------------------------------------------------
+   4. Generate New Token Blue Hero Card
+   -------------------------------------------------------------------------- */
+.token-hero-card {
+  display: block;
+  background: var(--color-primary-gradient);
+  color: #FFFFFF;
+  border-radius: var(--radius-card);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+  margin-bottom: var(--space-4);
+  text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.token-hero-card:active {
+  transform: scale(0.98);
+}
+
+.token-hero-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.token-hero-card__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.token-hero-card__icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-control);
+  background-color: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+}
+
+.token-hero-card__badge {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.token-hero-card__title {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.token-hero-card__circle-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #FFFFFF;
+  transition: transform 0.2s ease;
+}
+.token-hero-card:hover .token-hero-card__circle-arrow {
+  transform: translateX(4px);
+}
+
+.token-hero-card__desc {
+  font-size: var(--font-body-sm);
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* --------------------------------------------------------------------------
+   5. Track Existing Token Card
+   -------------------------------------------------------------------------- */
+.track-token-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--space-5);
+}
+
+.track-token-card__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.track-token-card__icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.track-token-card__title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex: 1;
+}
+
+.track-token-card__title {
+  font-size: var(--font-title-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.track-token-card__pill {
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-card-subtle);
+  color: var(--color-muted);
+}
+
+.track-token-card__subtext {
+  font-size: var(--font-label-xs);
+  color: var(--color-muted);
+}
+
+.track-token-card__input-group {
+  display: flex;
+  align-items: stretch;
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  overflow: hidden;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.track-token-card__input-group:focus-within {
+  border-color: var(--color-secondary);
+  background-color: var(--color-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.track-token-card__input-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-left: 12px;
+  color: var(--color-muted);
+}
+
+.track-token-card__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px;
+  font-size: 16px; /* iOS zoom prevention */
+  font-family: inherit;
+  color: var(--color-primary);
+  font-weight: var(--font-weight-semibold);
+  text-transform: uppercase;
+}
+.track-token-card__input::placeholder {
+  text-transform: none;
+  color: var(--color-muted-light);
+  font-weight: var(--font-weight-regular);
+}
+.track-token-card__input:focus {
+  outline: none;
+}
+
+.track-token-card__btn {
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  border: none;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: var(--font-weight-bold);
+  font-size: var(--font-label-sm);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.track-token-card__btn:active {
+  background-color: var(--color-primary-dark);
+}
+
+.track-feedback {
+  font-size: var(--font-label-xs);
+  margin-top: var(--space-2);
+  display: none;
+}
+.track-feedback--error {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-danger);
+}
+.track-feedback--success {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--color-success);
+}
+
+/* --------------------------------------------------------------------------
+   6. Your Active Passes Section
+   -------------------------------------------------------------------------- */
+.section-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.section-header-title {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.section-header-link {
+  font-size: var(--font-label-sm);
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.active-pass-card {
+  background: var(--color-card);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  box-shadow: 0 4px 16px rgba(37, 99, 235, 0.08);
+  margin-bottom: var(--space-5);
+  position: relative;
+  overflow: hidden;
+}
+.active-pass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 6px;
+  height: 100%;
+  background-color: var(--color-secondary);
+}
+
+/* --------------------------------------------------------------------------
+   7. 2x2 Civic Departments Grid
+   -------------------------------------------------------------------------- */
+.dept-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  margin-bottom: var(--space-5);
+}
+
+.dept-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 148px;
+  box-shadow: var(--shadow-1);
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.dept-card:active {
+  transform: scale(0.97);
+  border-color: var(--color-secondary);
+}
+
+.dept-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.dept-card__icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dept-card__icon-box .material-symbols-outlined {
+  font-size: 20px;
+}
+
+.dept-card__wait-badge {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+}
+.dept-card__wait-badge--low {
+  background-color: var(--color-success-surface);
+  color: var(--color-tertiary-dark);
+  border: 1px solid var(--color-success-border);
+}
+.dept-card__wait-badge--med {
+  background-color: var(--color-warning-surface);
+  color: var(--color-warning-text);
+  border: 1px solid var(--color-warning-border);
+}
+
+.dept-card__title {
+  font-size: var(--font-body-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.25;
+  margin-bottom: 2px;
+}
+
+.dept-card__desc {
+  font-size: var(--font-label-xs);
+  color: var(--color-muted);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-bottom: var(--space-3);
+}
+
+.dept-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.dept-card__time {
+  font-size: var(--font-label-xs);
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.dept-card__action-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+.dept-card__action-btn .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* --------------------------------------------------------------------------
+   8. Lounge Image Banner
+   -------------------------------------------------------------------------- */
+.lounge-banner {
+  position: relative;
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  min-height: 156px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: var(--space-4);
+  box-shadow: var(--shadow-2);
+  margin-bottom: var(--space-5);
+  background-color: var(--color-primary-dark);
+}
+
+.lounge-banner__bg {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  object-fit: cover;
+  z-index: 1;
+}
+
+.lounge-banner__overlay {
+  position: absolute;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: linear-gradient(180deg, rgba(11, 28, 48, 0.1) 0%, rgba(11, 28, 48, 0.85) 100%);
+  z-index: 2;
+}
+
+.lounge-banner__content {
+  position: relative;
+  z-index: 3;
+  color: #FFFFFF;
+}
+
+.lounge-banner__tag {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 2px;
+}
+
+.lounge-banner__title-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.lounge-banner__title {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.2;
+}
+
+.lounge-banner__air-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   9. Civic Accessibility Care Panel
+   -------------------------------------------------------------------------- */
+.accessibility-panel {
+  background-color: var(--color-secondary-surface);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  margin-bottom: var(--space-6);
+  box-shadow: var(--shadow-1);
+}
+
+.accessibility-panel__header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-2);
+}
+
+.accessibility-panel__icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.accessibility-panel__icon-box .material-symbols-outlined {
+  font-size: 24px;
+}
+
+.accessibility-panel__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.accessibility-panel__title {
+  font-size: var(--font-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.accessibility-panel__badge {
+  background-color: var(--color-priority-badge);
+  color: var(--color-tertiary-light);
+  font-size: 10px;
+  font-weight: var(--font-weight-bold);
+  padding: 2px 6px;
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.05em;
+}
+
+.accessibility-panel__desc {
+  font-size: var(--font-body-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+  margin-bottom: var(--space-4);
+}
+
+.accessibility-panel__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+@media (min-width: 480px) {
+  .accessibility-panel__actions {
+    flex-direction: row;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   10. Services Screen: Dark Average Center Wait Card
+   -------------------------------------------------------------------------- */
+.services-hero-wait-card {
+  background: var(--color-primary-gradient);
+  color: #FFFFFF;
+  border-radius: var(--radius-card);
+  padding: var(--space-4) var(--space-5);
+  box-shadow: var(--shadow-2);
+  margin-bottom: var(--space-4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.services-hero-wait-card__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  margin-bottom: 2px;
+}
+
+.services-hero-wait-card__val {
+  font-size: var(--font-headline-lg);
+  font-weight: var(--font-weight-bold);
+}
+
+.services-hero-wait-card__desks {
+  font-size: var(--font-body-sm);
+  font-weight: var(--font-weight-regular);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.services-hero-wait-card__icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-control);
+  background-color: rgba(37, 99, 235, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60A5FA;
+}
+.services-hero-wait-card__icon-box .material-symbols-outlined {
+  font-size: 26px;
+}
+
+/* Search Box */
+.service-search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: 0 var(--space-3);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--space-3);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.service-search-box:focus-within {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.service-search-box__icon {
+  color: var(--color-muted);
+  font-size: 20px;
+  margin-right: var(--space-2);
+}
+
+.service-search-box__input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 12px 0;
+  font-size: 16px; /* iOS zoom prevention */
+  color: var(--color-text);
+}
+.service-search-box__input:focus {
+  outline: none;
+}
+
+/* --------------------------------------------------------------------------
+   11. Service Card Detailed (Screen 2)
+   -------------------------------------------------------------------------- */
+.service-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+  margin-bottom: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.service-card:active {
+  border-color: var(--color-secondary);
+}
+
+.service-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.service-card__icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.service-card__icon-box .material-symbols-outlined {
+  font-size: 26px;
+}
+
+.service-card__queue-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-success-surface);
+  color: var(--color-tertiary-dark);
+  border: 1px solid var(--color-success-border);
+  font-size: var(--font-label-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.service-card__title {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.25;
+}
+
+.service-card__desc {
+  font-size: var(--font-body-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.45;
+}
+
+.service-card__meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.service-meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-card-subtle);
+  color: var(--color-text-secondary);
+  font-size: 11px;
+  font-weight: var(--font-weight-semibold);
+}
+.service-meta-chip .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+/* --------------------------------------------------------------------------
+   12. Current Processing Pulse Card
+   -------------------------------------------------------------------------- */
+.pulse-panel {
+  background-color: var(--color-secondary-surface);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.pulse-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.pulse-panel__title {
+  font-size: var(--font-title-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.pulse-panel__sub {
+  font-size: 11px;
+  color: var(--color-secondary);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pulse-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.pulse-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.pulse-card__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-medium);
+  color: var(--color-muted);
+  margin-bottom: 2px;
+}
+
+.pulse-card__token {
+  font-size: var(--font-headline-md);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.1;
+  margin-bottom: 2px;
+  font-family: var(--font-family-mono);
+}
+.pulse-card__token--calling {
+  color: var(--color-secondary);
+}
+.pulse-card__token--next {
+  color: var(--color-primary);
+}
+
+.pulse-card__desk {
+  font-size: 11px;
+  color: var(--color-text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+/* --------------------------------------------------------------------------
+   13. Need Accessibility Assistance Banner (Screen 2)
+   -------------------------------------------------------------------------- */
+.assistance-banner {
+  background-color: var(--color-secondary-surface);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  margin-bottom: var(--space-6);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.assistance-banner__icon-box {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-border);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.assistance-banner__title {
+  font-size: var(--font-body-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: 2px;
+}
+
+.assistance-banner__desc {
+  font-size: var(--font-label-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+  margin-bottom: var(--space-2);
+}
+
+.assistance-banner__link {
+  font-size: var(--font-label-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   14. Issue Token Pass Form (Screen 3)
+   -------------------------------------------------------------------------- */
+.issue-portal-banner {
+  background: var(--color-secondary-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+  border: 1px solid var(--color-secondary-border);
+}
+
+.issue-portal-banner__icon-box {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.issue-portal-banner__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-secondary-dark);
+}
+
+.issue-portal-banner__text {
+  font-size: var(--font-body-sm);
+  color: var(--color-text);
+  line-height: 1.35;
+}
+
+/* Assigned Service Hub Card */
+.service-hub-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+  box-shadow: var(--shadow-1);
+}
+
+.service-hub-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.service-hub-card__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.service-hub-card__icon-box {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-hub-card__label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.service-hub-card__title {
+  font-size: var(--font-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+.service-hub-card__edit-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.service-hub-card__edit-btn:active {
+  background-color: var(--color-secondary-border);
+}
+
+.service-hub-card__meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-2);
+}
+
+.service-hub-meta-box {
+  background-color: var(--color-background);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.service-hub-meta-box .material-symbols-outlined {
+  color: var(--color-secondary);
+  font-size: 20px;
+}
+
+.service-hub-meta-box__label {
+  font-size: 10px;
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-muted);
+  text-transform: uppercase;
+}
+
+.service-hub-meta-box__val {
+  font-size: var(--font-body-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+}
+
+/* Phone input group with country selector */
+.phone-input-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.country-select-box {
+  width: 110px;
+  min-height: 48px;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 8px;
+  font-size: 15px;
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+}
+
+.country-select-box select {
+  border: none;
+  background: transparent;
+  width: 100%;
+  font-weight: inherit;
+  font-size: 15px;
+  outline: none;
+  cursor: pointer;
+}
+
+.phone-field-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: 0 12px;
+}
+.phone-field-box:focus-within {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.phone-field-box .material-symbols-outlined {
+  color: var(--color-muted);
+  margin-right: 8px;
+  font-size: 20px;
+}
+
+.phone-field-box input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  min-height: 48px;
+  font-size: 16px;
+  color: var(--color-text);
+  outline: none;
+}
+
+/* Readonly Category Box */
+.readonly-category-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--color-card-subtle);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  padding: 12px 14px;
+  color: var(--color-text);
+  font-size: var(--font-body-sm);
+  font-weight: var(--font-weight-medium);
+}
+.readonly-category-box__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+.readonly-category-box .material-symbols-outlined {
+  font-size: 18px;
+  color: var(--color-muted);
+}
+
+/* Issue Sticky Bottom Bar */
+.issue-sticky-bar {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(248, 250, 252, 0) 0%, rgba(248, 250, 252, 0.95) 20%, #F8FAFC 100%);
+  padding: var(--space-3) 0 calc(var(--space-4) + var(--safe-area-bottom));
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: var(--z-sticky);
+}
+
+.security-caption {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--color-muted);
+  margin-top: var(--space-2);
+}
+.security-caption .material-symbols-outlined {
+  font-size: 14px;
+  color: var(--color-success);
+}
+
+/* --------------------------------------------------------------------------
+   15. Ticket Pass Card (Screen 4)
+   -------------------------------------------------------------------------- */
+.token-success-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-top: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.token-success-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-color: var(--color-success-surface);
+  color: var(--color-success-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.15);
+}
+.token-success-icon .material-symbols-outlined {
+  font-size: 32px;
+  font-weight: bold;
+}
+
+.token-success-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  font-size: var(--font-label-xs);
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: var(--space-2);
+}
+.token-success-pill__dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--color-tertiary);
+}
+
+.token-success-desc {
+  font-size: var(--font-body-sm);
+  color: var(--color-text-secondary);
+  max-width: 340px;
+  line-height: 1.45;
+}
+
+/* Complete Digital Ticket Pass Container */
+.ticket-pass {
+  background-color: var(--color-card);
+  border-radius: var(--radius-card-lg);
+  border: 1px solid var(--color-border);
+  box-shadow: 0 10px 30px rgba(20, 45, 78, 0.08);
+  position: relative;
+  overflow: hidden;
+  margin-bottom: var(--space-4);
+}
+
+.ticket-pass__top-bar {
+  height: 5px;
+  background-color: var(--color-secondary);
+  width: 100%;
+}
+
+.ticket-pass__header {
+  padding: var(--space-4) var(--space-4) var(--space-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ticket-pass__service-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.ticket-pass__service-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-surface);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-pass__service-label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.ticket-pass__service-title {
+  font-size: var(--font-title-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+/* Number Callout Section */
+.ticket-pass__number-box {
+  margin: var(--space-3) var(--space-4);
+  background: var(--color-secondary-surface);
+  border-radius: var(--radius-card);
+  padding: var(--space-5) var(--space-4);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.ticket-pass__number-label {
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-secondary-dark);
+}
+
+.ticket-pass__token-number {
+  font-size: 3rem; /* 48px */
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary-dark);
+  font-family: var(--font-family-mono);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.ticket-pass__counter-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+  font-size: var(--font-label-sm);
+  font-weight: var(--font-weight-semibold);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+/* Stat Tiles */
+.ticket-pass__stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+  padding: 0 var(--space-4) var(--space-4);
+}
+
+.ticket-stat-tile {
+  background-color: var(--color-background);
+  border-radius: var(--radius-card-sm);
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+}
+
+.ticket-stat-tile__header {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-muted);
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.ticket-stat-tile__header .material-symbols-outlined {
+  font-size: 15px;
+  color: var(--color-secondary);
+}
+
+.ticket-stat-tile__val {
+  font-size: var(--font-title-lg);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  line-height: 1.2;
+}
+
+.ticket-stat-tile__sub {
+  font-size: 11px;
+  color: var(--color-muted);
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 2px;
+}
+.ticket-stat-tile__sub--teal {
+  color: var(--color-success);
+}
+
+/* Ticket Divider with Left & Right Cut-outs */
+.ticket-divider-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 24px;
+  margin: var(--space-1) 0;
+}
+
+.ticket-divider-cutout-left,
+.ticket-divider-cutout-right {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  background-color: var(--color-background);
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  z-index: 5;
+}
+.ticket-divider-cutout-left {
+  left: -10px;
+  clip-path: polygon(50% 0%, 100% 0%, 100% 100%, 50% 100%);
+}
+.ticket-divider-cutout-right {
+  right: -10px;
+  clip-path: polygon(0% 0%, 50% 0%, 50% 100%, 0% 100%);
+}
+
+.ticket-divider-line {
+  flex: 1;
+  border-top: 2px dashed var(--color-border);
+  margin: 0 16px;
+}
+
+/* QR Code Display Container */
+.ticket-qr-section {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.ticket-qr-box {
+  width: 170px;
+  height: 170px;
+  background-color: var(--color-secondary-surface);
+  border-radius: var(--radius-card);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: var(--space-3);
+  box-shadow: inset 0 2px 6px rgba(20, 45, 78, 0.04);
+}
+
+.ticket-qr-canvas {
+  width: 144px;
+  height: 144px;
+  image-rendering: pixelated;
+  border-radius: var(--radius-sm);
+}
+
+.ticket-qr-caption {
+  font-size: var(--font-label-sm);
+  color: var(--color-muted);
+  margin-bottom: var(--space-3);
+}
+
+.ticket-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  font-size: 11px;
+  color: var(--color-muted);
+  font-weight: var(--font-weight-medium);
+  flex-wrap: wrap;
+}
+.ticket-meta-row .material-symbols-outlined {
+  font-size: 15px;
+  color: var(--color-secondary);
+}
+
+/* SMS Notice Card */
+.sms-active-notice {
+  background-color: var(--color-secondary-surface);
+  border: 1px solid var(--color-secondary-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.sms-active-notice__icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-control);
+  background-color: var(--color-secondary-border);
+  color: var(--color-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sms-active-notice__title {
+  font-size: var(--font-body-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--color-primary);
+  margin-bottom: 2px;
+}
+
+.sms-active-notice__desc {
+  font-size: var(--font-label-sm);
+  color: var(--color-text-secondary);
+  line-height: 1.4;
+}
+
+/* Ticket Action Bar */
+.ticket-actions-bar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  margin-bottom: var(--space-6);
+}
+
+.ticket-actions-row {
+  display: flex;
+  gap: var(--space-2);
+}
+
+/* Print Only Stylesheet */
+@media print {
+  body {
+    background-color: #FFFFFF !important;
+    padding: 0 !important;
+  }
+  #app-header,
+  #app-bottom-nav,
+  .token-success-header,
+  .sms-active-notice,
+  .ticket-actions-bar,
+  .ticket-footer-help {
+    display: none !important;
+  }
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+  .ticket-pass {
+    box-shadow: none !important;
+    border: 1.5px solid #000000 !important;
+    max-width: 480px;
+    margin: 20px auto !important;
+    page-break-inside: avoid;
+  }
+}
+

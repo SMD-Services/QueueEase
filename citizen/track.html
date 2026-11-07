@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('lang', lang);
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Live Queue Tracking</title>
+  <meta name="description" content="Track your real-time queue position and counter summoning status." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body>
+
+  <!-- Shared App Header Target -->
+  <header id="app-header"></header>
+
+  <main class="container" style="padding-top: var(--space-3);">
+
+    <!-- Main Live Tracking View -->
+    <div id="track-main-content">
+      
+      <!-- 1. Synced Header Banner -->
+      <div class="live-pill-row" style="background:var(--surface-card); border:1px solid var(--border-subtle); border-radius:var(--radius-card); padding:10px 14px; margin-bottom:var(--space-3);">
+        <div class="flow-row items-center gap-2">
+          <span class="civic-status-pill__dot" style="background:var(--color-tertiary);"></span>
+          <div class="flow-col">
+            <span class="text-body-sm font-bold color-primary" data-i18n="track_live_title">Live Queue Tracking</span>
+            <span class="text-label-xs color-muted" data-i18n="track_live_sub">Hall B Service Counter • Central Desk</span>
+          </div>
+        </div>
+        <span class="status-pill status-pill--calling" style="background:var(--info-bg); border-color:var(--border-subtle); color:var(--info-text); font-size:11px; padding:3px 10px;">
+          <span class="material-symbols-outlined" style="font-size:14px;">radar</span>
+          <span data-i18n="track_synced">SYNCED</span>
+        </span>
+      </div>
+
+      <!-- 2. Dark Gradient Token Hero Card (A008) -->
+      <section class="card card--navy" id="track-token-hero" style="margin-bottom: var(--space-4);" aria-label="Official Citizen Token Hero">
+        <!-- Rendered by track.js -->
+        <div class="flow-col gap-2">
+          <div class="skeleton skeleton--text" style="width:40%;"></div>
+          <div class="skeleton skeleton--text" style="width:70%; height:32px;"></div>
+        </div>
+      </section>
+
+      <!-- 3. Queue Stepper Section -->
+      <section id="track-stepper-container" style="margin-bottom: var(--space-5);" aria-label="Queue progress stepper">
+        <!-- Rendered by track.js -->
+        <div class="skeleton skeleton--card" style="height: 160px;"></div>
+      </section>
+
+      <!-- 4. Live Board List -->
+      <section style="margin-bottom: var(--space-5);">
+        <div class="section-header-row">
+          <div class="flow-row items-center gap-2">
+            <span class="material-symbols-outlined color-primary">view_list</span>
+            <h2 class="section-header-title" data-i18n="track_live_board_title">Live Board</h2>
+          </div>
+          <span class="text-label-xs color-muted" data-i18n="track_refreshed_now">Refreshed just now</span>
+        </div>
+
+        <div class="flow-col" id="track-live-board-list" aria-live="polite">
+          <!-- Rendered by track.js -->
+          <div class="skeleton skeleton--card" style="height: 60px; margin-bottom: 8px;"></div>
+          <div class="skeleton skeleton--card" style="height: 60px; margin-bottom: 8px;"></div>
+          <div class="skeleton skeleton--card" style="height: 60px;"></div>
+        </div>
+      </section>
+
+      <!-- 5. Status Timeline -->
+      <section style="margin-bottom: var(--space-5);">
+        <div class="flow-row items-center gap-2" style="margin-bottom: var(--space-3);">
+          <span class="material-symbols-outlined color-primary">schedule</span>
+          <h2 class="section-header-title" data-i18n="track_timeline_title">Status Timeline</h2>
+        </div>
+
+        <div class="card card--sm" id="track-status-timeline">
+          <!-- Rendered by track.js -->
+        </div>
+      </section>
+
+      <!-- 6. Notification Preferences -->
+      <section style="margin-bottom: var(--space-5);">
+        <div class="section-header-row" style="margin-bottom: var(--space-2);">
+          <div class="flow-row items-center gap-2">
+            <span class="material-symbols-outlined color-primary">notifications</span>
+            <h2 class="section-header-title" data-i18n="track_notif_prefs_title">Notification Preferences</h2>
+          </div>
+          <span class="text-label-xs color-success font-bold" data-i18n="track_notif_active">Active</span>
+        </div>
+
+        <div class="flow-col gap-2" id="notification-preferences-box">
+          <!-- Checkbox 1: SMS -->
+          <div class="checkbox-card checkbox-card--active" style="padding:12px 14px;" role="checkbox" aria-checked="true" tabindex="0">
+            <span class="material-symbols-outlined color-secondary" style="font-size:22px;">sms</span>
+            <div class="flow-col flex-1">
+              <span class="text-body-sm font-bold color-primary" data-i18n="track_notif_sms_title">SMS Chime Alerts</span>
+              <span class="text-label-xs color-muted" data-i18n="track_notif_sms_desc">Sends updates to +1 (555) ••• 8820</span>
+            </div>
+            <div class="custom-checkbox custom-checkbox--checked">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+          </div>
+
+          <!-- Checkbox 2: Push -->
+          <div class="checkbox-card checkbox-card--active" style="padding:12px 14px;" role="checkbox" aria-checked="true" tabindex="0">
+            <span class="material-symbols-outlined color-secondary" style="font-size:22px;">mail</span>
+            <div class="flow-col flex-1">
+              <span class="text-body-sm font-bold color-primary" data-i18n="track_notif_push_title">Push Notifications</span>
+              <span class="text-label-xs color-muted" data-i18n="track_notif_push_desc">Immediate ping on phone screen</span>
+            </div>
+            <div class="custom-checkbox custom-checkbox--checked">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+          </div>
+
+          <!-- Checkbox 3: Audio Chime -->
+          <div class="checkbox-card checkbox-card--active" style="padding:12px 14px;" role="checkbox" aria-checked="true" tabindex="0">
+            <span class="material-symbols-outlined color-secondary" style="font-size:22px;">volume_up</span>
+            <div class="flow-col flex-1">
+              <span class="text-body-sm font-bold color-primary" data-i18n="track_notif_audio_title">Audible Voice Chime</span>
+              <span class="text-label-xs color-muted" data-i18n="track_notif_audio_desc">Audio chime when token is summoned</span>
+            </div>
+            <div class="custom-checkbox custom-checkbox--checked">
+              <span class="material-symbols-outlined">check</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. Action Buttons -->
+      <div class="flow-col gap-3" style="margin-bottom: var(--space-5);">
+        <button type="button" class="btn btn--navy btn--full btn--lg" id="btn-refresh-queue">
+          <span class="material-symbols-outlined">refresh</span>
+          <span data-i18n="track_btn_refresh_queue">Refresh Queue Status</span>
+        </button>
+
+        <button type="button" class="btn btn--secondary btn--full btn--lg" id="btn-listen-announcement" style="background:var(--surface-tint); border-color:var(--border-subtle); color:var(--accent-text);">
+          <span class="material-symbols-outlined">campaign</span>
+          <span data-i18n="track_btn_listen_announcement">Listen to Queue Announcement</span>
+        </button>
+      </div>
+
+      <!-- Security Footnote -->
+      <div class="flow-row items-center justify-center gap-2 text-label-xs color-muted" style="margin-bottom: var(--space-6); text-align:center;">
+        <span class="material-symbols-outlined" style="font-size:16px; color:var(--color-success);">verified_user</span>
+        <span data-i18n="track_security_note">Municipal Public Utility • Queue Protection Active</span>
+      </div>
+
+    </div>
+
+    <!-- Empty State (When no token is tracked) -->
+    <div id="track-empty-state" class="empty-state" style="display: none; margin-top: var(--space-6);">
+      <div class="empty-state__icon">
+        <span class="material-symbols-outlined">radar</span>
+      </div>
+      <h2 class="empty-state__title" data-i18n="track_empty_title">No Active Token to Track</h2>
+      <p class="empty-state__desc" data-i18n="track_empty_desc">
+        Enter an existing token number (e.g. A008 or T-209) or claim a new digital queue pass from our civic services.
+      </p>
+
+      <form id="empty-track-form" class="flow-col gap-3" style="width: 100%; max-width: 320px; margin-bottom: var(--space-4);">
+        <input 
+          type="text" 
+          id="empty-track-input" 
+          class="input-field" 
+          placeholder="E.G. A008 OR C-104" 
+          data-i18n-placeholder="track_empty_placeholder"
+          style="text-transform: uppercase;"
+          required 
+        />
+        <button type="submit" class="btn btn--primary btn--full">
+          <span class="material-symbols-outlined">search</span>
+          <span data-i18n="track_empty_btn_find">Find My Token</span>
+        </button>
+      </form>
+
+      <a href="/citizen/services.html" class="btn btn--ghost btn--sm">
+        <span data-i18n="track_empty_browse_services">Browse Civic Services</span>
+      </a>
+    </div>
+
+  </main>
+
+  <!-- Shared Bottom Navigation Target -->
+  <nav id="app-bottom-nav"></nav>
+
+  <script type="module">
+    import { initTrackPage } from '/assets/js/track.js';
+    import '/assets/js/a11y.js';
+    initTrackPage();
+  </script>
+</body>
+</html>

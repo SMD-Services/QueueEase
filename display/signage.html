@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        if (['en', 'hi', 'mr'].indexOf(lang) !== -1) {
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.lang = lang;
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase Live Lounge TV Display - Metropolitan Civic Center</title>
+  <meta name="description" content="16:9 Digital lounge signage display for QueueEase automated ticket calling system, live counter status, and bilingual queue announcements." />
+  
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/signage.css" />
+</head>
+<body class="signage-mode">
+
+  <!-- 1. Top Header Bar -->
+  <header class="signage-header" role="banner">
+    <div class="signage-header__left">
+      <div class="signage-header__logo-icon">
+        <span class="material-symbols-outlined" style="font-size:28px;">tv</span>
+      </div>
+      <div>
+        <div class="signage-header__title-row">
+          <h1 class="signage-header__title" data-i18n="signage_header_title">Metropolitan Civic Center</h1>
+          <span class="signage-header__zone-tag">HALL A • ZONE 1</span>
+        </div>
+        <div class="signage-header__sub" data-i18n="app_desc">Automated Ticket Calling & Lounge Guidance System</div>
+      </div>
+    </div>
+
+    <div class="signage-header__right">
+      <div class="signage-live-badge">
+        <span style="width:8px; height:8px; border-radius:50%; background:#10B981; box-shadow:0 0 10px #10B981;"></span>
+        <span data-i18n="live_badge">SYSTEM LIVE</span>
+      </div>
+      <div class="signage-clock-box">
+        <div class="signage-clock-time" id="signage-time">10:45:00</div>
+        <div class="signage-clock-date" id="signage-date">WEDNESDAY, OCTOBER 22, 2026</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 2. Simulation & Control Toolbar -->
+  <div class="signage-toolbar" role="toolbar" aria-label="Signage Display OS Controls">
+    <div style="display:flex; align-items:center; gap:12px;">
+      <span style="color:#94A3B8; font-family:var(--font-family-mono); font-size:11px; display:flex; align-items:center; gap:6px;">
+        <span class="material-symbols-outlined" style="font-size:15px; color:#38BDF8;">terminal</span>
+        QueueEase Display OS v4.2
+      </span>
+      <span style="color:rgba(255,255,255,0.2);">|</span>
+      <!-- 3-Language Selector -->
+      <div style="display:flex; align-items:center; background:rgba(255,255,255,0.08); border-radius:14px; padding:2px; gap:2px;" id="signage-lang-pills">
+        <button type="button" class="signage-tool-btn signage-tool-btn--active" data-lang="en" style="padding:2px 8px; font-size:11px;">EN</button>
+        <button type="button" class="signage-tool-btn" data-lang="hi" style="padding:2px 8px; font-size:11px;">हिन्दी</button>
+        <button type="button" class="signage-tool-btn" data-lang="mr" style="padding:2px 8px; font-size:11px;">मराठी</button>
+      </div>
+    </div>
+
+    <!-- State Buttons -->
+    <div class="signage-toolbar__controls">
+      <span style="color:#64748B; font-size:11px; margin-right:4px;">Simulate Mode:</span>
+      <button type="button" class="signage-tool-btn signage-tool-btn--active" data-state="live">Live Broadcast</button>
+      <button type="button" class="signage-tool-btn" data-state="no_serving">No Active Call</button>
+      <button type="button" class="signage-tool-btn" data-state="cleared">Queue Cleared</button>
+      <button type="button" class="signage-tool-btn" data-state="closed">Hall Closed</button>
+      <button type="button" class="signage-tool-btn" id="btn-signage-chime" style="color:#FBBF24; border-color:rgba(245,158,11,0.4); display:flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:14px;">notifications_active</span>
+        <span data-i18n="assist_btn_test_voice">Test Audio Chime</span>
+      </button>
+      <a href="/citizen/home.html" class="signage-tool-btn" style="color:#94A3B8; text-decoration:none; display:flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:14px;">arrow_back</span>
+        <span data-i18n="nav_home">Return to Portal</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- 3. Main Lounge Layout (Left 55% / Right 45%) -->
+  <main class="signage-main-grid" role="main" aria-label="Live Queue Screen">
+    <!-- Left Hero: NOW SERVING -->
+    <section class="now-serving-hero-panel" id="now-serving-hero-panel" aria-labelledby="now-serving-heading" aria-live="assertive">
+      <!-- Top Bilingual Header -->
+      <div class="now-serving-hero__top">
+        <div>
+          <div class="now-serving-hero__badge-row">
+            <span style="width:10px; height:10px; border-radius:50%; background:#38BDF8; box-shadow:0 0 12px #38BDF8;"></span>
+            <h2 id="now-serving-heading" class="now-serving-hero__title" data-i18n="signage_now_calling">NOW SERVING</h2>
+          </div>
+          <div class="now-serving-hero__sub" id="hero-status-subtitle" data-i18n="signage_audio_active">
+            AUDIO SUMMON ACTIVE • CHIME BROADCASTED
+          </div>
+        </div>
+        <div class="now-serving-hero__proceed-pill">
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_circle_right</span>
+          <span data-i18n="track_approaching">PROCEED TO DESK</span>
+        </div>
+      </div>
+
+      <!-- Giant Summon Number -->
+      <div class="now-serving-hero__number-center">
+        <div class="now-serving-hero__id-label">OFFICIAL CITIZEN TOKEN PASS</div>
+        <div class="now-serving-hero__number" id="hero-token-number">A005</div>
+        
+        <div class="now-serving-hero__pills-row">
+          <span class="status-pill status-pill--calling" style="font-size:12px; padding:4px 12px;">
+            <span class="material-symbols-outlined" style="font-size:14px;">campaign</span>
+            <span>Turn In Progress</span>
+          </span>
+          <span class="status-pill status-pill--completed" style="font-size:12px; padding:4px 12px; background:rgba(20,184,166,0.2); color:#2DD4BF; border-color:#14B8A6;">
+            <span class="material-symbols-outlined" style="font-size:14px;">verified</span>
+            <span>Biometric Verified</span>
+          </span>
+          <span class="status-pill status-pill--waiting" style="font-size:12px; padding:4px 12px; background:rgba(255,255,255,0.1); color:#FFFFFF; border-color:rgba(255,255,255,0.2);">
+            <span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
+            <span>Est. Consult: 6 mins</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Destination Counter Station Card -->
+      <div class="now-serving-hero__station-footer">
+        <div style="display:flex; align-items:center; gap:14px;">
+          <div class="now-serving-hero__counter-box" id="hero-counter-num">02</div>
+          <div>
+            <div style="font-size:clamp(1rem, 1.4vw, 1.3rem); font-weight:var(--font-weight-bold); color:#FFFFFF;" id="hero-station-name">
+              COUNTER 02 — CERTIFICATE APPLICATION
+            </div>
+            <div style="font-size:12px; color:#94A3B8; margin-top:2px;" id="hero-station-room">
+              Room 104 • Ground Floor West Wing
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align:right;">
+          <div style="font-size:13px; font-weight:var(--font-weight-bold); color:#38BDF8;" id="hero-station-officer">
+            Officer Mark Jenkins
+          </div>
+          <div style="font-size:11px; color:#64748B; display:flex; align-items:center; gap:4px; justify-content:flex-end;">
+            <span>West Aisle</span>
+            <span class="material-symbols-outlined" style="font-size:14px;">arrow_forward</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Side: Up Next + Fleet Overview -->
+    <div class="signage-right-col">
+      <!-- Up Next Buffer Panel -->
+      <section class="signage-sub-panel" aria-labelledby="up-next-heading">
+        <div class="signage-sub-panel__header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:#F59E0B; font-size:20px;">timer</span>
+            <h3 id="up-next-heading" class="signage-sub-panel__title" data-i18n="signage_up_next">UP NEXT IN QUEUE</h3>
+          </div>
+          <span style="font-size:11px; color:#94A3B8; background:rgba(255,255,255,0.06); padding:2px 8px; border-radius:4px;">
+            4 In Staging Buffer
+          </span>
+        </div>
+
+        <div class="up-next-grid" id="up-next-grid">
+          <!-- Populated by signage.js -->
+        </div>
+      </section>
+
+      <!-- Counters Fleet Overview Panel -->
+      <section class="signage-sub-panel" aria-labelledby="fleet-heading">
+        <div class="signage-sub-panel__header">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span class="material-symbols-outlined" style="color:#38BDF8; font-size:20px;">grid_view</span>
+            <h3 id="fleet-heading" class="signage-sub-panel__title" data-i18n="signage_queue_summary">COUNTERS FLEET OVERVIEW</h3>
+          </div>
+          <span style="font-size:11px; color:#10B981; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.3); padding:2px 8px; border-radius:4px;">
+            5 / 6 Operational
+          </span>
+        </div>
+
+        <div class="counters-fleet-grid" id="counters-fleet-grid">
+          <!-- Populated by signage.js -->
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <!-- 4. Document Verification & Assistance Notice Bar -->
+  <aside class="signage-bottom-notice" role="complementary" aria-label="Lounge Instructions">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <span class="material-symbols-outlined" style="color:#38BDF8; font-size:20px;">description</span>
+      <div>
+        <strong style="color:#FFFFFF;">ORIGINAL DOCUMENTS REQUIRED:</strong>
+        <span style="color:#94A3B8;">Please have government ID, proof of address, and signed forms ready prior to counter dispatch.</span>
+      </div>
+    </div>
+
+    <div style="display:flex; align-items:center; gap:16px; font-size:11px; color:#94A3B8;">
+      <span style="display:flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:16px; color:#14B8A6;">hearing</span>
+        <span>Induction Loops Active (Desks 1-4)</span>
+      </span>
+      <span style="display:flex; align-items:center; gap:4px;">
+        <span class="material-symbols-outlined" style="font-size:16px; color:#38BDF8;">translate</span>
+        <span>Translators Available (ISL, हिन्दी, मराठी)</span>
+      </span>
+    </div>
+  </aside>
+
+  <!-- 5. Animated Red Ticker Marquee -->
+  <div class="signage-ticker-bar" role="marquee" aria-live="off">
+    <div class="signage-ticker-label">
+      <span class="material-symbols-outlined" style="font-size:16px;">campaign</span>
+      <span>PUBLIC NOTICE</span>
+    </div>
+    <div class="signage-ticker-marquee">
+      <div class="signage-ticker-text">
+        NOTICE: DESK 04 WILL CLOSE AT 16:30 FOR CIVIC AUDIT • PLEASE COLLECT BIRTH CERTIFICATES AT COUNTER 02 • WEAR FACE COVERINGS IN RESPIRATORY CLINIC ZONE C • FREE PUBLIC WI-FI AVAILABLE: CIVIC-GUEST • NO RESERVATION REQUIRED FOR WALK-IN ENQUIRIES • ACCESSIBILITY ESCORT DESK AVAILABLE AT ENTRANCE GATE A
+      </div>
+    </div>
+  </div>
+
+  <!-- Signage Controller Script -->
+  <script type="module">
+    import { initSignage } from '/assets/js/signage.js';
+    initSignage();
+  </script>
+</body>
+</html>

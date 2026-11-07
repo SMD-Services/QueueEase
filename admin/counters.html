@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Counter Fleet & Physical Desk Management - QueueEase Enterprise</title>
+  <meta name="description" content="Municipal physical desk management, automated load balancing rules, and real-time station routing controls for Regional Director Marcus Vance." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+
+  <style>
+    .counter-fleet-main-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+    @media (min-width: 640px) {
+      .counter-fleet-main-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (min-width: 1100px) {
+      .counter-fleet-main-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .admin-counter-card {
+      background-color: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: var(--space-4);
+      box-shadow: var(--shadow-1);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .admin-counter-card__dark-box {
+      background: linear-gradient(135deg, #0F234A 0%, #071328 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-card-sm);
+      padding: 14px;
+      margin: 12px 0;
+    }
+
+    .counter-metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      background: #F8FAFC;
+      border-radius: var(--radius-sm);
+      padding: 8px 4px;
+      margin-bottom: 12px;
+      border: 1px solid #F1F5F9;
+    }
+
+    .counter-card-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid #F1F5F9;
+      padding-top: 10px;
+    }
+  </style>
+</head>
+<body class="dashboard-layout">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Admin Sidebar -->
+  <aside class="dashboard-sidebar" id="admin-sidebar" role="navigation" aria-label="Administrative Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/admin/overview.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box" style="background:#0F234A;">
+          <span class="material-symbols-outlined" style="font-size:22px;">account_balance</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">ENTERPRISE CONSOLE</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge" style="background:rgba(37,99,235,0.2); border-color:#3B82F6; color:#93C5FD;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#60A5FA;"></span>
+        <span>CIVIC HUB 07</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/admin/overview.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/admin/counters.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">storefront</span>
+        <span>Manage Counters</span>
+      </a>
+      <a href="/admin/staff.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">badge</span>
+        <span>Manage Staff</span>
+      </a>
+      <a href="/staff/history.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>All Tokens</span>
+      </a>
+      <a href="/display/signage.html" class="dashboard-nav-link" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">tv</span>
+        <span>Lounge Display</span>
+      </a>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('add-counter-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">add_business</span>
+        <span>Provision Counter</span>
+      </button>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('ruleset-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">alt_route</span>
+        <span>Dispatch Rules</span>
+      </button>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:bold;">Cluster Node G-104</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Online • Latency 8ms</div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:var(--radius-control); padding:8px 10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="avatar" style="width:32px; height:32px; background:#2563EB; color:#FFFFFF; font-weight:bold; font-size:12px;">MV</div>
+          <div>
+            <div style="font-size:12px; font-weight:bold; color:#FFFFFF;">Marcus Vance</div>
+            <div style="font-size:10px; color:#94A3B8;">Regional Director</div>
+          </div>
+        </div>
+        <button type="button" class="btn-admin-logout" aria-label="Sign Out" style="background:none; border:none; color:#F87171; cursor:pointer; padding:4px;">
+          <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="admin-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+
+        <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--color-primary);" class="hide-mobile">
+          <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">domain</span>
+          <span>Central Metro Hall</span>
+          <span style="color:#94A3B8;">›</span>
+          <span style="color:#2563EB;">Civic Hub 07</span>
+        </div>
+
+        <div class="dashboard-topbar__search-wrap">
+          <span class="material-symbols-outlined dashboard-topbar__search-icon">search</span>
+          <input type="text" class="dashboard-topbar__search-input" placeholder="Search tokens, counters, staff, service codes..." aria-label="Global search" />
+        </div>
+      </div>
+
+      <div class="dashboard-topbar__right">
+        <a href="/citizen/issue.html" class="btn btn--primary" style="padding:8px 14px; font-size:12px; text-decoration:none;">
+          <span class="material-symbols-outlined" style="font-size:16px;">add_circle</span>
+          <span>Quick Issue Token</span>
+        </a>
+
+        <button type="button" class="btn btn--ghost" onclick="showToast('Regional telemetry synchronized.');" aria-label="Notifications" style="position:relative; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">notifications</span>
+          <span style="position:absolute; top:8px; right:8px; width:7px; height:7px; background:#EF4444; border-radius:50%;"></span>
+        </button>
+
+        <div class="avatar" style="width:36px; height:36px; background:#0F234A; color:#FFFFFF; font-weight:bold; font-size:13px;">
+          MV
+        </div>
+      </div>
+    </header>
+
+    <!-- Counters Body -->
+    <main class="dashboard-body">
+      <!-- Title & Actions -->
+      <section style="display:flex; align-items:flex-start; justify-content:space-between; gap:var(--space-4); flex-wrap:wrap;">
+        <div>
+          <div style="display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:bold; color:#2563EB; letter-spacing:0.04em; margin-bottom:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#2563EB;"></span>
+            <span>TERMINAL FLEET TELEMETRY</span>
+            <span style="color:#CBD5E1;">•</span>
+            <span style="color:#64748B;">CENTRAL WING CONTROL</span>
+          </div>
+          <h1 style="font-size:clamp(1.5rem, 2.2vw, 2rem); font-weight:bold; color:var(--color-primary); margin:0 0 4px;">
+            Counter Fleet & Physical Desk Management
+          </h1>
+          <div style="font-size:var(--font-body-sm); color:var(--color-text-secondary); max-width:840px;">
+            Monitor, configure, and dynamically assign physical civic counters across municipal wings.
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn--secondary" onclick="showToast('Executing automated load balancing across 6 desks...', 'success');" style="padding:10px 14px; font-size:13px;">
+            <span class="material-symbols-outlined">balance</span>
+            <span>Rebalance Counter Load</span>
+          </button>
+          <button type="button" class="btn btn--secondary" onclick="showToast('Bulk shift transition scheduled for 14:00.');" style="padding:10px 14px; font-size:13px;">
+            <span class="material-symbols-outlined">group_work</span>
+            <span>Bulk Shift Transition</span>
+          </button>
+          <button type="button" class="btn btn--primary" onclick="openModal('add-counter-modal')" style="padding:10px 16px; font-size:13px; background:#0F234A;">
+            <span class="material-symbols-outlined">add_business</span>
+            <span>+ Add New Counter</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- 4 Stat Tiles -->
+      <section class="dashboard-stats-grid" aria-label="Counters Fleet Stats">
+        <!-- 1. Fleet Capacity -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">FLEET CAPACITY</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">desktop_windows</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between;">
+            <span class="stat-card-staff__value">16</span>
+            <span style="font-size:12px; font-weight:bold; color:#2563EB;">100% Total Terminals</span>
+          </div>
+        </div>
+
+        <!-- 2. Operational Stream -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">OPERATIONAL STREAM</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">cell_tower</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="stat-card-staff__value" style="color:#059669;">14</span>
+            <span style="font-size:12px; font-weight:bold; color:#059669;">Active & Dispatching</span>
+          </div>
+        </div>
+
+        <!-- 3. Personnel Pause -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">PERSONNEL PAUSE</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">coffee</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between;">
+            <span class="stat-card-staff__value" style="color:#D97706;">1</span>
+            <span style="font-size:12px; color:#D97706; font-weight:bold;">On Scheduled Recess (Wing A)</span>
+          </div>
+        </div>
+
+        <!-- 4. Diagnostic / Offline -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">DIAGNOSTIC / OFFLINE</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#F1F5F9; color:#64748B; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">build</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between;">
+            <span class="stat-card-staff__value" style="color:#64748B;">1</span>
+            <span style="font-size:12px; color:#64748B;">Standby / Maint. (Kiosk C)</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Filter Controls Bar -->
+      <section class="card" style="padding:var(--space-4);">
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center; justify-content:space-between;">
+          <div style="display:flex; gap:10px; flex-wrap:wrap;">
+            <select style="height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:13px;">
+              <option>All Wings (Ground & Atrium)</option>
+              <option>Ground Floor - Wing A</option>
+              <option>Wing B - East Wing Atrium</option>
+            </select>
+
+            <select style="height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:13px;">
+              <option>All Service Categories</option>
+              <option>Certificate Application</option>
+              <option>Document Verification</option>
+              <option>Priority & Fast-Track</option>
+            </select>
+
+            <select style="height:38px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:13px;">
+              <option>Status: Any State</option>
+              <option>Serving / Active</option>
+              <option>Online (Idle)</option>
+              <option>Paused (Recess)</option>
+              <option>Offline / Standby</option>
+            </select>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:8px; font-size:11px; color:#64748B;">
+            <span>Real-time sync rate: <strong>2s</strong></span>
+            <button type="button" class="btn btn--ghost" onclick="showToast('Counter fleet refreshed.');" style="padding:4px; min-width:32px; min-height:32px;">
+              <span class="material-symbols-outlined" style="font-size:18px;">refresh</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6 Counter Fleet Cards Grid -->
+      <section class="counter-fleet-main-grid">
+        <!-- Counter 01 -->
+        <div class="admin-counter-card">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">GROUND FLOOR • GATE ALPHA</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 01 - Express Gate
+                </h3>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 8px;">SERVING</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:var(--color-primary);">Certificate Application</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <span style="display:flex; align-items:center; gap:4px;">
+                  <span class="avatar" style="width:16px; height:16px; font-size:8px; background:#142D4E; color:#FFFFFF;">MJ</span>
+                  <strong>Officer Mark Jenkins • STF-4409</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#93C5FD; margin-bottom:4px;">
+                <span>ACTIVE CITIZEN TOKEN</span>
+                <span style="display:flex; align-items:center; gap:3px;">
+                  <span class="material-symbols-outlined" style="font-size:13px;">schedule</span>
+                  04m 21s Elapsed
+                </span>
+              </div>
+              <div style="font-size:2rem; font-weight:bold; font-family:var(--font-family-mono); color:#FFFFFF; line-height:1;">
+                A008
+              </div>
+              <div style="font-size:10px; color:#38BDF8; margin-top:4px;">
+                Est. remaining: ~02:40
+              </div>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">48</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">7m 12s</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#2563EB;">3 Waiting</strong>
+                <div style="font-size:10px; color:#059669;">Spillover Safe</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" onclick="showToast('Editing Counter 01 properties.')" style="padding:6px; min-width:32px; min-height:32px;" aria-label="Edit desk"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" onclick="showToast('Rebalancing Counter 01 traffic.')" style="padding:6px; min-width:32px; min-height:32px;" aria-label="Transfer traffic"><span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span></button>
+              <button type="button" class="btn btn--ghost" onclick="showToast('Station paused for recess.');" style="padding:6px; min-width:32px; min-height:32px;" aria-label="Pause desk"><span class="material-symbols-outlined" style="font-size:18px;">pause</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 01')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Counter 02 -->
+        <div class="admin-counter-card">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">GROUND FLOOR • WEST HALL</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 02 - Certificate Desk
+                </h3>
+              </div>
+              <span class="status-pill status-pill--calling" style="font-size:10px; padding:2px 8px;">ONLINE (IDLE)</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:var(--color-primary);">Certificate Application</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <span style="display:flex; align-items:center; gap:4px;">
+                  <span class="avatar" style="width:16px; height:16px; font-size:8px; background:#0D9488; color:#FFFFFF;">SC</span>
+                  <strong>Officer Sarah Chen • STF-3210</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box" style="background:#EFF6FF; color:var(--color-primary); border:1px solid #BFDBFE;">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#2563EB; margin-bottom:4px;">
+                <span style="font-weight:bold;">NEXT TOKEN DISPATCH</span>
+                <span class="status-pill status-pill--completed" style="font-size:9px; padding:1px 6px;">Ready for Call</span>
+              </div>
+              <div style="font-size:2rem; font-weight:bold; font-family:var(--font-family-mono); color:#1E40AF; line-height:1;">
+                A009
+              </div>
+              <div style="margin-top:6px;">
+                <button type="button" class="btn btn--primary" onclick="showToast('Called Token A009 to Counter 02', 'success');" style="width:100%; justify-content:center; padding:4px 8px; font-size:11px;">
+                  <span class="material-symbols-outlined" style="font-size:14px;">campaign</span>
+                  <span>Call Token A009 Next</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">52</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">6m 45s</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#2563EB;">2 Waiting</strong>
+                <div style="font-size:10px; color:#059669;">Spillover Target</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">pause</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 02')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Counter 03 -->
+        <div class="admin-counter-card">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">WING B • EAST WING ATRIUM</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 03 - Verification Hub
+                </h3>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 8px;">SERVING</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:var(--color-primary);">Document Verification</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <span style="display:flex; align-items:center; gap:4px;">
+                  <span class="avatar" style="width:16px; height:16px; font-size:8px; background:#2563EB; color:#FFFFFF;">DM</span>
+                  <strong>Officer David Miller • STF-8812</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#F59E0B; margin-bottom:4px;">
+                <span>ACTIVE CITIZEN TOKEN</span>
+                <span style="display:flex; align-items:center; gap:3px;">
+                  <span class="material-symbols-outlined" style="font-size:13px;">schedule</span>
+                  11m 04s Elapsed
+                </span>
+              </div>
+              <div style="font-size:2rem; font-weight:bold; font-family:var(--font-family-mono); color:#FFFFFF; line-height:1;">
+                V014
+              </div>
+              <div style="font-size:10px; color:#F59E0B; font-weight:bold; margin-top:4px;">
+                High Verification Load
+              </div>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">36</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">9m 30s</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#DC2626;">7 Waiting</strong>
+                <div style="font-size:10px; color:#DC2626; font-weight:bold;">Spillover Alert</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">pause</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 03')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Counter 04 -->
+        <div class="admin-counter-card">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">GROUND FLOOR • ACCESSIBILITY</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 04 - Special Assistance
+                </h3>
+              </div>
+              <span class="status-pill status-pill--priority" style="font-size:10px; padding:2px 8px; background:#FEF3C7; color:#D97706;">PAUSED (RECESS)</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:var(--color-primary);">Priority & Senior Fast-Track</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <span style="display:flex; align-items:center; gap:4px;">
+                  <span class="avatar" style="width:16px; height:16px; font-size:8px; background:#D97706; color:#FFFFFF;">EA</span>
+                  <strong>Officer Elena Alvarez • STF-6701</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box" style="background:#FFFBEB; color:#92400E; border:1px solid #FCD34D;">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#B45309; margin-bottom:4px;">
+                <span style="font-weight:bold;">STATION STATUS</span>
+                <span>Recess Ends: 14:15 PM</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px; margin:6px 0;">
+                <span class="material-symbols-outlined" style="font-size:22px; color:#D97706;">lock</span>
+                <div>
+                  <strong style="font-size:14px; color:#92400E;">Scheduled 15m Break</strong>
+                  <div style="font-size:10px; color:#B45309;">Spillover directed to Counter 05 automatically</div>
+                </div>
+              </div>
+              <button type="button" class="btn btn--primary" onclick="showToast('Force resumed Counter 04 dispatch.', 'success');" style="width:100%; justify-content:center; padding:4px 8px; font-size:11px; background:#0F234A;">
+                <span>Force Resume Station</span>
+              </button>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">29</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">8m 15s</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#059669;">0 Waiting</strong>
+                <div style="font-size:10px; color:#64748B;">Routed to 05</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">pause</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 04')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Counter 05 -->
+        <div class="admin-counter-card">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">WING A • MAIN LOBBY</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 05 - Public Enquiry Desk
+                </h3>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 8px;">SERVING</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:var(--color-primary);">Public Enquiry & Support</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <span style="display:flex; align-items:center; gap:4px;">
+                  <span class="avatar" style="width:16px; height:16px; font-size:8px; background:#4F46E5; color:#FFFFFF;">JW</span>
+                  <strong>Officer Jason Wright • STF-1904</strong>
+                </span>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#93C5FD; margin-bottom:4px;">
+                <span>ACTIVE CITIZEN TOKEN</span>
+                <span style="display:flex; align-items:center; gap:3px;">
+                  <span class="material-symbols-outlined" style="font-size:13px;">schedule</span>
+                  01m 45s Elapsed
+                </span>
+              </div>
+              <div style="font-size:2rem; font-weight:bold; font-family:var(--font-family-mono); color:#FFFFFF; line-height:1;">
+                E042
+              </div>
+              <div style="font-size:10px; color:#34D399; margin-top:4px;">
+                Pace optimal
+              </div>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">61</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">4m 10s</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#2563EB;">4 Waiting</strong>
+                <div style="font-size:10px; color:#64748B;">Queue Depth</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">pause</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 05')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Counter 06 -->
+        <div class="admin-counter-card" style="opacity:0.9;">
+          <div>
+            <div style="display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:4px;">
+              <div>
+                <div style="font-size:10px; font-weight:bold; color:#64748B; text-transform:uppercase;">WING B • NORTH ANNEXE</div>
+                <h3 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:2px 0 0;">
+                  Counter 06 - Auxiliary Kiosk
+                </h3>
+              </div>
+              <span class="status-pill status-pill--waiting" style="font-size:10px; padding:2px 8px;">OFFLINE / STANDBY</span>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-card-sm); padding:8px 10px; margin:8px 0; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:2px;">
+                <span style="color:#64748B;">Allocated Service:</span>
+                <strong style="color:#64748B;">Unassigned Reserve</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <span style="color:#64748B;">Assigned Duty:</span>
+                <em style="color:#94A3B8;">No Personnel Logged In</em>
+              </div>
+            </div>
+
+            <div class="admin-counter-card__dark-box" style="background:#F1F5F9; color:#475569; border:1px solid #CBD5E1; text-align:center;">
+              <div style="display:flex; justify-content:space-between; font-size:10px; color:#64748B; margin-bottom:4px;">
+                <span>HARDWARE HEARTBEAT</span>
+                <span style="color:#10B981; font-weight:bold;">Unit Ready</span>
+              </div>
+              <div style="margin:4px 0;">
+                <span class="material-symbols-outlined" style="font-size:24px; color:#64748B;">power_settings_new</span>
+                <div style="font-weight:bold; font-size:13px; color:var(--color-primary);">Standby Hot-Swap</div>
+                <div style="font-size:10px; color:#64748B;">Ready to absorb peak spillover from Wing A</div>
+              </div>
+              <button type="button" class="btn btn--primary" onclick="showToast('Initialized Counter 06 auxiliary session.', 'success');" style="width:100%; justify-content:center; padding:4px 8px; font-size:11px;">
+                <span>Initialize & Open Counter</span>
+              </button>
+            </div>
+
+            <div class="counter-metrics-strip">
+              <div>
+                <strong style="font-size:14px; color:var(--color-primary);">0</strong>
+                <div style="font-size:10px; color:#64748B;">Processed</div>
+              </div>
+              <div style="border-left:1px solid #E2E8F0; border-right:1px solid #E2E8F0;">
+                <strong style="font-size:14px; color:var(--color-primary);">--</strong>
+                <div style="font-size:10px; color:#64748B;">Avg Pace</div>
+              </div>
+              <div>
+                <strong style="font-size:14px; color:#64748B;">0 Waiting</strong>
+                <div style="font-size:10px; color:#64748B;">Queue Depth</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="counter-card-actions">
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">edit</span></button>
+              <button type="button" class="btn btn--ghost" style="padding:6px; min-width:32px; min-height:32px;"><span class="material-symbols-outlined" style="font-size:18px;">build</span></button>
+            </div>
+            <button type="button" class="btn btn--secondary" onclick="playDeskChime('Counter 06')" style="padding:4px 10px; font-size:11px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+              <span>Chime Test</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Panel: Automated Dispatch Rules & Dynamic Load Balancing -->
+      <section class="card" style="padding:var(--space-5);">
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="font-size:22px; color:#2563EB;">alt_route</span>
+              <h2 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:0;">
+                Automated Dispatch Rules & Dynamic Load Balancing
+              </h2>
+            </div>
+            <div style="font-size:12px; color:var(--color-text-secondary); margin-top:2px;">
+              Configured algorithmic traffic cascades and desk spillover protocols for municipal surges.
+            </div>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:11px; color:#64748B;">Policy: <strong>Surge Protocol Beta-4</strong></span>
+            <button type="button" class="btn btn--secondary" onclick="openModal('ruleset-modal')" style="padding:6px 12px; font-size:12px;">
+              Modify Ruleset
+            </button>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr; gap:var(--space-4);" class="grid-desktop-3col">
+          <!-- Cascade Rule 1 -->
+          <div class="card" style="padding:14px; border:1px solid #E2E8F0; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:10px; font-weight:bold; color:#2563EB; letter-spacing:0.04em;">CASCADE RULE #01</span>
+                <span class="status-pill status-pill--completed" style="font-size:9px; padding:1px 6px;">Active</span>
+              </div>
+              <h3 style="font-size:1rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                Counter 01 → Counter 02 Express Spillover
+              </h3>
+              <p style="font-size:11px; color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                If Counter 01 queue exceeds <strong>&gt; 5 citizens</strong> or ticket service duration &gt; 9 mins, incoming Certificate Application tokens auto-cascade to Counter 02.
+              </p>
+            </div>
+
+            <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:12px; font-size:11px; color:#64748B; display:flex; align-items:center; gap:6px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+              <span>Spillover Threshold: 5 pax Current Queue: 3/5</span>
+            </div>
+          </div>
+
+          <!-- Cascade Rule 2 -->
+          <div class="card" style="padding:14px; border:1px solid #E2E8F0; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:10px; font-weight:bold; color:#D97706; letter-spacing:0.04em;">CASCADE RULE #02</span>
+                <span class="status-pill status-pill--priority" style="font-size:9px; padding:1px 6px; background:#FEF3C7; color:#D97706;">Throttled</span>
+              </div>
+              <h3 style="font-size:1rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                Verification Hub Heavy-Load Deflection
+              </h3>
+              <p style="font-size:11px; color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                Counter 03 queue depth is currently <strong>7 citizens</strong>. System is preparing auto-dispatch handover to standby Counter 06 if wait exceeds 14 mins.
+              </p>
+            </div>
+
+            <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:12px; font-size:11px; display:flex; align-items:center; justify-content:space-between;">
+              <span style="color:#D97706; display:flex; align-items:center; gap:4px;">
+                <span style="width:6px; height:6px; border-radius:50%; background:#D97706;"></span>
+                <span>Auto-Trigger at 8 pax</span>
+              </span>
+              <button type="button" class="btn btn--primary" onclick="showToast('Manually triggered Counter 06 deflection.', 'success');" style="padding:3px 8px; font-size:10px;">
+                Trigger Now
+              </button>
+            </div>
+          </div>
+
+          <!-- Cascade Rule 3 -->
+          <div class="card" style="padding:14px; border:1px solid #E2E8F0; display:flex; flex-direction:column; justify-content:space-between;">
+            <div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                <span style="font-size:10px; font-weight:bold; color:#059669; letter-spacing:0.04em;">CASCADE RULE #03</span>
+                <span class="status-pill status-pill--completed" style="font-size:9px; padding:1px 6px;">Active</span>
+              </div>
+              <h3 style="font-size:1rem; font-weight:bold; color:var(--color-primary); margin:0 0 6px;">
+                Recess Routing & Priority Protection
+              </h3>
+              <p style="font-size:11px; color:var(--color-text-secondary); line-height:1.4; margin:0;">
+                While Counter 04 is paused on meal recess, all incoming Senior & Special Assistance tickets take top priority on Counter 05 without queue drop.
+              </p>
+            </div>
+
+            <div style="border-top:1px solid #F1F5F9; padding-top:10px; margin-top:12px; font-size:11px; color:#059669; display:flex; align-items:center; justify-content:space-between;">
+              <span style="display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">verified</span>
+                <span>Zero-Drop Guarantee</span>
+              </span>
+              <span style="font-weight:bold;">Protected</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal 1: Add New Counter Modal -->
+  <div class="sheet-backdrop" id="add-counter-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="add-counter-modal" role="dialog" aria-labelledby="add-counter-title" aria-modal="true" aria-hidden="true" style="max-width:480px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h3 id="add-counter-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Provision Physical Civic Counter
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('add-counter-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:12px; margin-bottom:16px;">
+        <div>
+          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Counter Identifier</label>
+          <input type="text" placeholder="e.g. Counter 07 - Fast Lane" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;" />
+        </div>
+
+        <div>
+          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Physical Location / Wing</label>
+          <input type="text" placeholder="e.g. Wing A • Ground Floor North" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;" />
+        </div>
+
+        <div>
+          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Initial Service Mapping</label>
+          <select style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+            <option>Certificate Application</option>
+            <option>Document Verification</option>
+            <option>Special Assistance & Priority</option>
+            <option>Unassigned Standby</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--primary" onclick="closeModal('add-counter-modal'); showToast('Counter provisioned into municipal fleet.', 'success');" style="flex:1; justify-content:center; background:#0F234A;">
+          Provision Station
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('add-counter-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Ruleset Config Modal -->
+  <div class="sheet-backdrop" id="ruleset-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="ruleset-modal" role="dialog" aria-labelledby="ruleset-title" aria-modal="true" aria-hidden="true" style="max-width:480px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h3 id="ruleset-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Dispatch Policy & Cascade Thresholds
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('ruleset-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="display:flex; flex-direction:column; gap:14px; margin-bottom:16px;">
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:4px;">
+            <span>Spillover Queue Trigger (Citizens)</span>
+            <span id="slider-queue-val" style="color:#2563EB;">5 citizens</span>
+          </div>
+          <input type="range" min="2" max="15" value="5" id="slider-queue" style="width:100%;" />
+        </div>
+
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:12px; font-weight:bold; margin-bottom:4px;">
+            <span>Max Processing Latency Before Deflection</span>
+            <span id="slider-time-val" style="color:#2563EB;">10 mins</span>
+          </div>
+          <input type="range" min="5" max="30" value="10" id="slider-time" style="width:100%;" />
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between;">
+          <div>
+            <div style="font-weight:bold; font-size:13px;">Auto-Reserve Activation</div>
+            <div style="font-size:11px; color:#64748B;">Spin up standby kiosks during surge periods</div>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked />
+            <span class="toggle-slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn--primary" onclick="closeModal('ruleset-modal'); showToast('Dispatch rules updated successfully.', 'success');" style="width:100%; justify-content:center;">
+        Apply Algorithmic Ruleset
+      </button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initAdminShell } from '../assets/js/admin.js';
+    import { playChime, speakAnnouncement } from '../assets/js/signage.js';
+    import { openModal, closeModal, showToast } from '../assets/js/ui.js';
+
+    // 1. Initialize Shell
+    initAdminShell('counters');
+
+    // 2. Chime test
+    window.playDeskChime = function(counterName) {
+      playChime();
+      speakAnnouncement('A008', counterName, 'Certificate Desk', 'Ground Floor');
+      showToast(`Chime dispatched to ${counterName} speaker.`);
+    };
+
+    // 3. Slider updates
+    const qSlider = document.getElementById('slider-queue');
+    const qVal = document.getElementById('slider-queue-val');
+    if (qSlider) {
+      qSlider.addEventListener('input', (e) => {
+        qVal.textContent = `${e.target.value} citizens`;
+      });
+    }
+
+    const tSlider = document.getElementById('slider-time');
+    const tVal = document.getElementById('slider-time-val');
+    if (tSlider) {
+      tSlider.addEventListener('input', (e) => {
+        tVal.textContent = `${e.target.value} mins`;
+      });
+    }
+  </script>
+</body>
+</html>

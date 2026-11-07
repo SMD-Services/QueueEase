@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        if (['en', 'hi', 'mr'].indexOf(lang) !== -1) {
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.lang = lang;
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Token Pass Generated</title>
+  <meta name="description" content="Your place in queue is secured. Present this digital ticket or QR code when your number is called." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body class="no-bottom-nav">
+
+  <!-- Header with Back Button -->
+  <header class="app-header" id="app-header">
+    <div class="container">
+      <div class="app-header__inner">
+        <div class="app-header__branding">
+          <a href="/citizen/home.html" class="app-header__btn" aria-label="Back to Home">
+            <span class="material-symbols-outlined" style="font-size:22px;">arrow_back_ios_new</span>
+          </a>
+          <div class="app-header__titles">
+            <h1 class="app-header__title" style="font-size:var(--font-title-lg);">Issue Token Pass</h1>
+            <span class="app-header__subtitle">QueueEase Civic Services</span>
+          </div>
+        </div>
+
+        <div class="app-header__actions">
+          <button type="button" class="app-header__btn" aria-label="Citizen Account">
+            <span class="material-symbols-outlined" style="font-size:22px;">account_circle</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--space-4); max-width: 480px;">
+
+    <!-- 1. Success Icon and Confirmation Header -->
+    <section class="token-success-header">
+      <div class="token-success-icon" aria-hidden="true">
+        <span class="material-symbols-outlined">check</span>
+      </div>
+      <div class="token-success-pill">
+        <span class="token-success-pill__dot"></span>
+        <span data-i18n="toast_token_created">TOKEN GENERATED SUCCESSFULLY</span>
+      </div>
+      <p class="token-success-desc" data-i18n="token_heading">
+        Your place in queue is secured. Present this digital ticket or QR code when your number is called.
+      </p>
+    </section>
+
+    <!-- 2. Digital Ticket Pass Card with Cut-outs -->
+    <article class="ticket-pass" aria-label="Official Digital Ticket Pass">
+      <div class="ticket-pass__top-bar"></div>
+
+      <!-- Service Category Row -->
+      <div class="ticket-pass__header">
+        <div class="ticket-pass__service-left">
+          <div class="ticket-pass__service-icon">
+            <span class="material-symbols-outlined">assignment</span>
+          </div>
+          <div>
+            <div class="ticket-pass__service-label" data-i18n="token_service_label">SERVICE CATEGORY</div>
+            <h2 class="ticket-pass__service-title" id="ticket-service-name">Certificate Application</h2>
+          </div>
+        </div>
+        <span class="status-pill status-pill--waiting">
+          <span class="status-pill__dot"></span>
+          <span data-i18n="status_waiting">Waiting</span>
+        </span>
+      </div>
+
+      <!-- Big Token Number Callout -->
+      <div class="ticket-pass__number-box">
+        <span class="ticket-pass__number-label" data-i18n="token_number_label">YOUR TOKEN NUMBER</span>
+        <div class="ticket-pass__token-number" id="ticket-token-number">A008</div>
+        <div class="ticket-pass__counter-badge" id="ticket-counter-badge">
+          <span class="material-symbols-outlined" style="font-size:18px;">desktop_windows</span>
+          <span>Counter 02 • Desk Assigned</span>
+        </div>
+      </div>
+
+      <!-- Stat Tiles (Est Wait & Queue Position) -->
+      <div class="ticket-pass__stat-grid">
+        <div class="ticket-stat-tile">
+          <div class="ticket-stat-tile__header">
+            <span class="material-symbols-outlined">hourglass_top</span>
+            <span data-i18n="token_wait_label">EST. WAIT TIME</span>
+          </div>
+          <div class="ticket-stat-tile__val" id="ticket-wait-minutes">15 Minutes</div>
+          <div class="ticket-stat-tile__sub ticket-stat-tile__sub--teal">
+            <span class="material-symbols-outlined" style="font-size:14px;">trending_down</span>
+            <span data-i18n="optimal_flow">Flow is on track</span>
+          </div>
+        </div>
+
+        <div class="ticket-stat-tile">
+          <div class="ticket-stat-tile__header">
+            <span class="material-symbols-outlined">group</span>
+            <span data-i18n="token_ahead_label">QUEUE POSITION</span>
+          </div>
+          <div class="ticket-stat-tile__val" id="ticket-queue-position">3 Ahead</div>
+          <div class="ticket-stat-tile__sub">
+            <span data-i18n="home_stat_waiting">Citizens in lounge</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ticket Notch Divider -->
+      <div class="ticket-divider-row" aria-hidden="true">
+        <div class="ticket-divider-cutout-left"></div>
+        <div class="ticket-divider-line"></div>
+        <div class="ticket-divider-cutout-right"></div>
+      </div>
+
+      <!-- QR Code Section -->
+      <div class="ticket-qr-section">
+        <div class="ticket-qr-box">
+          <canvas id="ticket-qr-canvas" class="ticket-qr-canvas" width="200" height="200" aria-label="Digital QR code verification"></canvas>
+        </div>
+        <div class="ticket-qr-caption" data-i18n="density_f1_desc">Scan at desk scanner upon arrival</div>
+        <div class="ticket-meta-row" id="ticket-issued-time">
+          <span class="material-symbols-outlined">schedule</span>
+          <span>Issued: Today, 10:42 AM</span>
+          <span>•</span>
+          <span class="material-symbols-outlined">location_on</span>
+          <span>Hall B Desk</span>
+        </div>
+      </div>
+    </article>
+
+    <!-- 3. SMS Active Notification Card -->
+    <div class="sms-active-notice">
+      <div class="sms-active-notice__icon-box">
+        <span class="material-symbols-outlined">sms</span>
+      </div>
+      <div>
+        <h3 class="sms-active-notice__title" data-i18n="profile_pref_sms">Live SMS Dispatch Active</h3>
+        <p class="sms-active-notice__desc" id="ticket-sms-text">
+          Alerts are linked to <strong>(555) ***-2834</strong>. Feel free to explore the civic lounge or cafeteria while you wait.
+        </p>
+      </div>
+    </div>
+
+    <!-- 4. Action Buttons -->
+    <div class="ticket-actions-bar">
+      <button type="button" class="btn btn--primary btn--full btn--lg" id="btn-track-token">
+        <span class="material-symbols-outlined">radar</span>
+        <span data-i18n="token_btn_track">Track My Token</span>
+      </button>
+
+      <div class="ticket-actions-row">
+        <button type="button" class="btn btn--secondary flex-1" id="btn-download-token">
+          <span class="material-symbols-outlined">download</span>
+          <span data-i18n="token_btn_download">Download Token</span>
+        </button>
+        <button type="button" class="btn btn--secondary flex-1" id="btn-print-token">
+          <span class="material-symbols-outlined">print</span>
+          <span data-i18n="token_btn_download">Print Token</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- 5. Footer Cancel/Transfer Help Link & Ref ID -->
+    <div class="flow-col items-center gap-1" style="text-align: center; margin-bottom: var(--space-6);">
+      <div class="flow-row items-center justify-center gap-1 text-body-sm">
+        <span class="material-symbols-outlined color-muted" style="font-size:18px;">support_agent</span>
+        <span class="color-text-secondary">Need to cancel or transfer?</span>
+        <button type="button" class="btn-link color-secondary font-bold" id="btn-speak-staff" style="background:none;border:none;padding:0;cursor:pointer;font-family:inherit;font-size:inherit;text-decoration:underline;">Speak with counter staff</button>
+      </div>
+      <div class="text-label-xs color-muted" id="ticket-ref-id">QueueEase Reference ID: #QE-88349-B2</div>
+    </div>
+
+  </main>
+
+  <script type="module">
+    import { initTokenPage } from '/assets/js/ticket.js';
+    import { openSheet, closeSheet, showToast } from '/assets/js/ui.js';
+    import { Store } from '/assets/js/store.js';
+
+    initTokenPage();
+
+    // Cancel / Transfer Modal
+    const staffHelpBtn = document.getElementById('btn-speak-staff');
+    if (staffHelpBtn) {
+      staffHelpBtn.addEventListener('click', () => {
+        openSheet(`
+          <div class="flow-col gap-4">
+            <h3 class="text-title-md font-bold color-primary">Manage Your Active Pass</h3>
+            <p class="text-body-sm color-text-secondary">
+              If your schedule has changed, you can transfer to another civic service or release your place in line for other citizens.
+            </p>
+            <div class="flow-col gap-2">
+              <button type="button" class="btn btn--secondary btn--full" id="btn-transfer-pass">
+                <span class="material-symbols-outlined">swap_horiz</span>
+                <span>Transfer to Different Service</span>
+              </button>
+              <button type="button" class="btn btn--danger btn--full" id="btn-cancel-pass">
+                <span class="material-symbols-outlined">cancel</span>
+                <span>Cancel Token & Leave Queue</span>
+              </button>
+            </div>
+          </div>
+        `, 'Counter Staff Assistance');
+
+        setTimeout(() => {
+          document.getElementById('btn-transfer-pass')?.addEventListener('click', () => {
+            closeSheet();
+            window.location.href = '/citizen/services.html';
+          });
+          document.getElementById('btn-cancel-pass')?.addEventListener('click', () => {
+            Store.clearActiveCitizenToken();
+            closeSheet();
+            showToast('Your queue token has been cancelled.', 'info');
+            setTimeout(() => {
+              window.location.href = '/citizen/home.html';
+            }, 800);
+          });
+        }, 100);
+      });
+    }
+  </script>
+</body>
+</html>

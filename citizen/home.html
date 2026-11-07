@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('lang', lang);
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Welcome to QueueEase (Civic Hall Live)</title>
+  <meta name="description" content="Seamless digital access to civic departments and real-time waiting queues." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- PWA & Mobile Viewport Standards -->
+  <link rel="manifest" href="/manifest.json" />
+  <meta name="theme-color" content="#142D4E" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="QueueEase" />
+  <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png" />
+  <link rel="icon" type="image/svg+xml" href="/assets/icons/icon.svg" />
+
+  <!-- Critical Inline CSS for Instant Paint -->
+  <style>
+    :root {
+      --color-primary: #142D4E;
+      --color-secondary: #2563EB;
+      --color-background: #F8FAFC;
+    }
+    body {
+      margin: 0;
+      font-family: 'Hanken Grotesk', system-ui, -apple-system, sans-serif;
+      background-color: var(--color-background);
+      color: #0B1C30;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      padding-bottom: calc(76px + env(safe-area-inset-bottom, 0px));
+      min-height: 100dvh;
+    }
+    .app-header {
+      background-color: var(--color-card);
+      border-bottom: 1px solid var(--color-border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: 56px;
+    }
+    .container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding-left: 16px;
+      padding-right: 16px;
+    }
+    .live-pill-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .civic-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      background: var(--color-secondary-surface);
+      color: var(--color-secondary);
+      font-size: 11px;
+      font-weight: 700;
+    }
+    .civic-status-pill__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--color-secondary);
+    }
+  </style>
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body>
+
+  <!-- Shared App Header Target -->
+  <header id="app-header"></header>
+
+  <main class="container" style="padding-top: var(--space-3);">
+    
+    <!-- 1. Live Status Header Bar -->
+    <div class="live-pill-row">
+      <div class="civic-status-pill">
+        <span class="civic-status-pill__dot"></span>
+        <span data-i18n="home_digital_hall_live">DIGITAL CIVIC HALL LIVE</span>
+      </div>
+      <div class="desk-hours-meta">
+        <span class="material-symbols-outlined">schedule</span>
+        <span data-i18n="home_desk_closes">Desk closes 17:30</span>
+      </div>
+    </div>
+
+    <!-- 2. Welcome Hero Header -->
+    <section class="citizen-hero-header">
+      <h1 class="citizen-hero-header__title" data-i18n="home_welcome_title">Welcome to QueueEase</h1>
+      <p class="citizen-hero-header__subtitle" data-i18n="home_welcome_desc">
+        Seamless digital access to civic departments and real-time waiting queues.
+      </p>
+    </section>
+
+    <!-- 3. Center Status Hub Card -->
+    <section class="hub-status-card" aria-label="Current civic center operations">
+      <div class="hub-status-card__header">
+        <div class="hub-status-card__location">
+          <div class="hub-status-card__icon-box">
+            <span class="material-symbols-outlined">location_on</span>
+          </div>
+          <div>
+            <div class="hub-status-card__title" data-i18n="home_hub_title">Civic Center West • Hall B</div>
+            <div class="hub-status-card__subtitle" data-i18n="home_hub_subtitle">Standard Public Hours Active</div>
+          </div>
+        </div>
+        <span class="hub-status-card__tag" data-i18n="optimal_flow">Optimal Flow</span>
+      </div>
+
+      <div class="hub-status-card__metrics">
+        <!-- Metric 1: Avg Wait -->
+        <div class="hub-metric-col">
+          <span class="hub-metric-col__label" data-i18n="home_avg_wait">Avg Wait</span>
+          <span class="hub-metric-col__value" id="stat-avg-wait-val">12m</span>
+          <span class="hub-metric-col__sub hub-metric-col__sub--speed">
+            <span class="material-symbols-outlined" style="font-size:12px;">arrow_downward</span>
+            <span data-i18n="home_4m_faster">4m faster</span>
+          </span>
+        </div>
+
+        <!-- Metric 2: Counters -->
+        <div class="hub-metric-col">
+          <span class="hub-metric-col__label" data-i18n="home_counters">Counters</span>
+          <span class="hub-metric-col__value" id="stat-counters-val">8/10</span>
+          <span class="hub-metric-col__sub" id="stat-counters-sub" data-i18n="home_recess">2 on recess</span>
+        </div>
+
+        <!-- Metric 3: Served -->
+        <div class="hub-metric-col">
+          <span class="hub-metric-col__label" data-i18n="home_served">Served</span>
+          <span class="hub-metric-col__value" id="stat-served-val">420+</span>
+          <span class="hub-metric-col__sub" data-i18n="home_citizens_today">Citizens today</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Generate New Token Blue Hero Card -->
+    <a href="/citizen/services.html" class="token-hero-card" aria-label="Generate new digital token pass">
+      <div class="token-hero-card__top">
+        <div class="token-hero-card__left">
+          <div class="token-hero-card__icon-box">
+            <span class="material-symbols-outlined" style="font-size:26px;">confirmation_number</span>
+          </div>
+          <div>
+            <div class="token-hero-card__badge" data-i18n="home_instant_pass_badge">INSTANT DIGITAL PASS</div>
+            <div class="token-hero-card__title" data-i18n="home_gen_title">Generate New Token</div>
+          </div>
+        </div>
+        <div class="token-hero-card__circle-arrow">
+          <span class="material-symbols-outlined" style="font-size:20px;">arrow_forward</span>
+        </div>
+      </div>
+      <p class="token-hero-card__desc" data-i18n="home_gen_desc">
+        Select your civic department & get an instant slot in line without standing in front of kiosk lines.
+      </p>
+    </a>
+
+    <!-- 5. Track Existing Token Card -->
+    <section class="track-token-card">
+      <div class="track-token-card__header">
+        <div class="track-token-card__icon-box">
+          <span class="material-symbols-outlined" style="font-size:22px;">radar</span>
+        </div>
+        <div class="track-token-card__title-row">
+          <div>
+            <h2 class="track-token-card__title" data-i18n="home_track_title">Track Existing Token</h2>
+            <div class="track-token-card__subtext" data-i18n="home_track_subtitle">Check real-time counter positioning</div>
+          </div>
+          <span class="track-token-card__pill" data-i18n="home_kiosk_mobile">Kiosk & Mobile</span>
+        </div>
+      </div>
+
+      <form id="track-token-form" onsubmit="event.preventDefault();">
+        <div class="track-token-card__input-group">
+          <div class="track-token-card__input-icon">
+            <span class="material-symbols-outlined" style="font-size:20px;">search</span>
+          </div>
+          <input 
+            type="text" 
+            id="track-token-input" 
+            class="track-token-card__input" 
+            placeholder="E.G. C-104 OR T-209" 
+            data-i18n-placeholder="home_track_placeholder"
+            autocomplete="off"
+            aria-label="Token number to track"
+          />
+          <button type="submit" class="track-token-card__btn">
+            <span data-i18n="home_btn_locate">Locate</span>
+            <span class="material-symbols-outlined" style="font-size:16px;">near_me</span>
+          </button>
+        </div>
+        <div id="track-feedback" class="track-feedback"></div>
+      </form>
+    </section>
+
+    <!-- 6. Your Active Passes Section -->
+    <section style="margin-bottom: var(--space-5);">
+      <div class="section-header-row">
+        <h2 class="section-header-title" data-i18n="home_active_passes">Your Active Passes</h2>
+        <button type="button" class="section-header-link" id="toggle-demo-pass-btn" data-i18n="home_toggle_demo">Toggle demo pass</button>
+      </div>
+
+      <!-- Active Pass Container (Hydrated by JS) -->
+      <div id="active-pass-container">
+        <!-- Skeleton fallback during initial paint -->
+        <div class="card card--sm flow-col gap-2">
+          <div class="skeleton skeleton--text" style="width: 40%;"></div>
+          <div class="skeleton skeleton--card" style="height: 80px;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 7. Civic Departments 2x2 Grid -->
+    <section style="margin-bottom: var(--space-5);">
+      <div class="section-header-row" style="margin-bottom: 2px;">
+        <h2 class="section-header-title" data-i18n="home_civic_depts">Civic Departments</h2>
+        <a href="/citizen/services.html" class="section-header-link" style="display:inline-flex; align-items:center; gap:2px;">
+          <span data-i18n="home_view_all">View All</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+        </a>
+      </div>
+      <p class="text-body-sm color-muted" style="margin-bottom: var(--space-3);" data-i18n="home_instant_enrollment">
+        Instant queue enrollment by category
+      </p>
+
+      <div class="dept-grid">
+        <!-- 1. Certificate Application -->
+        <div class="dept-card" data-service-id="srv-1">
+          <div class="dept-card__top">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">badge</span>
+            </div>
+            <span class="dept-card__wait-badge dept-card__wait-badge--low" data-i18n="wait_low">Low Wait</span>
+          </div>
+          <div>
+            <h3 class="dept-card__title" data-i18n="dept_cert_title">Certificate Application</h3>
+            <p class="dept-card__desc" data-i18n="dept_cert_desc">Birth, residency, tax IDs</p>
+          </div>
+          <div class="dept-card__footer">
+            <span class="dept-card__time" data-i18n="wait_approx_6m">~6 mins</span>
+            <div class="dept-card__action-btn">
+              <span class="material-symbols-outlined">add_circle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Document Verification -->
+        <div class="dept-card" data-service-id="srv-2">
+          <div class="dept-card__top">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">verified_user</span>
+            </div>
+            <span class="dept-card__wait-badge dept-card__wait-badge--low" data-i18n="wait_low">Low Wait</span>
+          </div>
+          <div>
+            <h3 class="dept-card__title" data-i18n="dept_doc_title">Document Verification</h3>
+            <p class="dept-card__desc" data-i18n="dept_doc_desc">Apostille, notarization</p>
+          </div>
+          <div class="dept-card__footer">
+            <span class="dept-card__time" data-i18n="wait_approx_10m">~10 mins</span>
+            <div class="dept-card__action-btn">
+              <span class="material-symbols-outlined">add_circle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. Public Enquiry -->
+        <div class="dept-card" data-service-id="srv-3">
+          <div class="dept-card__top">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">help_outline</span>
+            </div>
+            <span class="dept-card__wait-badge dept-card__wait-badge--med" data-i18n="wait_18m">18m Wait</span>
+          </div>
+          <div>
+            <h3 class="dept-card__title" data-i18n="dept_enquiry_title">Public Enquiry</h3>
+            <p class="dept-card__desc" data-i18n="dept_enquiry_desc">Zoning, general permits</p>
+          </div>
+          <div class="dept-card__footer">
+            <span class="dept-card__time" data-i18n="wait_approx_18m">~18 mins</span>
+            <div class="dept-card__action-btn">
+              <span class="material-symbols-outlined">add_circle</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. Social Welfare Services -->
+        <div class="dept-card" data-service-id="srv-4">
+          <div class="dept-card__top">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">diversity_3</span>
+            </div>
+            <span class="dept-card__wait-badge dept-card__wait-badge--low" data-i18n="wait_low">Low Wait</span>
+          </div>
+          <div>
+            <h3 class="dept-card__title" data-i18n="dept_welfare_title">Social Welfare Services</h3>
+            <p class="dept-card__desc" data-i18n="dept_welfare_desc">Senior & family grants</p>
+          </div>
+          <div class="dept-card__footer">
+            <span class="dept-card__time" data-i18n="wait_approx_8m">~8 mins</span>
+            <div class="dept-card__action-btn">
+              <span class="material-symbols-outlined">add_circle</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 8. Lounge Image Banner -->
+    <section class="lounge-banner" aria-label="Hall B Lounge information">
+      <img src="/assets/img/lounge.jpg" alt="Civic Hall B Waiting Lounge with live displays" class="lounge-banner__bg" loading="lazy" />
+      <div class="lounge-banner__overlay"></div>
+      <div class="lounge-banner__content">
+        <div class="lounge-banner__tag" data-i18n="lounge_tag">ON-SITE ENVIRONMENT</div>
+        <div class="lounge-banner__title-row">
+          <h2 class="lounge-banner__title" data-i18n="lounge_title">Hall B Lounge & Free Wi-Fi</h2>
+          <span class="lounge-banner__air-pill" data-i18n="lounge_air">Air Quality: Clean</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Civic Accessibility Care Panel -->
+    <section class="accessibility-panel" aria-label="Priority and accessibility assistance">
+      <div class="accessibility-panel__header">
+        <div class="accessibility-panel__icon-box">
+          <span class="material-symbols-outlined">accessible</span>
+        </div>
+        <div class="accessibility-panel__title-row">
+          <h2 class="accessibility-panel__title" data-i18n="home_access_title">Civic Accessibility Care</h2>
+          <span class="accessibility-panel__badge" data-i18n="badge_priority">PRIORITY</span>
+        </div>
+      </div>
+      <p class="accessibility-panel__desc" data-i18n="home_access_desc">
+        Need special assistance, sign-language interpreters, or step-free escort? Enable priority guidance or request on-site staff help immediately.
+      </p>
+      <div class="accessibility-panel__actions">
+        <button type="button" class="btn btn--navy flex-1" id="btn-call-staff">
+          <span class="material-symbols-outlined">headset_mic</span>
+          <span data-i18n="home_btn_call_staff">Call On-Site Staff</span>
+        </button>
+        <button type="button" class="btn btn--secondary flex-1" id="btn-fast-track" style="background:#FFFFFF;">
+          <span data-i18n="home_btn_fast_track">Disability Fast-Track</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared Bottom Navigation Target -->
+  <nav id="app-bottom-nav"></nav>
+
+  <!-- Page Script -->
+  <script type="module">
+    import { initCitizenHome } from '/assets/js/citizen.js';
+    import '/assets/js/a11y.js';
+    import '/assets/js/pwa.js';
+    initCitizenHome();
+  </script>
+</body>
+</html>

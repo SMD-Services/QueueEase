@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('lang', lang);
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Issue Token Pass</title>
+  <meta name="description" content="Enter your civic details to generate your digital token pass." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body class="no-bottom-nav">
+
+  <!-- Header with Back Button -->
+  <header class="app-header">
+    <div class="container">
+      <div class="app-header__inner">
+        <div class="app-header__branding">
+          <a href="/citizen/services.html" class="app-header__btn" aria-label="Back to Services" data-i18n-aria="issue_back_to_services">
+            <span class="material-symbols-outlined" style="font-size:22px;">arrow_back_ios_new</span>
+          </a>
+          <div class="app-header__titles">
+            <h1 class="app-header__title" style="font-size:var(--font-title-lg);" data-i18n="issue_header_title">Issue Token Pass</h1>
+            <span class="app-header__subtitle" data-i18n="issue_header_sub">QueueEase Civic Services</span>
+          </div>
+        </div>
+
+        <div class="app-header__actions">
+          <button type="button" class="app-header__btn" aria-label="Citizen Account" data-i18n-aria="header_profile_btn">
+            <span class="material-symbols-outlined" style="font-size:22px;">account_circle</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--space-4);">
+    
+    <!-- 1. Portal Check-in Banner -->
+    <div class="issue-portal-banner">
+      <div class="issue-portal-banner__icon-box">
+        <span class="material-symbols-outlined" style="font-size:24px;">confirmation_number</span>
+      </div>
+      <div>
+        <div class="issue-portal-banner__label" data-i18n="issue_portal_checkin">PORTAL CHECK-IN</div>
+        <div class="issue-portal-banner__text" data-i18n="issue_portal_text">Enter your basic details to generate your digital token pass.</div>
+      </div>
+    </div>
+
+    <!-- 2. Assigned Service Hub Card -->
+    <section class="service-hub-card">
+      <div class="service-hub-card__top">
+        <div class="service-hub-card__left">
+          <div class="service-hub-card__icon-box">
+            <span class="material-symbols-outlined">badge</span>
+          </div>
+          <div>
+            <div class="service-hub-card__label" data-i18n="issue_assigned_hub">ASSIGNED SERVICE HUB</div>
+            <h2 class="service-hub-card__title" id="hub-service-title">Certificate Application</h2>
+          </div>
+        </div>
+        <a href="/citizen/services.html" class="service-hub-card__edit-btn" title="Change Service" aria-label="Change Service" data-i18n-title="issue_change_service" data-i18n-aria="issue_change_service">
+          <span class="material-symbols-outlined" style="font-size:18px;">edit</span>
+        </a>
+      </div>
+
+      <div class="service-hub-card__meta-grid">
+        <div class="service-hub-meta-box">
+          <span class="material-symbols-outlined">domain</span>
+          <div>
+            <div class="service-hub-meta-box__label" data-i18n="issue_location_label">Location</div>
+            <div class="service-hub-meta-box__val" id="hub-service-location">Counter Hall 02</div>
+          </div>
+        </div>
+        <div class="service-hub-meta-box">
+          <span class="material-symbols-outlined">schedule</span>
+          <div>
+            <div class="service-hub-meta-box__label" data-i18n="issue_est_wait_label">Estimated Wait</div>
+            <div class="service-hub-meta-box__val" id="hub-service-wait">~15 mins</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Issue Form -->
+    <form id="issue-token-form" novalidate>
+      
+      <!-- Field 1: Legal Name -->
+      <div class="form-group">
+        <label class="input-label" for="citizen-legal-name">
+          <span><span data-i18n="issue_legal_name_label">Citizen Legal Name</span> <span class="input-label__required">*</span></span>
+        </label>
+        <div class="phone-field-box">
+          <span class="material-symbols-outlined">person</span>
+          <input 
+            type="text" 
+            id="citizen-legal-name" 
+            name="name" 
+            value="Eleanor Vance" 
+            placeholder="Full legal name" 
+            data-i18n-placeholder="issue_placeholder_name"
+            required
+            aria-describedby="name-hint name-error"
+          />
+        </div>
+        <span class="input-label__hint" id="name-hint" data-i18n="issue_legal_name_hint">Name as shown on government issued identity document.</span>
+        <span id="name-error" class="color-danger text-label-xs" style="display:none; margin-top:2px;" role="alert"></span>
+      </div>
+
+      <!-- Field 2: Designated Processing Category (Readonly) -->
+      <div class="form-group">
+        <label class="input-label" data-i18n="issue_designated_category">Designated Processing Category</label>
+        <div class="readonly-category-box">
+          <div class="readonly-category-box__left">
+            <span class="material-symbols-outlined">description</span>
+            <span id="designated-category-field">Certificate Application (Birth, Residency & Civil)</span>
+          </div>
+          <span class="material-symbols-outlined">lock</span>
+        </div>
+      </div>
+
+      <!-- Field 3: Mobile Contact Number -->
+      <div class="form-group">
+        <div class="flow-row justify-between items-center" style="margin-bottom: 6px;">
+          <label class="input-label" for="citizen-phone" style="margin-bottom:0;" data-i18n="issue_mobile_contact">Mobile Contact Number</label>
+          <span class="text-label-xs color-muted font-bold" data-i18n="issue_optional">OPTIONAL</span>
+        </div>
+        <div class="phone-input-row">
+          <div class="country-select-box">
+            <select id="country-code-select" aria-label="Country phone code">
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+1-CA">🇨🇦 +1</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+91">🇮🇳 +91</option>
+            </select>
+          </div>
+          <div class="phone-field-box">
+            <span class="material-symbols-outlined">smartphone</span>
+            <input 
+              type="tel" 
+              id="citizen-phone" 
+              name="phone" 
+              value="(555) 019-2834" 
+              placeholder="(555) 000-0000"
+              aria-describedby="phone-error"
+            />
+          </div>
+        </div>
+        <span id="phone-error" class="color-danger text-label-xs" style="display:none; margin-top:2px;" role="alert"></span>
+      </div>
+
+      <!-- Field 4: Live SMS Dispatch Notification Checkbox -->
+      <div class="checkbox-card checkbox-card--active" id="sms-checkbox-card" style="margin-bottom: var(--space-4);" role="checkbox" aria-checked="true" tabindex="0">
+        <div class="custom-checkbox custom-checkbox--checked" id="sms-checkbox">
+          <span class="material-symbols-outlined">check</span>
+        </div>
+        <div class="flow-col">
+          <span class="text-body-md font-semibold color-primary" data-i18n="issue_sms_title">Live SMS Dispatch Notification</span>
+          <span class="text-body-sm color-muted" data-i18n="issue_sms_desc">Receive real-time alerts when your counter is approaching (Recommended).</span>
+        </div>
+      </div>
+
+      <!-- Field 5: Priority & Accessibility Queue 2x2 Grid -->
+      <div class="form-group">
+        <div class="flow-row justify-between items-center" style="margin-bottom: 8px;">
+          <div class="flow-row items-center gap-2">
+            <span class="material-symbols-outlined color-secondary" style="font-size:20px;">accessible</span>
+            <span class="text-title-sm font-bold color-primary" data-i18n="issue_priority_title">Priority & Accessibility Queue</span>
+          </div>
+          <span class="text-label-xs color-secondary font-bold" data-i18n="issue_assisted_lane">Assisted Lane</span>
+        </div>
+
+        <div class="flow-grid gap-2" style="grid-template-columns: repeat(2, 1fr);" role="radiogroup" aria-label="Priority Queue Selection">
+          <!-- Option 1: Standard Queue -->
+          <div class="radio-card radio-card--selected" data-val="standard" role="radio" aria-checked="true" tabindex="0">
+            <div class="radio-card__header">
+              <span class="material-symbols-outlined" style="font-size:20px;">schedule</span>
+              <span class="material-symbols-outlined radio-card__check-icon" style="font-size:18px;">check_circle</span>
+            </div>
+            <div>
+              <div class="radio-card__title" data-i18n="issue_lane_standard_title">Standard Queue</div>
+              <div class="radio-card__subtitle" data-i18n="issue_lane_standard_sub">Standard lane</div>
+            </div>
+          </div>
+
+          <!-- Option 2: Senior (65+) -->
+          <div class="radio-card" data-val="senior" role="radio" aria-checked="false" tabindex="0">
+            <div class="radio-card__header">
+              <span class="material-symbols-outlined" style="font-size:20px;">elderly</span>
+              <span class="material-symbols-outlined radio-card__check-icon" style="font-size:18px; display:none;">check_circle</span>
+            </div>
+            <div>
+              <div class="radio-card__title" data-i18n="issue_lane_senior_title">Senior (65+)</div>
+              <div class="radio-card__subtitle" data-i18n="issue_lane_senior_sub">Priority Lane 1</div>
+            </div>
+          </div>
+
+          <!-- Option 3: Mobility Support -->
+          <div class="radio-card" data-val="mobility" role="radio" aria-checked="false" tabindex="0">
+            <div class="radio-card__header">
+              <span class="material-symbols-outlined" style="font-size:20px;">accessible</span>
+              <span class="material-symbols-outlined radio-card__check-icon" style="font-size:18px; display:none;">check_circle</span>
+            </div>
+            <div>
+              <div class="radio-card__title" data-i18n="issue_lane_mobility_title">Mobility Support</div>
+              <div class="radio-card__subtitle" data-i18n="issue_lane_mobility_sub">Step-free desk</div>
+            </div>
+          </div>
+
+          <!-- Option 4: Expectant Mother -->
+          <div class="radio-card" data-val="expectant" role="radio" aria-checked="false" tabindex="0">
+            <div class="radio-card__header">
+              <span class="material-symbols-outlined" style="font-size:20px;">pregnant_woman</span>
+              <span class="material-symbols-outlined radio-card__check-icon" style="font-size:18px; display:none;">check_circle</span>
+            </div>
+            <div>
+              <div class="radio-card__title" data-i18n="issue_lane_expectant_title">Expectant Mother</div>
+              <div class="radio-card__subtitle" data-i18n="issue_lane_expectant_sub">Priority seating</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info Card 1: Instant Digital Pass -->
+      <div class="card card--sm flow-row items-start gap-3" style="margin-bottom: var(--space-3);">
+        <div class="dept-card__icon-box">
+          <span class="material-symbols-outlined">qr_code_scanner</span>
+        </div>
+        <div class="flow-col">
+          <span class="text-body-md font-bold color-primary" data-i18n="issue_pass_info_title">Instant Digital Pass</span>
+          <span class="text-body-sm color-text-secondary" data-i18n="issue_pass_info_desc">
+            Your digital token will be issued immediately with a live QR code. You can roam freely and receive notifications.
+          </span>
+        </div>
+      </div>
+
+      <!-- Info Card 2: Data Protected -->
+      <div class="card card--sm flow-row items-start gap-3" style="margin-bottom: var(--space-3);">
+        <div class="dept-card__icon-box" style="background:var(--success-bg); color:var(--success-text); border:1px solid var(--border-subtle);">
+          <span class="material-symbols-outlined">verified_user</span>
+        </div>
+        <div class="flow-col">
+          <span class="text-body-md font-bold color-primary" data-i18n="issue_data_prot_title">Data Protected</span>
+          <span class="text-body-sm color-text-secondary" data-i18n="issue_data_prot_desc">
+            Your contact details are strictly encrypted and automatically purged upon queue completion pursuant to Civic Privacy Directives.
+          </span>
+        </div>
+      </div>
+
+      <!-- Help Note -->
+      <div class="card card--sm flow-row items-center gap-3" style="background:#EFF6FF; border-color:#DBEAFE; margin-bottom: var(--space-6);">
+        <span class="material-symbols-outlined color-primary">help_outline</span>
+        <span class="text-body-sm color-text-secondary" data-i18n="issue_help_note">
+          Need physical guidance? Speak to the greeter desk at Entrance Gate A.
+        </span>
+      </div>
+
+      <!-- Sticky Bottom Action Button -->
+      <div class="issue-sticky-bar">
+        <button type="submit" class="btn btn--primary btn--full btn--lg" id="btn-generate-token">
+          <span class="material-symbols-outlined">shield</span>
+          <span data-i18n="issue_btn_generate">Generate Token Now</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+        <div class="security-caption">
+          <span class="material-symbols-outlined">lock</span>
+          <span data-i18n="issue_security_caption">Encrypted 256-bit Public Infrastructure Connection</span>
+        </div>
+      </div>
+
+    </form>
+  </main>
+
+  <script type="module">
+    import { initIssueForm } from '/assets/js/ticket.js';
+    import '/assets/js/a11y.js';
+    initIssueForm();
+  </script>
+</body>
+</html>

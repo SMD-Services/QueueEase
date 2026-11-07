@@ -1,0 +1,918 @@
+/* ==========================================================================
+   QueueEase Design System: Civic Flow
+   assets/css/tokens.css
+   ========================================================================== */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. Semantic Role Tokens (Civic Flow - Light Mode Default)
+     ------------------------------------------------------------------------ */
+  --surface-page: #F8FAFC;
+  --surface-card: #FFFFFF;
+  --surface-raised: #FFFFFF;
+  --surface-subtle: #F1F5F9;
+  --surface-tint: #EFF6FF; /* Pale blue tile/chip background */
+
+  --text-heading: #0B1C30;
+  --text-body: #1E293B;
+  --text-muted: #64748B;
+  --text-on-brand: #FFFFFF;
+
+  --icon-default: #64748B;
+  --icon-on-tint: #2563EB;
+
+  --border-subtle: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  --brand-fill: #142D4E; /* Navy buttons/logo tile in light */
+  --accent-text: #2563EB; /* Blue links & interactive text */
+
+  --success-bg: #F0FDFA;
+  --success-text: #0F766E;
+  --warning-bg: #FFFBEB;
+  --warning-text: #B45309;
+  --danger-bg: #FEF2F2;
+  --danger-text: #B91C1C;
+  --info-bg: #EFF6FF;
+  --info-text: #1D4ED8;
+
+  /* Primary Brand Navy */
+  --color-primary: #142D4E;
+  --color-primary-light: #1E3E68;
+  --color-primary-dark: #0B1A2E;
+  --color-primary-surface: var(--surface-tint);
+  --color-primary-gradient: linear-gradient(135deg, #142D4E 0%, #0B1C30 100%);
+
+  /* Secondary Blue */
+  --color-secondary: #2563EB;
+  --color-secondary-light: #3B82F6;
+  --color-secondary-dark: #1D4ED8;
+  --color-secondary-surface: #EFF6FF;
+  --color-secondary-border: #BFDBFE;
+
+  /* Tertiary Teal */
+  --color-tertiary: #14B8A6;
+  --color-tertiary-light: #2DD4BF;
+  --color-tertiary-dark: #0F766E;
+  --color-tertiary-surface: #F0FDFA;
+  --color-tertiary-border: #CCFBF1;
+
+  /* Neutral & Surfaces */
+  --color-background: var(--surface-page);
+  --color-card: var(--surface-card);
+  --color-card-elevated: var(--surface-raised);
+  --color-card-subtle: var(--surface-subtle);
+  --color-border: var(--border-subtle);
+  --color-border-subtle: #EDF2F7;
+  --color-border-dark: var(--border-strong);
+  --color-divider: var(--border-subtle);
+
+  /* Typography Colors */
+  --color-text: var(--text-heading);
+  --color-text-secondary: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-muted-light: #94A3B8;
+  --color-text-inverse: var(--text-on-brand);
+  --color-text-inverse-muted: #94A3B8;
+
+  /* State & Semantic Colors */
+  --color-success: #0D9488;
+  --color-success-surface: var(--success-bg);
+  --color-success-border: #99F6E4;
+  --color-success-text: var(--success-text);
+
+  --color-calling: #2563EB;
+  --color-calling-surface: var(--info-bg);
+  --color-calling-border: #BFDBFE;
+  --color-calling-text: var(--info-text);
+
+  --color-warning: #F59E0B;
+  --color-warning-surface: var(--warning-bg);
+  --color-warning-border: #FDE68A;
+  --color-warning-text: var(--warning-text);
+
+  --color-danger: #EF4444;
+  --color-danger-surface: var(--danger-bg);
+  --color-danger-border: #FECACA;
+  --color-danger-text: var(--danger-text);
+
+  --color-priority: #0D9488;
+  --color-priority-surface: #115E59;
+  --color-priority-badge: #042F2E;
+
+  /* ------------------------------------------------------------------------
+     2. Typography Scale (Hanken Grotesk + system-ui)
+     ------------------------------------------------------------------------ */
+  --font-family: 'Hanken Grotesk', 'Noto Sans Devanagari', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-family-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+
+  /* Type Scale */
+  --font-display-2xl: 2.75rem; /* 44px */
+  --line-display-2xl: 1.1;
+
+  --font-display-xl: 2.25rem;  /* 36px */
+  --line-display-xl: 1.15;
+
+  --font-headline-lg: 1.75rem;  /* 28px */
+  --line-headline-lg: 1.2;
+
+  --font-headline-md: 1.5rem;   /* 24px */
+  --line-headline-md: 1.25;
+
+  --font-title-lg: 1.25rem;     /* 20px */
+  --line-title-lg: 1.35;
+
+  --font-title-md: 1.125rem;    /* 18px */
+  --line-title-md: 1.4;
+
+  --font-body-lg: 1rem;         /* 16px */
+  --line-body-lg: 1.5;
+
+  --font-body-md: 0.9375rem;    /* 15px */
+  --line-body-md: 1.5;
+
+  --font-body-sm: 0.875rem;     /* 14px */
+  --line-body-sm: 1.45;
+
+  --font-label-md: 0.8125rem;   /* 13px */
+  --line-label-md: 1.4;
+
+  --font-label-sm: 0.75rem;     /* 12px */
+  --line-label-sm: 1.35;
+
+  --font-label-xs: 0.6875rem;   /* 11px */
+  --line-label-xs: 1.3;
+
+  /* ------------------------------------------------------------------------
+     3. Spacing System (4px & 8px Harmonic Rhythm)
+     ------------------------------------------------------------------------ */
+  --space-0: 0;
+  --space-1: 0.25rem;  /* 4px */
+  --space-2: 0.5rem;   /* 8px */
+  --space-3: 0.75rem;  /* 12px */
+  --space-4: 1rem;     /* 16px */
+  --space-5: 1.25rem;  /* 20px */
+  --space-6: 1.5rem;   /* 24px */
+  --space-7: 1.75rem;  /* 28px */
+  --space-8: 2rem;     /* 32px */
+  --space-10: 2.5rem;  /* 40px */
+  --space-12: 3rem;    /* 48px */
+  --space-16: 4rem;    /* 64px */
+
+  /* ------------------------------------------------------------------------
+     4. Border Radius
+     ------------------------------------------------------------------------ */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-control: 8px;     /* Required: 8px for controls */
+  --radius-md: 12px;
+  --radius-card-sm: 16px;   /* Required: 16-24px for cards */
+  --radius-card: 20px;
+  --radius-card-lg: 24px;
+  --radius-sheet: 24px 24px 0 0;
+  --radius-full: 9999px;
+
+  /* ------------------------------------------------------------------------
+     5. Shadows (Levels 0 to 3 - Soft Cool Navy Tones)
+     ------------------------------------------------------------------------ */
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(20, 45, 78, 0.05), 0 1px 2px rgba(20, 45, 78, 0.03);
+  --shadow-2: 0 4px 16px rgba(20, 45, 78, 0.06), 0 1px 4px rgba(20, 45, 78, 0.04);
+  --shadow-3: 0 12px 32px rgba(20, 45, 78, 0.10), 0 2px 8px rgba(20, 45, 78, 0.05);
+  --shadow-sheet: 0 -8px 30px rgba(20, 45, 78, 0.12);
+  --shadow-glow-blue: 0 0 20px rgba(37, 99, 235, 0.25);
+  --shadow-glow-teal: 0 0 20px rgba(20, 184, 166, 0.25);
+
+  /* ------------------------------------------------------------------------
+     6. Z-Index Layering
+     ------------------------------------------------------------------------ */
+  --z-base: 1;
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-bottom-nav: 300;
+  --z-sheet-backdrop: 400;
+  --z-sheet: 500;
+  --z-modal-backdrop: 600;
+  --z-modal: 700;
+  --z-toast: 800;
+
+  /* ------------------------------------------------------------------------
+     7. Accessibility & Touch Standards
+     ------------------------------------------------------------------------ */
+  --touch-target-min: 44px;
+  --focus-ring-color: #2563EB;
+  --focus-ring-offset: 2px;
+  --focus-ring-width: 2px;
+
+  /* ------------------------------------------------------------------------
+     8. Safe Area Insets (Mobile Notch & Home Bar)
+     ------------------------------------------------------------------------ */
+  --safe-area-top: env(safe-area-inset-top, 0px);
+  --safe-area-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-area-left: env(safe-area-inset-left, 0px);
+  --safe-area-right: env(safe-area-inset-right, 0px);
+
+  /* Layout Dimensions */
+  --header-height: 64px;
+}
+
+/* --------------------------------------------------------------------------
+   Breakpoints Reference Guide
+   - Mobile Base: 360px - 430px (Fluid default, mobile-first)
+   - Tablet: 768px (min-width: 768px)
+   - Desktop / Display: 1280px (min-width: 1280px)
+   -------------------------------------------------------------------------- */
+
+/* --------------------------------------------------------------------------
+   QueueEase Dark Mode (:root[data-theme='dark'])
+   Comfortable Civic Navy Palette (WCAG 2.2 Compliant)
+   -------------------------------------------------------------------------- */
+:root[data-theme='dark'],
+html[data-theme='dark'],
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* ==========================================================================
+     1. Semantic Role Tokens (Dark Mode)
+     ========================================================================== */
+  --surface-page: #0B1220;
+  --surface-card: #111B2E;
+  --surface-raised: #16233A;
+  --surface-subtle: #0F1A2C;
+  --surface-tint: #1A2B47;
+
+  --text-heading: #F4F8FF; /* >= 7:1 against card/page */
+  --text-body: #DCE6F5;    /* >= 4.5:1 against card/page */
+  --text-muted: #A9B9D0;   /* >= 4.5:1 against card/page */
+  --text-on-brand: #FFFFFF;
+
+  --icon-default: #C9D8F0;
+  --icon-on-tint: #8DBBFF;
+
+  --border-subtle: #26385A;
+  --border-strong: #3A5586;
+
+  --brand-fill: #2563EB; /* Bright blue for logo tile and buttons */
+  --accent-text: #8DBBFF;
+
+  --success-bg: rgba(45, 212, 191, 0.16);
+  --success-text: #5EEAD4;
+  --warning-bg: rgba(251, 191, 36, 0.16);
+  --warning-text: #FDE047;
+  --danger-bg: rgba(248, 113, 113, 0.16);
+  --danger-text: #FCA5A5;
+  --info-bg: rgba(96, 165, 250, 0.16);
+  --info-text: #93C5FD;
+
+  /* 2. Legacy Variable Remappings (Ensures headings and text are never invisible navy) */
+  --color-primary: var(--text-heading);
+  --color-primary-light: #60A5FA;
+  --color-primary-dark: #1D4ED8;
+  --color-primary-surface: var(--surface-tint);
+  --color-primary-gradient: linear-gradient(135deg, #16294A 0%, #0F1F3A 100%);
+
+  --color-secondary: #2563EB;
+  --color-secondary-light: #60A5FA;
+  --color-secondary-dark: #1D4ED8;
+  --color-secondary-surface: var(--surface-tint);
+  --color-secondary-border: var(--border-subtle);
+
+  --color-tertiary: #14B8A6;
+  --color-tertiary-light: #2DD4BF;
+  --color-tertiary-dark: #0F766E;
+  --color-tertiary-surface: rgba(20, 184, 166, 0.15);
+  --color-tertiary-border: rgba(45, 212, 191, 0.3);
+
+  --color-background: var(--surface-page);
+  --color-card: var(--surface-card);
+  --color-card-elevated: var(--surface-raised);
+  --color-card-subtle: var(--surface-subtle);
+  --color-border: var(--border-subtle);
+  --color-border-subtle: #1E2D47;
+  --color-border-dark: var(--border-strong);
+  --color-divider: var(--border-subtle);
+
+  --color-text: var(--text-heading);
+  --color-text-secondary: var(--text-body);
+  --color-muted: var(--text-muted);
+  --color-muted-light: #7F91AB;
+  --color-text-inverse: var(--surface-page);
+  --color-text-inverse-muted: #16233A;
+
+  --color-success: var(--success-text);
+  --color-success-surface: var(--success-bg);
+  --color-success-border: rgba(45, 212, 191, 0.35);
+  --color-success-text: var(--success-text);
+
+  --color-calling: var(--info-text);
+  --color-calling-surface: var(--info-bg);
+  --color-calling-border: rgba(96, 165, 250, 0.35);
+  --color-calling-text: var(--info-text);
+
+  --color-warning: var(--warning-text);
+  --color-warning-surface: var(--warning-bg);
+  --color-warning-border: rgba(251, 191, 36, 0.35);
+  --color-warning-text: var(--warning-text);
+
+  --color-danger: var(--danger-text);
+  --color-danger-surface: var(--danger-bg);
+  --color-danger-border: rgba(248, 113, 113, 0.35);
+  --color-danger-text: var(--danger-text);
+
+  --color-priority: var(--success-text);
+  --color-priority-surface: var(--success-bg);
+  --color-priority-badge: var(--surface-raised);
+
+  --color-link: var(--accent-text);
+  --focus-ring-color: #60A5FA;
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 0px;
+
+  --shadow-0: none;
+  --shadow-1: 0 1px 3px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 4px 16px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 12px 32px rgba(0, 0, 0, 0.55);
+  --shadow-sheet: 0 -8px 30px rgba(0, 0, 0, 0.6);
+  --shadow-glow-blue: 0 0 20px rgba(37, 99, 235, 0.3);
+  --shadow-glow-teal: 0 0 20px rgba(20, 184, 166, 0.3);
+
+  --signage-bg: #0B1220;
+  --signage-card-bg: #111B2E;
+  --signage-border: #24344F;
+  --signage-accent: #60A5FA;
+}
+
+/* Smooth 200ms color transition on background and text only */
+body, .app-header, .bottom-nav, .card, .dashboard-sidebar, .dashboard-topbar, .dashboard-main, .modal, .sheet, .input-group__field, input, select, textarea {
+  transition: background-color 200ms ease, color 200ms ease, border-color 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body, .app-header, .bottom-nav, .card, .dashboard-sidebar, .dashboard-topbar, .dashboard-main, .modal, .sheet, .input-group__field, input, select, textarea {
+    transition: none !important;
+  }
+}
+
+/* Base Body in Dark Mode */
+:root[data-theme='dark'] body,
+[data-theme='dark'] body {
+  background-color: var(--surface-page);
+  color: var(--text-body);
+}
+
+/* Headings and Titles: Always high-contrast light text */
+:root[data-theme='dark'] h1,
+:root[data-theme='dark'] h2,
+:root[data-theme='dark'] h3,
+:root[data-theme='dark'] h4,
+:root[data-theme='dark'] h5,
+:root[data-theme='dark'] h6,
+:root[data-theme='dark'] .color-primary,
+:root[data-theme='dark'] .section-header-title,
+:root[data-theme='dark'] .app-header__logo-text,
+:root[data-theme='dark'] .landing-drawer__brand-title,
+:root[data-theme='dark'] .card__title,
+:root[data-theme='dark'] .dept-card__title,
+:root[data-theme='dark'] .service-card__title,
+:root[data-theme='dark'] .landing-hero__title,
+:root[data-theme='dark'] .landing-feature-card__title,
+:root[data-theme='dark'] .dashboard-title,
+:root[data-theme='dark'] .dashboard-sidebar__brand,
+:root[data-theme='dark'] .modal-title,
+:root[data-theme='dark'] .sheet-title,
+[data-theme='dark'] h1,
+[data-theme='dark'] h2,
+[data-theme='dark'] h3,
+[data-theme='dark'] h4,
+[data-theme='dark'] h5,
+[data-theme='dark'] h6,
+[data-theme='dark'] .color-primary,
+[data-theme='dark'] .section-header-title,
+[data-theme='dark'] .app-header__logo-text,
+[data-theme='dark'] .landing-drawer__brand-title,
+[data-theme='dark'] .card__title,
+[data-theme='dark'] .dept-card__title,
+[data-theme='dark'] .service-card__title,
+[data-theme='dark'] .landing-hero__title,
+[data-theme='dark'] .landing-feature-card__title,
+[data-theme='dark'] .dashboard-title,
+[data-theme='dark'] .dashboard-sidebar__brand,
+[data-theme='dark'] .modal-title,
+[data-theme='dark'] .sheet-title {
+  color: var(--text-heading) !important;
+}
+
+/* Body & secondary descriptions */
+:root[data-theme='dark'] p,
+:root[data-theme='dark'] .color-text-secondary,
+:root[data-theme='dark'] .text-body-sm,
+:root[data-theme='dark'] .text-body-md,
+:root[data-theme='dark'] .text-body-lg,
+:root[data-theme='dark'] .dashboard-subtitle,
+[data-theme='dark'] p,
+[data-theme='dark'] .color-text-secondary,
+[data-theme='dark'] .text-body-sm,
+[data-theme='dark'] .text-body-md,
+[data-theme='dark'] .text-body-lg,
+[data-theme='dark'] .dashboard-subtitle {
+  color: var(--text-body);
+}
+
+/* Muted text & tags */
+:root[data-theme='dark'] .color-muted,
+:root[data-theme='dark'] .text-label-xs,
+:root[data-theme='dark'] .text-label-sm,
+:root[data-theme='dark'] .app-header__subtitle,
+:root[data-theme='dark'] .app-header__meta,
+:root[data-theme='dark'] .dashboard-sidebar__hub-badge span:last-child,
+[data-theme='dark'] .color-muted,
+[data-theme='dark'] .text-label-xs,
+[data-theme='dark'] .text-label-sm,
+[data-theme='dark'] .app-header__subtitle,
+[data-theme='dark'] .app-header__meta {
+  color: var(--text-muted) !important;
+}
+
+/* Links in Dark Mode */
+:root[data-theme='dark'] a:not(.btn):not(.bottom-nav__item):not(.dashboard-nav__link),
+[data-theme='dark'] a:not(.btn):not(.bottom-nav__item):not(.dashboard-nav__link) {
+  color: var(--accent-text);
+}
+
+/* Hero cards and page banners: Navy gradient, never white */
+:root[data-theme='dark'] section.card,
+:root[data-theme='dark'] .hero-card,
+:root[data-theme='dark'] .page-hero-card,
+:root[data-theme='dark'] .token-hero-card,
+:root[data-theme='dark'] .card--navy,
+:root[data-theme='dark'] .services-hero-wait-card,
+:root[data-theme='dark'] .accessibility-hero,
+:root[data-theme='dark'] .lounge-banner,
+:root[data-theme='dark'] .auth-card,
+:root[data-theme='dark'] .dashboard-sidebar,
+[data-theme='dark'] section.card,
+[data-theme='dark'] .hero-card,
+[data-theme='dark'] .page-hero-card,
+[data-theme='dark'] .token-hero-card,
+[data-theme='dark'] .card--navy,
+[data-theme='dark'] .services-hero-wait-card,
+[data-theme='dark'] .accessibility-hero,
+[data-theme='dark'] .lounge-banner,
+[data-theme='dark'] .auth-card,
+[data-theme='dark'] .dashboard-sidebar {
+  background: linear-gradient(135deg, #16294A 0%, #0F1F3A 100%) !important;
+  border: 1px solid #2C4A7A !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35) !important;
+  color: var(--text-heading) !important;
+}
+
+/* Standard Cards & Surfaces */
+:root[data-theme='dark'] .card,
+:root[data-theme='dark'] .hub-status-card,
+:root[data-theme='dark'] .service-card,
+:root[data-theme='dark'] .dept-card,
+:root[data-theme='dark'] .dashboard-card,
+:root[data-theme='dark'] .metric-card,
+:root[data-theme='dark'] .queue-row,
+:root[data-theme='dark'] .timeline-item,
+:root[data-theme='dark'] .ticket-pass,
+:root[data-theme='dark'] .kpi-tile,
+:root[data-theme='dark'] .badge-card,
+:root[data-theme='dark'] .empty-state,
+:root[data-theme='dark'] .live-pill-row,
+:root[data-theme='dark'] .filter-bar,
+[data-theme='dark'] .card,
+[data-theme='dark'] .hub-status-card,
+[data-theme='dark'] .service-card,
+[data-theme='dark'] .dept-card,
+[data-theme='dark'] .dashboard-card,
+[data-theme='dark'] .metric-card,
+[data-theme='dark'] .queue-row,
+[data-theme='dark'] .timeline-item,
+[data-theme='dark'] .ticket-pass,
+[data-theme='dark'] .kpi-tile,
+[data-theme='dark'] .badge-card,
+[data-theme='dark'] .empty-state,
+[data-theme='dark'] .live-pill-row,
+[data-theme='dark'] .filter-bar {
+  background-color: var(--surface-card) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-body) !important;
+}
+
+/* Icon Tiles and Circles: No white boxes */
+:root[data-theme='dark'] .dept-card__icon-box,
+:root[data-theme='dark'] .accessibility-panel__icon-box,
+:root[data-theme='dark'] .service-card__icon-box,
+:root[data-theme='dark'] .landing-feature-card__icon-box,
+:root[data-theme='dark'] .icon-box,
+:root[data-theme='dark'] .feature-tile__icon,
+:root[data-theme='dark'] .civic-category-card__icon,
+:root[data-theme='dark'] .admin-counter-card__dark-box,
+:root[data-theme='dark'] .step-card__icon-box,
+[data-theme='dark'] .dept-card__icon-box,
+[data-theme='dark'] .accessibility-panel__icon-box,
+[data-theme='dark'] .service-card__icon-box,
+[data-theme='dark'] .landing-feature-card__icon-box,
+[data-theme='dark'] .icon-box,
+[data-theme='dark'] .feature-tile__icon,
+[data-theme='dark'] .civic-category-card__icon,
+[data-theme='dark'] .admin-counter-card__dark-box,
+[data-theme='dark'] .step-card__icon-box {
+  background-color: var(--surface-tint) !important;
+  background: var(--surface-tint) !important;
+  color: var(--icon-on-tint) !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+
+/* Logo Tiles */
+:root[data-theme='dark'] .app-header__logo-box,
+:root[data-theme='dark'] .landing-drawer__logo-box,
+:root[data-theme='dark'] .dashboard-sidebar__logo-box,
+[data-theme='dark'] .app-header__logo-box,
+[data-theme='dark'] .landing-drawer__logo-box,
+[data-theme='dark'] .dashboard-sidebar__logo-box {
+  background-color: var(--brand-fill) !important;
+  background: var(--brand-fill) !important;
+  color: #FFFFFF !important;
+}
+
+/* Raised Surfaces: Modals, Sheets, Sticky Bars */
+:root[data-theme='dark'] .modal,
+:root[data-theme='dark'] .sheet,
+:root[data-theme='dark'] .bottom-sheet,
+:root[data-theme='dark'] .app-header,
+:root[data-theme='dark'] .bottom-nav,
+:root[data-theme='dark'] .dashboard-topbar,
+:root[data-theme='dark'] .toast,
+:root[data-theme='dark'] .dropdown-menu,
+[data-theme='dark'] .modal,
+[data-theme='dark'] .sheet,
+[data-theme='dark'] .bottom-sheet,
+[data-theme='dark'] .app-header,
+[data-theme='dark'] .bottom-nav,
+[data-theme='dark'] .dashboard-topbar,
+[data-theme='dark'] .toast,
+[data-theme='dark'] .dropdown-menu {
+  background-color: var(--surface-raised) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-heading) !important;
+}
+
+/* Remap inline background styles to avoid light boxes */
+:root[data-theme='dark'] [style*="background:#F8FAFC"],
+:root[data-theme='dark'] [style*="background: #F8FAFC"],
+:root[data-theme='dark'] [style*="background:#f8fafc"],
+:root[data-theme='dark'] [style*="background: #f8fafc"],
+:root[data-theme='dark'] [style*="background:#F1F5F9"],
+:root[data-theme='dark'] [style*="background: #F1F5F9"],
+:root[data-theme='dark'] [style*="background:#f1f5f9"],
+:root[data-theme='dark'] [style*="background: #f1f5f9"],
+[data-theme='dark'] [style*="background:#F8FAFC"],
+[data-theme='dark'] [style*="background: #F8FAFC"],
+[data-theme='dark'] [style*="background:#f8fafc"],
+[data-theme='dark'] [style*="background: #f8fafc"],
+[data-theme='dark'] [style*="background:#F1F5F9"],
+[data-theme='dark'] [style*="background: #F1F5F9"],
+[data-theme='dark'] [style*="background:#f1f5f9"],
+[data-theme='dark'] [style*="background: #f1f5f9"] {
+  background-color: var(--surface-subtle) !important;
+  background: var(--surface-subtle) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-body) !important;
+}
+
+:root[data-theme='dark'] [style*="background:#EFF6FF"],
+:root[data-theme='dark'] [style*="background: #EFF6FF"],
+:root[data-theme='dark'] [style*="background:#eff6ff"],
+:root[data-theme='dark'] [style*="background: #eff6ff"],
+[data-theme='dark'] [style*="background:#EFF6FF"],
+[data-theme='dark'] [style*="background: #EFF6FF"],
+[data-theme='dark'] [style*="background:#eff6ff"],
+[data-theme='dark'] [style*="background: #eff6ff"] {
+  background-color: var(--surface-tint) !important;
+  background: var(--surface-tint) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-body) !important;
+}
+
+:root[data-theme='dark'] [style*="background:#FFFFFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background: #FFFFFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background:#ffffff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background: #ffffff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background:#FFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background: #FFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background:#fff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+:root[data-theme='dark'] [style*="background: #fff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background:#FFFFFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background: #FFFFFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background:#ffffff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background: #ffffff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background:#FFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background: #FFF"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background:#fff"]:not(.ticket-qr-box):not(#ticket-qr-canvas),
+[data-theme='dark'] [style*="background: #fff"]:not(.ticket-qr-box):not(#ticket-qr-canvas) {
+  background-color: var(--surface-card) !important;
+  background: var(--surface-card) !important;
+  border-color: var(--border-subtle) !important;
+  color: var(--text-body) !important;
+}
+
+/* Status Pills with Translucent Tint */
+:root[data-theme='dark'] .status-pill,
+:root[data-theme='dark'] .civic-status-pill,
+[data-theme='dark'] .status-pill,
+[data-theme='dark'] .civic-status-pill {
+  background-color: rgba(38, 56, 90, 0.4);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-heading);
+}
+:root[data-theme='dark'] .status-pill--completed,
+:root[data-theme='dark'] .status-pill--serving,
+[data-theme='dark'] .status-pill--completed,
+[data-theme='dark'] .status-pill--serving {
+  background-color: var(--success-bg) !important;
+  border-color: rgba(45, 212, 191, 0.35) !important;
+  color: var(--success-text) !important;
+}
+:root[data-theme='dark'] .status-pill--calling,
+:root[data-theme='dark'] .status-pill--priority,
+[data-theme='dark'] .status-pill--calling,
+[data-theme='dark'] .status-pill--priority {
+  background-color: var(--info-bg) !important;
+  border-color: rgba(96, 165, 250, 0.35) !important;
+  color: var(--info-text) !important;
+}
+:root[data-theme='dark'] .status-pill--warning,
+[data-theme='dark'] .status-pill--warning {
+  background-color: var(--warning-bg) !important;
+  border-color: rgba(251, 191, 36, 0.35) !important;
+  color: var(--warning-text) !important;
+}
+:root[data-theme='dark'] .status-pill--skipped,
+:root[data-theme='dark'] .status-pill--danger,
+[data-theme='dark'] .status-pill--skipped,
+[data-theme='dark'] .status-pill--danger {
+  background-color: var(--danger-bg) !important;
+  border-color: rgba(248, 113, 113, 0.35) !important;
+  color: var(--danger-text) !important;
+}
+
+/* Segmented Controls: Active is bright blue with white text; unselected transparent with text-body */
+:root[data-theme='dark'] .segmented-control,
+[data-theme='dark'] .segmented-control {
+  background-color: var(--surface-subtle) !important;
+  border: 1px solid var(--border-subtle) !important;
+}
+:root[data-theme='dark'] .segmented-control__item,
+[data-theme='dark'] .segmented-control__item {
+  background-color: transparent !important;
+  color: var(--text-body) !important;
+  border: none !important;
+}
+:root[data-theme='dark'] .segmented-control__item.segmented-control__item--active,
+:root[data-theme='dark'] .segmented-control__item[aria-checked="true"],
+:root[data-theme='dark'] .segmented-control__item.active,
+[data-theme='dark'] .segmented-control__item.segmented-control__item--active,
+[data-theme='dark'] .segmented-control__item[aria-checked="true"],
+[data-theme='dark'] .segmented-control__item.active {
+  background-color: #2563EB !important;
+  border-color: #3B82F6 !important;
+  color: #FFFFFF !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Chips & Filters */
+:root[data-theme='dark'] .chip,
+:root[data-theme='dark'] .filter-chip,
+[data-theme='dark'] .chip,
+[data-theme='dark'] .filter-chip {
+  background-color: var(--surface-subtle);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-body);
+}
+:root[data-theme='dark'] .chip--active,
+:root[data-theme='dark'] .filter-chip--active,
+[data-theme='dark'] .chip--active,
+[data-theme='dark'] .filter-chip--active {
+  background-color: #2563EB !important;
+  border-color: #3B82F6 !important;
+  color: #FFFFFF !important;
+}
+
+/* Inputs, Selects, Textareas */
+:root[data-theme='dark'] input:not([type="checkbox"]):not([type="radio"]),
+:root[data-theme='dark'] select,
+:root[data-theme='dark'] textarea,
+:root[data-theme='dark'] .input-group__field,
+:root[data-theme='dark'] .input-field,
+[data-theme='dark'] input:not([type="checkbox"]):not([type="radio"]),
+[data-theme='dark'] select,
+[data-theme='dark'] textarea,
+[data-theme='dark'] .input-group__field,
+[data-theme='dark'] .input-field {
+  background-color: var(--surface-subtle) !important;
+  border: 1px solid var(--border-subtle) !important;
+  color: var(--text-heading) !important;
+}
+:root[data-theme='dark'] input::placeholder,
+:root[data-theme='dark'] textarea::placeholder,
+[data-theme='dark'] input::placeholder,
+[data-theme='dark'] textarea::placeholder {
+  color: var(--text-muted) !important;
+}
+:root[data-theme='dark'] input:focus,
+:root[data-theme='dark'] select:focus,
+:root[data-theme='dark'] textarea:focus,
+[data-theme='dark'] input:focus,
+[data-theme='dark'] select:focus,
+[data-theme='dark'] textarea:focus {
+  border-color: #60A5FA !important;
+  outline: 3px solid rgba(96, 165, 250, 0.35) !important;
+  outline-offset: 0 !important;
+}
+
+/* Buttons in Dark Mode */
+:root[data-theme='dark'] .btn--primary,
+:root[data-theme='dark'] button.btn-primary,
+:root[data-theme='dark'] .btn-hero,
+:root[data-theme='dark'] .btn-locate,
+:root[data-theme='dark'] button[type="submit"]:not(.btn--secondary),
+[data-theme='dark'] .btn--primary,
+[data-theme='dark'] button.btn-primary,
+[data-theme='dark'] .btn-hero,
+[data-theme='dark'] .btn-locate,
+[data-theme='dark'] button[type="submit"]:not(.btn--secondary) {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  border: none !important;
+}
+:root[data-theme='dark'] .btn--secondary,
+:root[data-theme='dark'] .btn--ghost,
+[data-theme='dark'] .btn--secondary,
+[data-theme='dark'] .btn--ghost {
+  background-color: transparent !important;
+  border: 1.5px solid var(--border-strong) !important;
+  color: var(--text-heading) !important;
+}
+:root[data-theme='dark'] .btn--secondary:hover,
+:root[data-theme='dark'] .btn--ghost:hover,
+[data-theme='dark'] .btn--secondary:hover,
+[data-theme='dark'] .btn--ghost:hover {
+  background-color: rgba(59, 91, 140, 0.25) !important;
+  border-color: #60A5FA !important;
+  color: #FFFFFF !important;
+}
+:root[data-theme='dark'] .btn--tertiary,
+:root[data-theme='dark'] .btn--tertiary-teal,
+[data-theme='dark'] .btn--tertiary,
+[data-theme='dark'] .btn--tertiary-teal {
+  background-color: #14B8A6 !important;
+  color: #04211D !important;
+  border: none !important;
+  font-weight: 600 !important;
+}
+
+/* Toggle Switches */
+:root[data-theme='dark'] .toggle-switch__slider,
+[data-theme='dark'] .toggle-switch__slider {
+  background-color: var(--border-subtle);
+}
+:root[data-theme='dark'] .toggle-switch input:checked + .toggle-switch__slider,
+[data-theme='dark'] .toggle-switch input:checked + .toggle-switch__slider {
+  background-color: #2563EB;
+}
+:root[data-theme='dark'] .toggle-switch__slider::before,
+[data-theme='dark'] .toggle-switch__slider::before {
+  background-color: #FFFFFF !important; /* Toggle thumb stays white */
+}
+
+/* Bottom Navigation */
+:root[data-theme='dark'] .bottom-nav__item,
+[data-theme='dark'] .bottom-nav__item {
+  color: var(--text-muted);
+}
+:root[data-theme='dark'] .bottom-nav__item.active,
+:root[data-theme='dark'] .bottom-nav__item--active,
+[data-theme='dark'] .bottom-nav__item.active,
+[data-theme='dark'] .bottom-nav__item--active {
+  color: #60A5FA !important;
+}
+
+/* Tables */
+:root[data-theme='dark'] table,
+:root[data-theme='dark'] th,
+:root[data-theme='dark'] td,
+[data-theme='dark'] table,
+[data-theme='dark'] th,
+[data-theme='dark'] td {
+  background-color: var(--surface-card);
+  color: var(--text-body);
+  border-color: var(--border-subtle);
+}
+:root[data-theme='dark'] th,
+[data-theme='dark'] th {
+  color: var(--text-heading) !important;
+}
+
+/* Images & Illustration Brightness */
+:root[data-theme='dark'] img:not(.qr-code-img):not(#ticket-qr-canvas),
+[data-theme='dark'] img:not(.qr-code-img):not(#ticket-qr-canvas) {
+  filter: brightness(0.92);
+}
+
+/* QR Code: STRICTLY black on white tile in both themes */
+.ticket-qr-box, #ticket-qr-canvas {
+  background-color: #FFFFFF !important;
+  background: #FFFFFF !important;
+  border-radius: var(--radius-card);
+  padding: 12px;
+  box-shadow: var(--shadow-1);
+}
+
+/* Charts: SVG grid lines and labels in Dark Mode */
+:root[data-theme='dark'] svg text,
+[data-theme='dark'] svg text {
+  fill: var(--text-muted) !important;
+}
+:root[data-theme='dark'] svg line,
+:root[data-theme='dark'] svg polyline,
+[data-theme='dark'] svg line,
+[data-theme='dark'] svg polyline {
+  stroke: var(--border-subtle) !important;
+}
+:root[data-theme='dark'] svg circle[stroke="#E2E8F0"],
+:root[data-theme='dark'] svg circle[stroke="#F1F5F9"],
+[data-theme='dark'] svg circle[stroke="#E2E8F0"],
+[data-theme='dark'] svg circle[stroke="#F1F5F9"] {
+  stroke: var(--border-subtle) !important;
+}
+
+/* TV Lounge Signage in Dark Mode */
+:root[data-theme='dark'] body.signage-mode,
+:root[data-theme='dark'] .signage-header,
+:root[data-theme='dark'] .signage-grid,
+:root[data-theme='dark'] .calling-now-card,
+:root[data-theme='dark'] .counter-row,
+[data-theme='dark'] body.signage-mode,
+[data-theme='dark'] .signage-header,
+[data-theme='dark'] .signage-grid,
+[data-theme='dark'] .calling-now-card,
+[data-theme='dark'] .counter-row {
+  background-color: var(--surface-page);
+  color: var(--text-heading);
+  border-color: var(--border-subtle);
+}
+:root[data-theme='dark'] .calling-now-card,
+[data-theme='dark'] .calling-now-card {
+  background: linear-gradient(135deg, #16294A 0%, #0F1F3A 100%) !important;
+  border: 1px solid #2C4A7A !important;
+}
+:root[data-theme='dark'] .calling-now-token,
+[data-theme='dark'] .calling-now-token {
+  color: #60A5FA !important;
+}
+
+/* Scrollbars in Dark Mode */
+:root[data-theme='dark'] ::-webkit-scrollbar,
+[data-theme='dark'] ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+:root[data-theme='dark'] ::-webkit-scrollbar-track,
+[data-theme='dark'] ::-webkit-scrollbar-track {
+  background: var(--surface-page);
+}
+:root[data-theme='dark'] ::-webkit-scrollbar-thumb,
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: var(--border-subtle);
+  border-radius: 4px;
+}
+:root[data-theme='dark'] ::-webkit-scrollbar-thumb:hover,
+[data-theme='dark'] ::-webkit-scrollbar-thumb:hover {
+  background: var(--border-strong);
+}
+
+/* Text Selection & Autofill in Dark Mode */
+:root[data-theme='dark'] ::selection,
+[data-theme='dark'] ::selection {
+  background: rgba(37, 99, 235, 0.45);
+  color: #F4F8FF;
+}
+:root[data-theme='dark'] input:-webkit-autofill,
+:root[data-theme='dark'] input:-webkit-autofill:hover, 
+:root[data-theme='dark'] input:-webkit-autofill:focus,
+[data-theme='dark'] input:-webkit-autofill,
+[data-theme='dark'] input:-webkit-autofill:hover, 
+[data-theme='dark'] input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #F4F8FF;
+  -webkit-box-shadow: 0 0 0px 1000px #0F1A2C inset;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+

@@ -1,0 +1,1403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Centralized Token Registry & Live Master Ledger - QueueEase Enterprise</title>
+  <meta name="description" content="Real-time municipal dispatch ledger, active ticket routing, and supervisor intervention terminal for QueueEase Enterprise." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+
+  <style>
+    .pulse-dot-live {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: livePulseRing 1.8s infinite;
+    }
+    @keyframes livePulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+    .token-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: var(--radius-pill);
+      font-family: var(--font-family-mono);
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .token-badge--standard {
+      background: #EFF6FF;
+      color: #1D4ED8;
+      border: 1px solid #BFDBFE;
+    }
+    .token-badge--priority {
+      background: #FEF3C7;
+      color: #B45309;
+      border: 1px solid #FDE68A;
+    }
+    .token-badge--serving {
+      background: #ECFDF5;
+      color: #047857;
+      border: 1px solid #A7F3D0;
+    }
+    .filter-chip-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #F1F5F9;
+      border: 1px solid var(--color-border);
+      color: var(--color-text-secondary);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .filter-chip-badge button {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: inline-flex;
+      align-items: center;
+      padding: 0;
+    }
+    .filter-chip-badge button:hover {
+      color: var(--color-danger);
+    }
+    .table-action-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-control);
+      border: 1px solid var(--color-border);
+      background: #FFFFFF;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .table-action-btn:hover {
+      background: #F8FAFC;
+      border-color: var(--color-secondary);
+      color: var(--color-secondary);
+    }
+    .table-action-btn--danger:hover {
+      background: #FEF2F2;
+      border-color: var(--color-danger);
+      color: var(--color-danger);
+    }
+  </style>
+</head>
+<body class="dashboard-layout">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Admin Sidebar -->
+  <aside class="dashboard-sidebar" id="admin-sidebar" role="navigation" aria-label="Administrative Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/admin/overview.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box" style="background:#0F234A;">
+          <span class="material-symbols-outlined" style="font-size:22px;">account_balance</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">ENTERPRISE CONSOLE</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge" style="background:rgba(37,99,235,0.2); border-color:#3B82F6; color:#93C5FD;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#60A5FA;"></span>
+        <span>CIVIC HUB 07</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/admin/overview.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/admin/services.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">view_cozy</span>
+        <span>Manage Services</span>
+      </a>
+      <a href="/admin/counters.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">storefront</span>
+        <span>Manage Counters</span>
+      </a>
+      <a href="/admin/staff.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">badge</span>
+        <span>Manage Staff</span>
+      </a>
+      <a href="/admin/tokens.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>All Tokens</span>
+      </a>
+      <a href="/admin/reports.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">bar_chart</span>
+        <span>Reports & Analytics</span>
+      </a>
+      <a href="/admin/settings.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">tune</span>
+        <span>System Settings</span>
+      </a>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:bold;">Cluster Node G-104</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Online • Latency 8ms</div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:var(--radius-control); padding:8px 10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="avatar" style="width:32px; height:32px; background:#2563EB; color:#FFFFFF; font-weight:bold; font-size:12px;">MV</div>
+          <div>
+            <div style="font-size:12px; font-weight:bold; color:#FFFFFF;">Marcus Vance</div>
+            <div style="font-size:10px; color:#94A3B8;">Regional Director</div>
+          </div>
+        </div>
+        <button type="button" class="btn-admin-logout" aria-label="Sign Out" style="background:none; border:none; color:#F87171; cursor:pointer; padding:4px;">
+          <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="admin-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="topbar-station-badge">
+          <span class="material-symbols-outlined" style="font-size:16px;">domain</span>
+          <span>Central Metro Hall • Civic Hub 07</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div class="topbar-search-box" style="display:none;" id="topbar-quick-search-wrap">
+          <span class="material-symbols-outlined" style="font-size:18px; color:var(--color-text-muted);">search</span>
+          <input type="text" placeholder="Search tokens, counters, staff, service codes..." aria-label="Global Admin Search" />
+        </div>
+        <button type="button" class="btn btn--primary" id="btn-quick-token-header" style="padding:6px 14px; font-size:13px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
+          <span>Quick Issue</span>
+        </button>
+        <button type="button" class="topbar-icon-btn" aria-label="Notifications" id="btn-notifications">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="topbar-notification-dot"></span>
+        </button>
+        <div class="avatar" style="width:36px; height:36px; background:#142D4E; color:#FFFFFF; font-weight:bold; font-size:13px;">MV</div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="dashboard-content" role="main">
+      <!-- Status Pill & Header -->
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--color-text-secondary); margin-bottom:6px;">
+            <span class="pulse-dot-live"></span>
+            <span style="color:#059669; font-weight:700;">SYNCHRONIZED NODE • LIVE FEED</span>
+            <span>•</span>
+            <span style="font-family:var(--font-family-mono); font-size:11px;">Update cycle: 1.2s</span>
+          </div>
+          <h1 style="font-size:clamp(1.4rem, 2.5vw, 1.85rem); font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0 0 6px; letter-spacing:-0.02em;">
+            Centralized Token Registry & Live Master Ledger
+          </h1>
+          <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); margin:0;">
+            Real-time municipal dispatch ledger, active ticket routing, and supervisor intervention terminal.
+          </p>
+        </div>
+
+        <!-- Top Right Actions -->
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+          <button type="button" class="btn btn--secondary" id="btn-lounge-broadcast" style="padding:8px 14px; font-size:13px; font-weight:600;">
+            <span class="material-symbols-outlined" style="font-size:18px; color:var(--color-secondary);">volume_up</span>
+            <span>Lounge Broadcast</span>
+          </button>
+          <button type="button" class="btn btn--primary" id="btn-manual-override" style="padding:8px 16px; font-size:13px; font-weight:600; background:var(--color-secondary);">
+            <span class="material-symbols-outlined" style="font-size:18px;">tune</span>
+            <span>Manual Token Override</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary Row (5 Cards) -->
+      <section aria-label="Token Registry Performance KPI Cards" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:24px;">
+        <!-- Card 1 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">TOTAL TODAY</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">receipt</span>
+            </div>
+          </div>
+          <div style="font-size:1.85rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono); line-height:1.1;" id="kpi-total-today">1,428</div>
+          <div style="display:flex; align-items:center; gap:4px; font-size:11px; color:#059669; font-weight:600; margin-top:6px;">
+            <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span>
+            <span>+12% vs yesterday</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">COMPLETED</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">task_alt</span>
+            </div>
+          </div>
+          <div style="font-size:1.85rem; font-weight:bold; color:#059669; font-family:var(--font-family-mono); line-height:1.1;" id="kpi-completed">1,284</div>
+          <div style="font-size:11px; color:var(--color-text-muted); margin-top:6px;">
+            <span>90% clearance rate</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">CURRENTLY SERVING</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">record_voice_over</span>
+            </div>
+          </div>
+          <div style="font-size:1.85rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono); line-height:1.1;" id="kpi-serving">14/16</div>
+          <div style="font-size:11px; color:#D97706; font-weight:600; margin-top:6px;">
+            <span>Active processing desks</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">WAITING IN LOUNGE</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#EFF6FF; color:#3B82F6; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">hourglass_top</span>
+            </div>
+          </div>
+          <div style="font-size:1.85rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono); line-height:1.1;" id="kpi-waiting">112</div>
+          <div style="font-size:11px; color:var(--color-text-muted); margin-top:6px;">
+            <span>Avg wait 11m 45s</span>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">SKIPPED / RECALLED</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#FEF2F2; color:#DC2626; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">person_cancel</span>
+            </div>
+          </div>
+          <div style="font-size:1.85rem; font-weight:bold; color:#DC2626; font-family:var(--font-family-mono); line-height:1.1;" id="kpi-skipped">18</div>
+          <div style="font-size:11px; color:var(--color-text-muted); margin-top:6px;">
+            <span>1.2% no-show deflection</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Advanced Filter Toolbar -->
+      <section class="card" style="padding:16px; margin-bottom:18px;" aria-label="Ledger Filter Controls">
+        <div style="display:flex; flex-wrap:wrap; gap:12px; align-items:center; justify-content:space-between; margin-bottom:14px;">
+          <!-- Left: Search Box -->
+          <div style="flex:1; min-width:280px; position:relative;">
+            <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted); pointer-events:none;">search</span>
+            <input type="text" id="token-search-input" placeholder="Search token #, citizen name, desk, notes..." class="form-control" style="padding-left:38px; width:100%; height:42px; font-size:14px;" />
+          </div>
+
+          <!-- Right: Saved Views & Quick Actions -->
+          <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px;">
+            <div style="position:relative;">
+              <select id="saved-views-select" class="form-control" style="height:42px; font-size:13px; font-weight:600; padding:0 32px 0 12px; appearance:none; background:#F8FAFC;">
+                <option value="all">Saved Views: Standard View</option>
+                <option value="active">Active Queue (Waiting & Serving)</option>
+                <option value="priority">Priority & Accessibility Lane</option>
+                <option value="exceptions">Exceptions & SLA Breaches</option>
+                <option value="recalled">Recalled & Skipped</option>
+              </select>
+              <span class="material-symbols-outlined" style="position:absolute; right:10px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted); pointer-events:none;">expand_more</span>
+            </div>
+
+            <button type="button" class="btn btn--secondary" id="btn-export-csv" style="height:42px; padding:0 14px; font-size:13px;" title="Export filtered records to CSV">
+              <span class="material-symbols-outlined" style="font-size:18px;">download</span>
+              <span class="desktop-only">Export CSV</span>
+            </button>
+
+            <button type="button" class="btn btn--ghost" id="btn-reset-filters" style="height:42px; padding:0 12px; font-size:13px; color:var(--color-text-secondary);">
+              <span class="material-symbols-outlined" style="font-size:16px;">filter_alt_off</span>
+              <span>Reset</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Secondary Filters Row -->
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(160px, 1fr)); gap:10px; align-items:center; border-top:1px solid #F1F5F9; padding-top:12px;">
+          <!-- Date Filter -->
+          <div>
+            <label for="filter-date" class="sr-only">Date</label>
+            <select id="filter-date" class="form-control" style="width:100%; height:38px; font-size:12px;">
+              <option value="today">Today (Live Session)</option>
+              <option value="yesterday">Yesterday</option>
+              <option value="last7">Past 7 Days</option>
+              <option value="all">Full Month Archive</option>
+            </select>
+          </div>
+
+          <!-- Service Filter -->
+          <div>
+            <label for="filter-service" class="sr-only">Service Hub</label>
+            <select id="filter-service" class="form-control" style="width:100%; height:38px; font-size:12px;">
+              <option value="all">All Service Hubs</option>
+              <option value="cert">Certificate Application</option>
+              <option value="doc">Document Verification</option>
+              <option value="enq">Public Enquiry</option>
+              <option value="other">Other Government Services</option>
+            </select>
+          </div>
+
+          <!-- Counter Desk Filter -->
+          <div>
+            <label for="filter-counter" class="sr-only">Counter Desk</label>
+            <select id="filter-counter" class="form-control" style="width:100%; height:38px; font-size:12px;">
+              <option value="all">All Counter Desks</option>
+              <option value="01">Counter 01 (Desk 102)</option>
+              <option value="02">Counter 02 (Desk 104)</option>
+              <option value="03">Counter 03 (Desk 105)</option>
+              <option value="04">Counter 04 (Desk 201)</option>
+              <option value="05">Counter 05 (Desk 202)</option>
+              <option value="06">Counter 06 (Desk 204)</option>
+            </select>
+          </div>
+
+          <!-- Status Filter -->
+          <div>
+            <label for="filter-status" class="sr-only">Status Stage</label>
+            <select id="filter-status" class="form-control" style="width:100%; height:38px; font-size:12px;">
+              <option value="all">All Statuses</option>
+              <option value="serving">Serving</option>
+              <option value="waiting">Waiting</option>
+              <option value="completed">Completed</option>
+              <option value="skipped">Skipped (No-Show)</option>
+              <option value="transferred">Transferred</option>
+            </select>
+          </div>
+
+          <!-- Priority Tier Filter -->
+          <div>
+            <label for="filter-priority" class="sr-only">Priority Tier</label>
+            <select id="filter-priority" class="form-control" style="width:100%; height:38px; font-size:12px;">
+              <option value="all">All Priority Tiers</option>
+              <option value="standard">Standard Lane</option>
+              <option value="senior">Senior (65+)</option>
+              <option value="mobility">Mobility & Accessibility</option>
+              <option value="expectant">Expectant Mother</option>
+              <option value="emergency">Emergency Attestation</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Active Scope Badges -->
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:8px; margin-top:12px; font-size:12px;">
+          <span style="font-weight:700; color:var(--color-text-muted); font-size:11px; text-transform:uppercase;">Active Scope:</span>
+          <span class="filter-chip-badge">
+            <span>Date: Today</span>
+            <button type="button" aria-label="Remove filter" onclick="resetSingleFilter('date')">×</button>
+          </span>
+          <span class="filter-chip-badge">
+            <span>Location: Civic Hub 07</span>
+          </span>
+          <span class="filter-chip-badge" id="chip-status-scope" style="display:none;">
+            <span id="chip-status-text">Status: All</span>
+            <button type="button" aria-label="Remove filter" onclick="resetSingleFilter('status')">×</button>
+          </span>
+          <span style="margin-left:auto; font-size:12px; color:var(--color-text-muted);" id="table-record-count">Showing 20 of 1,428 tokens</span>
+        </div>
+      </section>
+
+      <!-- Master Ledger Table Container -->
+      <section class="card" style="padding:0; overflow:hidden; margin-bottom:24px;" aria-label="Master Token Ledger">
+        <div class="table-responsive">
+          <table class="data-table-responsive" id="master-tokens-table" style="width:100%; border-collapse:collapse; text-align:left; font-size:13px;">
+            <thead>
+              <tr style="background:#F8FAFC; border-bottom:1px solid var(--color-border); color:var(--color-text-secondary); font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.04em;">
+                <th style="padding:12px 16px;">TOKEN & TIER</th>
+                <th style="padding:12px 16px;">CITIZEN IDENTITY</th>
+                <th style="padding:12px 16px;">SERVICE REQUESTED</th>
+                <th style="padding:12px 16px;">ASSIGNED DESK & OFFICER</th>
+                <th style="padding:12px 16px;">INTAKE STAMP</th>
+                <th style="padding:12px 16px;">WAIT / SLA STATUS</th>
+                <th style="padding:12px 16px;">CURRENT STATE</th>
+                <th style="padding:12px 16px; text-align:right;">EMERGENCY / ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody id="master-tokens-tbody">
+              <!-- Seed Row 1: Serving A008 -->
+              <tr data-token-id="A008" data-service="cert" data-status="serving" data-priority="standard" data-counter="02" style="border-bottom:1px solid var(--color-border); background:#FAFCFF;">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge token-badge--serving">A008</span>
+                    <span style="font-size:10px; background:#EFF6FF; color:#1D4ED8; padding:2px 6px; border-radius:4px; font-weight:700;">STD</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Eleanor Vance</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 019-2834</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Certificate Application</div>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Birth & Residency Attestation</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">storefront</span>
+                    <span style="font-weight:700; color:var(--color-primary);">Counter 02</span>
+                  </div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer J. Miller (Desk 104)</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:42 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Self-Service Mobile</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-family:var(--font-family-mono); font-weight:700; color:#059669;">8m elapsed</span>
+                    <span style="font-size:10px; background:#ECFDF5; color:#059669; padding:1px 5px; border-radius:3px; font-weight:bold;">SLA OK</span>
+                  </div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Target: 15 mins</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--serving">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#059669;"></span>
+                    <span>Now Serving</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <div style="display:inline-flex; align-items:center; gap:6px;">
+                    <button type="button" class="table-action-btn" title="Recall Citizen Chime" onclick="triggerRecall('A008')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">volume_up</span>
+                    </button>
+                    <button type="button" class="table-action-btn" title="Transfer Desk" onclick="openTransferModal('A008')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">move_down</span>
+                    </button>
+                    <button type="button" class="table-action-btn table-action-btn--danger" title="Force Complete" onclick="forceCompleteToken('A008')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Seed Row 2: Waiting P003 (Priority Senior) -->
+              <tr data-token-id="P003" data-service="doc" data-status="waiting" data-priority="senior" data-counter="06" style="border-bottom:1px solid var(--color-border); background:#FFFDF7;">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge token-badge--priority">P003</span>
+                    <span style="font-size:10px; background:#FEF3C7; color:#B45309; padding:2px 6px; border-radius:4px; font-weight:700;">SENIOR</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Robert Chen</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 438-9921</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Document Verification</div>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Apostille & Seal Notarization</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#D97706;">accessible_forward</span>
+                    <span style="font-weight:700; color:var(--color-primary);">Counter 06</span>
+                  </div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer S. Patel (Accessible Desk)</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:46 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Kiosk Terminal 02</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span style="font-family:var(--font-family-mono); font-weight:700; color:#D97706;">6m waiting</span>
+                    <span style="font-size:10px; background:#FEF3C7; color:#B45309; padding:1px 5px; border-radius:3px; font-weight:bold;">Near SLA</span>
+                  </div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Next in Line Priority</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--priority">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#D97706;"></span>
+                    <span>Waiting (Priority)</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <div style="display:inline-flex; align-items:center; gap:6px;">
+                    <button type="button" class="btn btn--primary" style="padding:4px 10px; font-size:12px; height:30px;" onclick="forceCallToken('P003')">
+                      <span>Force Call</span>
+                    </button>
+                    <button type="button" class="table-action-btn" title="Transfer Desk" onclick="openTransferModal('P003')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">move_down</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Seed Row 3: A007 Completed -->
+              <tr data-token-id="A007" data-service="cert" data-status="completed" data-priority="standard" data-counter="02" style="border-bottom:1px solid var(--color-border);">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge token-badge--standard">A007</span>
+                    <span style="font-size:10px; background:#F1F5F9; color:var(--color-text-muted); padding:2px 6px; border-radius:4px; font-weight:600;">STD</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Marcus Lee</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 782-1190</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Certificate Application</div>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Residency Certificate</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Counter 02</div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer J. Miller</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:35 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Dispatched 10:44 AM</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600; color:#059669;">9m turnaround</div>
+                  <div style="font-size:10px; color:#059669;">Compliant (100%)</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--completed">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+                    <span>Completed</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <button type="button" class="table-action-btn" title="View Audit Receipt" onclick="viewAuditReceipt('A007')">
+                    <span class="material-symbols-outlined" style="font-size:16px;">description</span>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Seed Row 4: B011 Skipped -->
+              <tr data-token-id="B011" data-service="enq" data-status="skipped" data-priority="standard" data-counter="08" style="border-bottom:1px solid var(--color-border); background:#FFFBFB;">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge" style="background:#FEF2F2; color:#DC2626; border:1px solid #FECACA;">B011</span>
+                    <span style="font-size:10px; background:#FEE2E2; color:#DC2626; padding:2px 6px; border-radius:4px; font-weight:600;">NO SHOW</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">David Rossi</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 304-8842</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Public Enquiry</div>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Zoning Consultation</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Counter 08</div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer T. Brooks</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:28 AM</div>
+                  <div style="font-size:10px; color:var(--color-danger);">Called 3x (No response)</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600; color:#DC2626;">Deflected 10:45 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">3 Chimes Elapsed</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--skipped">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#EF4444;"></span>
+                    <span>Skipped</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <button type="button" class="btn btn--secondary" style="padding:4px 10px; font-size:11px; height:30px;" onclick="reopenSkippedToken('B011')">
+                    <span class="material-symbols-outlined" style="font-size:14px;">replay</span>
+                    <span>Re-queue</span>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Seed Row 5: A009 Transferred -->
+              <tr data-token-id="A009" data-service="cert" data-status="transferred" data-priority="standard" data-counter="06" style="border-bottom:1px solid var(--color-border);">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge token-badge--standard">A009</span>
+                    <span style="font-size:10px; background:#F0FDF4; color:#15803D; padding:2px 6px; border-radius:4px; font-weight:600;">ROUTED</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Sarah Jenkins</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 902-3312</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Cert &rarr; Verification</div>
+                  <div style="font-size:11px; color:#2563EB;">Transferred from Counter 01</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Counter 06</div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer S. Patel</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:48 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Route transfer</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600; color:#2563EB;">2m in routing</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">SLA Clock Preserved</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--calling">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#2563EB;"></span>
+                    <span>Transferred</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <div style="display:inline-flex; align-items:center; gap:6px;">
+                    <button type="button" class="table-action-btn" title="View Transfer Logs" onclick="viewAuditReceipt('A009')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">sync_alt</span>
+                    </button>
+                    <button type="button" class="table-action-btn" title="Cancel Route" onclick="cancelToken('A009')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Seed Row 6: C002 Waiting -->
+              <tr data-token-id="C002" data-service="other" data-status="waiting" data-priority="standard" data-counter="04" style="border-bottom:1px solid var(--color-border);">
+                <td data-label="TOKEN & TIER" style="padding:14px 16px;">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <span class="token-badge token-badge--standard">C002</span>
+                    <span style="font-size:10px; background:#F1F5F9; color:var(--color-text-muted); padding:2px 6px; border-radius:4px; font-weight:600;">STD</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN IDENTITY" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Kevin Ortiz</div>
+                  <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono);">+1 (555) 612-4091</div>
+                </td>
+                <td data-label="SERVICE REQUESTED" style="padding:14px 16px;">
+                  <div style="font-weight:600; color:var(--color-text);">Other Government Services</div>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Commercial Waste Permit</div>
+                </td>
+                <td data-label="ASSIGNED DESK" style="padding:14px 16px;">
+                  <div style="font-weight:700; color:var(--color-primary);">Counter 04</div>
+                  <div style="font-size:11px; color:var(--color-text-secondary);">Officer R. Diaz</div>
+                </td>
+                <td data-label="INTAKE STAMP" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600;">10:52 AM</div>
+                  <div style="font-size:10px; color:var(--color-text-muted);">Kiosk Terminal 01</div>
+                </td>
+                <td data-label="WAIT / SLA STATUS" style="padding:14px 16px;">
+                  <div style="font-family:var(--font-family-mono); font-weight:600; color:#059669;">3m waiting</div>
+                  <div style="font-size:10px; color:#059669;">Within SLA (Target 20m)</div>
+                </td>
+                <td data-label="CURRENT STATE" style="padding:14px 16px;">
+                  <span class="status-pill status-pill--waiting">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#64748B;"></span>
+                    <span>Waiting in Lounge</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="padding:14px 16px; text-align:right;">
+                  <div style="display:inline-flex; align-items:center; gap:6px;">
+                    <button type="button" class="btn btn--primary" style="padding:4px 10px; font-size:12px; height:30px;" onclick="forceCallToken('C002')">
+                      <span>Call Now</span>
+                    </button>
+                    <button type="button" class="table-action-btn" title="Transfer Desk" onclick="openTransferModal('C002')">
+                      <span class="material-symbols-outlined" style="font-size:16px;">move_down</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; padding:12px 16px; background:#F8FAFC; border-top:1px solid var(--color-border); font-size:12px; gap:12px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="color:var(--color-text-muted);">Rows per page:</span>
+            <select class="form-control" style="height:32px; font-size:12px; padding:2px 8px;" id="rows-per-page-select">
+              <option value="20" selected>20</option>
+              <option value="50">50</option>
+              <option value="100">100</option>
+            </select>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="color:var(--color-text-muted);">Page 1 of 72</span>
+            <div style="display:flex; gap:4px;">
+              <button type="button" class="table-action-btn" disabled style="opacity:0.5; cursor:not-allowed;" aria-label="Previous Page">
+                <span class="material-symbols-outlined" style="font-size:16px;">chevron_left</span>
+              </button>
+              <button type="button" class="table-action-btn" style="background:#2563EB; color:#FFFFFF; font-weight:bold; border-color:#2563EB;">1</button>
+              <button type="button" class="table-action-btn">2</button>
+              <button type="button" class="table-action-btn">3</button>
+              <button type="button" class="table-action-btn" aria-label="Next Page">
+                <span class="material-symbols-outlined" style="font-size:16px;">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Diagnostics & Telemetry Modules (3 Cards) -->
+      <section style="display:grid; grid-template-columns:repeat(auto-fit, minmax(300px, 1fr)); gap:16px;" aria-label="Dispatch Telemetry & Hardware Control">
+        <!-- 1. Lounge Display Sync -->
+        <div class="card" style="padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="font-size:20px; color:#2563EB;">tv</span>
+              <h3 style="font-size:14px; font-weight:700; color:var(--color-primary); margin:0;">Lounge Display Matrix</h3>
+            </div>
+            <span class="status-pill status-pill--completed" style="font-size:10px;">4 Displays Active</span>
+          </div>
+          <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 14px; line-height:1.4;">
+            Main Hall A 4K Signage & Foyer B repeater screens are synchronized with the 1.2s websocket dispatch loop.
+          </p>
+          <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn--secondary" id="btn-test-chime" style="flex:1; justify-content:center; font-size:12px; padding:6px 10px;">
+              <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">volume_up</span>
+              <span>Test Chime</span>
+            </button>
+            <button type="button" class="btn btn--secondary" id="btn-refresh-screens" style="flex:1; justify-content:center; font-size:12px; padding:6px 10px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">refresh</span>
+              <span>Sync Boards</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 2. Expedited Dispatch (Fast-Track Override) -->
+        <div class="card" style="padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="font-size:20px; color:#D97706;">bolt</span>
+              <h3 style="font-size:14px; font-weight:700; color:var(--color-primary); margin:0;">Expedited VIP / Fast-Track</h3>
+            </div>
+            <span style="font-size:11px; font-family:var(--font-family-mono); color:#B45309; font-weight:700;">FL-99 OVERRIDE</span>
+          </div>
+          <p style="font-size:12px; color:var(--color-text-secondary); margin:0 0 14px; line-height:1.4;">
+            Issue instantaneous emergency queue override for diplomat, critical medical, or court-ordered cases.
+          </p>
+          <button type="button" class="btn btn--primary" id="btn-emergency-token" style="width:100%; justify-content:center; font-size:12px; padding:8px 12px; background:#D97706; border-color:#D97706;">
+            <span class="material-symbols-outlined" style="font-size:16px;">add_alert</span>
+            <span>Issue Emergency Fast-Track Pass</span>
+          </button>
+        </div>
+
+        <!-- 3. Queue Flow Velocity -->
+        <div class="card" style="padding:18px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span class="material-symbols-outlined" style="font-size:20px; color:#059669;">speed</span>
+              <h3 style="font-size:14px; font-weight:700; color:var(--color-primary); margin:0;">Queue Flow Velocity</h3>
+            </div>
+            <span style="font-size:11px; font-weight:700; color:#059669;">+18% Efficiency</span>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+            <span style="font-size:1.75rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono);">4.2m</span>
+            <span style="font-size:11px; color:var(--color-text-muted);">average citizen processing pace</span>
+          </div>
+          <!-- Progress bar -->
+          <div style="height:6px; background:#E2E8F0; border-radius:3px; overflow:hidden; margin-bottom:8px;">
+            <div style="width:84%; height:100%; background:#10B981; border-radius:3px;"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--color-text-muted);">
+            <span>Target: 5.0m</span>
+            <span>Ahead of Schedule (84% Optimal)</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- MODAL 1: Lounge Broadcast -->
+  <div class="modal-backdrop" id="broadcast-modal-backdrop"></div>
+  <div class="modal-container" id="broadcast-modal" role="dialog" aria-modal="true" aria-labelledby="broadcast-modal-title">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:20px 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:22px;">volume_up</span>
+          </div>
+          <div>
+            <h2 id="broadcast-modal-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">Lounge Public Announcement</h2>
+            <div style="font-size:11px; color:var(--color-text-muted);">Broadcast voice synthesized chime to all civic hall ceiling speakers</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn--ghost" style="padding:6px;" onclick="closeModal('broadcast-modal')" aria-label="Close modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="broadcast-form">
+        <div style="margin-bottom:16px;">
+          <label for="broadcast-preset" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Select Standard Announcement</label>
+          <select id="broadcast-preset" class="form-control" style="width:100%; height:42px; font-size:13px;">
+            <option value="custom">-- Custom Text Message --</option>
+            <option value="Attention all citizens, Counter 02 is now serving certificate applications. Please have your original identification ready.">Counter 02 Document Check Advisory</option>
+            <option value="Public service announcement: Floor B lounge counters will pause for 10 minutes for staff shift handover.">Shift Handover Pause (10 mins)</option>
+            <option value="Civic hall check-in kiosks are operating normally. Please take a digital token for expedited service.">Digital Token Kiosk Guidance</option>
+            <option value="Attention citizen with token A008, please report immediately to Counter 02.">Urgent Summon: Token A008 to Counter 02</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label for="broadcast-text" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Announcement Script (Web Speech Synthesized)</label>
+          <textarea id="broadcast-text" class="form-control" rows="3" style="width:100%; font-size:13px; line-height:1.4;" placeholder="Type announcement here...">Attention all citizens: Hall B lounge counters are running with normal processing velocity. Citizens holding priority passes please proceed to Counter 06.</textarea>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:20px; background:#F8FAFC; padding:10px 14px; border-radius:var(--radius-control); border:1px solid var(--color-border);">
+          <input type="checkbox" id="broadcast-chime-toggle" checked style="width:18px; height:18px; accent-color:#2563EB;" />
+          <label for="broadcast-chime-toggle" style="font-size:12px; color:var(--color-text-secondary); cursor:pointer;">
+            Precede announcement with dual-tone municipal chime (523Hz &rarr; 659Hz)
+          </label>
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn--secondary" onclick="closeModal('broadcast-modal')">Cancel</button>
+          <button type="submit" class="btn btn--primary" id="btn-submit-broadcast">
+            <span class="material-symbols-outlined" style="font-size:18px;">campaign</span>
+            <span>Broadcast Now</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: Manual Token Override -->
+  <div class="modal-backdrop" id="override-modal-backdrop"></div>
+  <div class="modal-container" id="override-modal" role="dialog" aria-modal="true" aria-labelledby="override-modal-title">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:20px 24px;">
+      <div style="display:flex; justify-content:between; align-items:center; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:22px;">tune</span>
+          </div>
+          <div>
+            <h2 id="override-modal-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">Manual Token Override</h2>
+            <div style="font-size:11px; color:var(--color-text-muted);">Reassign desk, escalate priority tier, or bump token position in line</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn--ghost" style="padding:6px; margin-left:auto;" onclick="closeModal('override-modal')" aria-label="Close modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="override-form">
+        <div style="margin-bottom:14px;">
+          <label for="override-token-id" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Target Token Number *</label>
+          <input type="text" id="override-token-id" required class="form-control" style="width:100%; height:42px; font-family:var(--font-family-mono); font-weight:bold; text-transform:uppercase;" placeholder="e.g. A008 or P003" value="A008" />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+          <div>
+            <label for="override-desk-select" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Target Counter Desk</label>
+            <select id="override-desk-select" class="form-control" style="width:100%; height:40px; font-size:13px;">
+              <option value="01">Counter 01 (Desk 102)</option>
+              <option value="02" selected>Counter 02 (Desk 104)</option>
+              <option value="03">Counter 03 (Desk 105)</option>
+              <option value="04">Counter 04 (Desk 201)</option>
+              <option value="06">Counter 06 (Desk 204)</option>
+            </select>
+          </div>
+          <div>
+            <label for="override-priority-select" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Escalate Priority</label>
+            <select id="override-priority-select" class="form-control" style="width:100%; height:40px; font-size:13px;">
+              <option value="maintain">Maintain Current Tier</option>
+              <option value="emergency">Tier 1: Emergency Attestation</option>
+              <option value="senior">Tier 2: Senior Citizen (65+)</option>
+              <option value="mobility">Tier 2: Mobility Assistance</option>
+              <option value="next">Immediate Next-in-Line Bump</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label for="override-reason" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Administrative Reason / Audit Note *</label>
+          <input type="text" id="override-reason" required class="form-control" style="width:100%; height:40px; font-size:13px;" placeholder="e.g. Supervisor expedited document notarization" value="Supervisor expedited processing" />
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn--secondary" onclick="closeModal('override-modal')">Cancel</button>
+          <button type="submit" class="btn btn--primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">save</span>
+            <span>Apply Override</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Transfer Desk -->
+  <div class="modal-backdrop" id="transfer-modal-backdrop"></div>
+  <div class="modal-container" id="transfer-modal" role="dialog" aria-modal="true" aria-labelledby="transfer-modal-title">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:20px 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h2 id="transfer-modal-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Transfer Token Route
+        </h2>
+        <button type="button" class="btn btn--ghost" style="padding:6px;" onclick="closeModal('transfer-modal')" aria-label="Close modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p style="font-size:13px; color:var(--color-text-secondary); margin:0 0 16px;">
+        Re-route citizen <strong id="transfer-token-label">A008</strong> to another specialized counter desk without resetting their elapsed wait SLA clock.
+      </p>
+
+      <form id="transfer-form">
+        <div style="margin-bottom:14px;">
+          <label for="transfer-target-desk" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Select Destination Counter</label>
+          <select id="transfer-target-desk" class="form-control" style="width:100%; height:42px; font-size:13px;">
+            <option value="01">Counter 01 - Civil Registry (Officer J. Miller)</option>
+            <option value="04">Counter 04 - Document Verification (Officer R. Diaz)</option>
+            <option value="06" selected>Counter 06 - Accessible Desk (Officer S. Patel)</option>
+            <option value="08">Counter 08 - General Consult (Officer T. Brooks)</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label for="transfer-notes" class="form-label" style="font-weight:600; font-size:12px; margin-bottom:6px; display:block;">Handover Reason / Notes</label>
+          <input type="text" id="transfer-notes" class="form-control" style="width:100%; height:40px; font-size:13px;" placeholder="e.g. Requires additional stamp notarization" value="Requires notarization seal" />
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn btn--secondary" onclick="closeModal('transfer-modal')">Cancel</button>
+          <button type="submit" class="btn btn--primary">
+            <span class="material-symbols-outlined" style="font-size:18px;">sync_alt</span>
+            <span>Confirm Re-route</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 4: Audit Receipt -->
+  <div class="modal-backdrop" id="receipt-modal-backdrop"></div>
+  <div class="modal-container" id="receipt-modal" role="dialog" aria-modal="true" aria-labelledby="receipt-modal-title">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:20px 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h2 id="receipt-modal-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Municipal Audit Log & Receipt
+        </h2>
+        <button type="button" class="btn btn--ghost" style="padding:6px;" onclick="closeModal('receipt-modal')" aria-label="Close modal">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px; margin-bottom:16px; font-family:var(--font-family-mono); font-size:12px; line-height:1.6;">
+        <div style="display:flex; justify-content:space-between; border-bottom:1px dashed #CBD5E1; padding-bottom:8px; margin-bottom:8px;">
+          <span>TOKEN ID:</span>
+          <strong id="receipt-token-id" style="color:var(--color-primary);">A007</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Service Hub:</span>
+          <span>Certificate Application</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Citizen Name:</span>
+          <span>Marcus Lee</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Processed By:</span>
+          <span>Officer J. Miller (Counter 02)</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Intake Timestamp:</span>
+          <span>10:35:12 AM</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Called Timestamp:</span>
+          <span>10:38:00 AM</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Completed Timestamp:</span>
+          <span>10:44:22 AM</span>
+        </div>
+        <div style="display:flex; justify-content:space-between; border-top:1px dashed #CBD5E1; padding-top:8px; margin-top:8px;">
+          <span>Total Wait Duration:</span>
+          <strong style="color:#059669;">2m 48s</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Service Processing Time:</span>
+          <strong style="color:#059669;">6m 22s</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Compliance SLA:</span>
+          <strong style="color:#059669;">PASSED (100%)</strong>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end;">
+        <button type="button" class="btn btn--secondary" onclick="closeModal('receipt-modal')">Close Record</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initAdminShell } from '../assets/js/admin.js';
+    import { Store } from '../assets/js/store.js';
+    import { openModal, closeModal, showToast } from '../assets/js/ui.js';
+    import { playChime, speakAnnouncement } from '../assets/js/signage.js';
+
+    // 1. Initialize Admin Shell
+    initAdminShell('tokens');
+
+    // 2. Modals wiring
+    document.getElementById('btn-lounge-broadcast').addEventListener('click', () => {
+      openModal('broadcast-modal');
+    });
+
+    document.getElementById('btn-manual-override').addEventListener('click', () => {
+      openModal('override-modal');
+    });
+
+    document.getElementById('btn-emergency-token').addEventListener('click', () => {
+      document.getElementById('override-token-id').value = 'EMERG-99';
+      document.getElementById('override-priority-select').value = 'emergency';
+      document.getElementById('override-reason').value = 'Emergency court order VIP clearance';
+      openModal('override-modal');
+    });
+
+    // 3. Lounge Broadcast Submission
+    document.getElementById('broadcast-preset').addEventListener('change', (e) => {
+      if (e.target.value !== 'custom') {
+        document.getElementById('broadcast-text').value = e.target.value;
+      }
+    });
+
+    document.getElementById('broadcast-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const text = document.getElementById('broadcast-text').value.trim();
+      const withChime = document.getElementById('broadcast-chime-toggle').checked;
+
+      if (!text) return;
+
+      if (withChime) {
+        playChime();
+      }
+
+      speakAnnouncement(text);
+      closeModal('broadcast-modal');
+      showToast('Public lounge announcement broadcast live!', 'success');
+    });
+
+    // 4. Manual Override Submission
+    document.getElementById('override-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const tokenId = document.getElementById('override-token-id').value.trim().toUpperCase();
+      const desk = document.getElementById('override-desk-select').value;
+      const priority = document.getElementById('override-priority-select').value;
+
+      closeModal('override-modal');
+      showToast(`Token ${tokenId} reallocated to Counter ${desk}. Dispatch policy elevated.`, 'success');
+      playChime();
+    });
+
+    // 5. Test Chime & Screen Sync
+    document.getElementById('btn-test-chime').addEventListener('click', () => {
+      playChime();
+      showToast('Auditory chime test sent (523Hz &rarr; 659Hz dual-tone).');
+    });
+
+    document.getElementById('btn-refresh-screens').addEventListener('click', () => {
+      showToast('Lounge display screens refreshed via WebSocket broadcast.', 'success');
+    });
+
+    // 6. CSV Export of Tokens
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+      const rows = [
+        ['Token', 'Citizen', 'Phone', 'Service', 'Counter', 'IntakeTime', 'WaitDuration', 'Status', 'SLAStatus'],
+        ['A008', 'Eleanor Vance', '+1 (555) 019-2834', 'Certificate Application', 'Counter 02', '10:42 AM', '8m', 'Serving', 'Compliant'],
+        ['P003', 'Robert Chen', '+1 (555) 438-9921', 'Document Verification', 'Counter 06', '10:46 AM', '6m', 'Waiting', 'Near SLA'],
+        ['A007', 'Marcus Lee', '+1 (555) 782-1190', 'Certificate Application', 'Counter 02', '10:35 AM', '9m', 'Completed', 'Compliant'],
+        ['B011', 'David Rossi', '+1 (555) 304-8842', 'Public Enquiry', 'Counter 08', '10:28 AM', '17m', 'Skipped', 'No Show'],
+        ['A009', 'Sarah Jenkins', '+1 (555) 902-3312', 'Certificate -> Verify', 'Counter 06', '10:48 AM', '2m', 'Transferred', 'Pending'],
+        ['C002', 'Kevin Ortiz', '+1 (555) 612-4091', 'Other Services', 'Counter 04', '10:52 AM', '3m', 'Waiting', 'Compliant']
+      ];
+
+      const csvContent = rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `QueueEase_Master_Tokens_${new Date().toISOString().slice(0, 10)}.csv`;
+      link.click();
+      URL.revokeObjectURL(url);
+      showToast('Token registry exported to CSV.', 'success');
+    });
+
+    // 7. Interactive Row Functions
+    window.triggerRecall = function(id) {
+      playChime();
+      speakAnnouncement(`Repeat summons for token ${id}. Please report to assigned counter.`);
+      showToast(`Recall chime broadcast for ${id}.`, 'warning');
+    };
+
+    window.forceCallToken = function(id) {
+      playChime();
+      speakAnnouncement(`Attention. Token ${id}, please proceed to counter now.`);
+      showToast(`Token ${id} summoned to counter.`, 'success');
+      const row = document.querySelector(`tr[data-token-id="${id}"]`);
+      if (row) {
+        const stateCell = row.querySelector('[data-label="CURRENT STATE"]');
+        if (stateCell) {
+          stateCell.innerHTML = `
+            <span class="status-pill status-pill--serving">
+              <span style="width:6px; height:6px; border-radius:50%; background:#059669;"></span>
+              <span>Now Serving</span>
+            </span>`;
+        }
+      }
+    };
+
+    window.forceCompleteToken = function(id) {
+      showToast(`Token ${id} marked complete by supervisor.`, 'success');
+      const row = document.querySelector(`tr[data-token-id="${id}"]`);
+      if (row) {
+        const stateCell = row.querySelector('[data-label="CURRENT STATE"]');
+        if (stateCell) {
+          stateCell.innerHTML = `
+            <span class="status-pill status-pill--completed">
+              <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+              <span>Completed</span>
+            </span>`;
+        }
+      }
+    };
+
+    window.openTransferModal = function(id) {
+      document.getElementById('transfer-token-label').textContent = id;
+      openModal('transfer-modal');
+    };
+
+    document.getElementById('transfer-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const tokenId = document.getElementById('transfer-token-label').textContent;
+      const desk = document.getElementById('transfer-target-desk').value;
+      closeModal('transfer-modal');
+      showToast(`Token ${tokenId} re-routed to Counter ${desk}.`, 'success');
+    });
+
+    window.cancelToken = function(id) {
+      const row = document.querySelector(`tr[data-token-id="${id}"]`);
+      if (row) {
+        row.style.opacity = '0.5';
+        showToast(`Token ${id} route cancelled.`, 'warning');
+      }
+    };
+
+    window.reopenSkippedToken = function(id) {
+      showToast(`Token ${id} returned to active waiting lounge.`, 'success');
+      const row = document.querySelector(`tr[data-token-id="${id}"]`);
+      if (row) {
+        const stateCell = row.querySelector('[data-label="CURRENT STATE"]');
+        if (stateCell) {
+          stateCell.innerHTML = `
+            <span class="status-pill status-pill--waiting">
+              <span style="width:6px; height:6px; border-radius:50%; background:#64748B;"></span>
+              <span>Waiting in Lounge</span>
+            </span>`;
+        }
+      }
+    };
+
+    window.viewAuditReceipt = function(id) {
+      document.getElementById('receipt-token-id').textContent = id;
+      openModal('receipt-modal');
+    };
+
+    // 8. Filters and Search
+    const searchInput = document.getElementById('token-search-input');
+    const serviceFilter = document.getElementById('filter-service');
+    const counterFilter = document.getElementById('filter-counter');
+    const statusFilter = document.getElementById('filter-status');
+    const priorityFilter = document.getElementById('filter-priority');
+    const rows = document.querySelectorAll('#master-tokens-tbody tr');
+
+    function applyFilters() {
+      const query = searchInput.value.toLowerCase().trim();
+      const service = serviceFilter.value;
+      const counter = counterFilter.value;
+      const status = statusFilter.value;
+      const priority = priorityFilter.value;
+
+      let visibleCount = 0;
+
+      rows.forEach(row => {
+        const rowText = row.textContent.toLowerCase();
+        const rowService = row.getAttribute('data-service') || '';
+        const rowCounter = row.getAttribute('data-counter') || '';
+        const rowStatus = row.getAttribute('data-status') || '';
+        const rowPriority = row.getAttribute('data-priority') || '';
+
+        const matchQuery = !query || rowText.includes(query);
+        const matchService = service === 'all' || rowService === service;
+        const matchCounter = counter === 'all' || rowCounter === counter;
+        const matchStatus = status === 'all' || rowStatus === status;
+        const matchPriority = priority === 'all' || rowPriority === priority;
+
+        if (matchQuery && matchService && matchCounter && matchStatus && matchPriority) {
+          row.style.display = '';
+          visibleCount++;
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const countEl = document.getElementById('table-record-count');
+      if (countEl) countEl.textContent = `Showing ${visibleCount} of 1,428 tokens`;
+    }
+
+    searchInput.addEventListener('input', applyFilters);
+    serviceFilter.addEventListener('change', applyFilters);
+    counterFilter.addEventListener('change', applyFilters);
+    statusFilter.addEventListener('change', applyFilters);
+    priorityFilter.addEventListener('change', applyFilters);
+
+    document.getElementById('saved-views-select').addEventListener('change', (e) => {
+      const val = e.target.value;
+      if (val === 'active') {
+        statusFilter.value = 'all';
+        searchInput.value = '';
+        applyFilters();
+      } else if (val === 'priority') {
+        priorityFilter.value = 'senior';
+        applyFilters();
+      } else if (val === 'recalled') {
+        statusFilter.value = 'skipped';
+        applyFilters();
+      } else {
+        serviceFilter.value = 'all';
+        counterFilter.value = 'all';
+        statusFilter.value = 'all';
+        priorityFilter.value = 'all';
+        searchInput.value = '';
+        applyFilters();
+      }
+    });
+
+    document.getElementById('btn-reset-filters').addEventListener('click', () => {
+      searchInput.value = '';
+      serviceFilter.value = 'all';
+      counterFilter.value = 'all';
+      statusFilter.value = 'all';
+      priorityFilter.value = 'all';
+      document.getElementById('saved-views-select').value = 'all';
+      applyFilters();
+      showToast('All filter criteria cleared.');
+    });
+
+    window.resetSingleFilter = function(type) {
+      if (type === 'status') {
+        statusFilter.value = 'all';
+        document.getElementById('chip-status-scope').style.display = 'none';
+      }
+      applyFilters();
+    };
+
+    // Quick Token button in topbar
+    document.getElementById('btn-quick-token-header').addEventListener('click', () => {
+      openModal('override-modal');
+    });
+
+    // 9. Live 1.2s auto-refresh simulation without losing filter or scroll
+    let pulseCount = 0;
+    setInterval(() => {
+      pulseCount++;
+      // Live subtle telemetry jitter
+      const kpiWait = document.getElementById('kpi-waiting');
+      if (kpiWait && pulseCount % 10 === 0) {
+        const currentWait = 112 + Math.floor(Math.random() * 5) - 2;
+        kpiWait.textContent = currentWait;
+      }
+    }, 1200);
+
+    // 10. Reactive Store Subscription across tabs
+    Store.subscribe(() => {
+      const tokens = Store.getAllTokens();
+      tokens.forEach(t => {
+        const row = document.querySelector(`tr[data-token-id="${t.tokenNumber}"]`) || 
+                    document.querySelector(`tr[data-token-id="${t.id}"]`);
+        if (row) {
+          row.setAttribute('data-status', t.status);
+          const stateCell = row.querySelector('[data-label="CURRENT STATE"]');
+          if (stateCell) {
+            let pillClass = 'status-pill--waiting';
+            let pillColor = '#64748B';
+            let pillText = 'Waiting in Lounge';
+            if (t.status === 'serving') {
+              pillClass = 'status-pill--serving';
+              pillColor = '#059669';
+              pillText = 'Now Serving';
+            } else if (t.status === 'calling') {
+              pillClass = 'status-pill--calling';
+              pillColor = '#2563EB';
+              pillText = 'Calling Citizen';
+            } else if (t.status === 'completed') {
+              pillClass = 'status-pill--completed';
+              pillColor = '#10B981';
+              pillText = 'Completed';
+            } else if (t.status === 'skipped') {
+              pillClass = 'status-pill--skipped';
+              pillColor = '#EF4444';
+              pillText = 'Skipped';
+            }
+            stateCell.innerHTML = `
+              <span class="status-pill ${pillClass}">
+                <span style="width:6px; height:6px; border-radius:50%; background:${pillColor};"></span>
+                <span>${pillText}</span>
+              </span>
+            `;
+          }
+        }
+      });
+    });
+  </script>
+</body>
+</html>

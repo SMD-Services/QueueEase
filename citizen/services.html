@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        if (['en', 'hi', 'mr'].indexOf(lang) !== -1) {
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.lang = lang;
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Choose Your Required Service</title>
+  <meta name="description" content="Select a civic department to book your queue position and estimate your visit duration." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body>
+
+  <!-- Shared App Header Target -->
+  <header id="app-header"></header>
+
+  <main class="container" style="padding-top: var(--space-3);">
+
+    <!-- 1. Live Status Header Bar -->
+    <div class="live-pill-row">
+      <div class="civic-status-pill">
+        <span class="civic-status-pill__dot"></span>
+        <span data-i18n="live_badge">CIVIC RECEPTION LIVE</span>
+      </div>
+      <div class="desk-hours-meta">
+        <span class="material-symbols-outlined" style="font-size:16px;">meeting_room</span>
+        <span>Counter Hub 04</span>
+      </div>
+    </div>
+
+    <!-- 2. Services Hero Heading -->
+    <section class="citizen-hero-header">
+      <h1 class="citizen-hero-header__title" data-i18n="services_heading">Choose Your Required Service</h1>
+      <p class="citizen-hero-header__subtitle" data-i18n="services_desc">
+        Select a civic department to book your queue position and estimate your visit duration.
+      </p>
+    </section>
+
+    <!-- 3. Average Wait Dark Card with Hourglass -->
+    <section class="services-hero-wait-card" aria-label="Average center wait summary">
+      <div>
+        <div class="services-hero-wait-card__label" data-i18n="home_stat_est_wait">AVERAGE CENTER WAIT</div>
+        <div>
+          <span class="services-hero-wait-card__val">11 mins</span>
+          <span class="services-hero-wait-card__desks">across 14 active desks</span>
+        </div>
+      </div>
+      <div class="services-hero-wait-card__icon-box">
+        <span class="material-symbols-outlined">hourglass_top</span>
+      </div>
+    </section>
+
+    <!-- 4. Real-time Search Box -->
+    <div class="service-search-box">
+      <span class="material-symbols-outlined service-search-box__icon">search</span>
+      <input 
+        type="text" 
+        id="services-search-input" 
+        class="service-search-box__input" 
+        placeholder="Search services, permits, certificates..."
+        data-i18n-placeholder="services_search_placeholder"
+        aria-label="Search civic services"
+      />
+    </div>
+
+    <!-- 5. Horizontally Scrollable Filter Chips -->
+    <div class="chips-container" id="services-filter-chips" style="margin-bottom: var(--space-4);" role="tablist" aria-label="Service category filters">
+      <button type="button" class="chip chip--active" data-category="all" role="tab" aria-selected="true" data-i18n="footer_services">All Services</button>
+      <button type="button" class="chip" data-category="Civil Registry" role="tab" aria-selected="false" data-i18n="cat_gov_badge">Civil Registry</button>
+      <button type="button" class="chip" data-category="Documentation" role="tab" aria-selected="false" data-i18n="dept_doc_title">Documentation</button>
+      <button type="button" class="chip" data-category="public" role="tab" aria-selected="false" data-i18n="cat_center_badge">Public</button>
+    </div>
+
+    <!-- 6. Four Service Cards List Container -->
+    <section id="services-cards-list" aria-label="Civic services list">
+      <!-- Skeleton placeholders for first paint -->
+      <div class="service-card">
+        <div class="service-card__top">
+          <div class="skeleton skeleton--avatar" style="border-radius: var(--radius-control);"></div>
+          <div class="skeleton" style="width: 140px; height: 24px; border-radius: var(--radius-full);"></div>
+        </div>
+        <div class="skeleton skeleton--text" style="width: 60%; height: 22px;"></div>
+        <div class="skeleton skeleton--text" style="width: 90%;"></div>
+        <div class="skeleton" style="width: 100%; height: 48px; border-radius: var(--radius-control);"></div>
+      </div>
+      <div class="service-card">
+        <div class="service-card__top">
+          <div class="skeleton skeleton--avatar" style="border-radius: var(--radius-control);"></div>
+          <div class="skeleton" style="width: 140px; height: 24px; border-radius: var(--radius-full);"></div>
+        </div>
+        <div class="skeleton skeleton--text" style="width: 60%; height: 22px;"></div>
+        <div class="skeleton skeleton--text" style="width: 90%;"></div>
+        <div class="skeleton" style="width: 100%; height: 48px; border-radius: var(--radius-control);"></div>
+      </div>
+    </section>
+
+    <!-- Search Empty State -->
+    <div id="services-empty-state" class="empty-state" style="display: none; margin-bottom: var(--space-5);">
+      <div class="empty-state__icon">
+        <span class="material-symbols-outlined">search_off</span>
+      </div>
+      <h2 class="empty-state__title" data-i18n="empty_no_records">No services matched your query</h2>
+      <p class="empty-state__desc" data-i18n="empty_no_tokens">
+        Try checking your spelling or selecting "All Services" from the filter tags above.
+      </p>
+      <button type="button" class="btn btn--secondary" onclick="document.getElementById('services-search-input').value=''; document.getElementById('services-search-input').dispatchEvent(new Event('input'));">
+        <span data-i18n="btn_refresh">Clear Search Filter</span>
+      </button>
+    </div>
+
+    <!-- 7. Current Processing Pulse Card -->
+    <section class="pulse-panel" aria-label="Current processing pulse">
+      <div class="pulse-panel__header">
+        <h2 class="pulse-panel__title" data-i18n="track_synced_badge">Current Processing Pulse</h2>
+        <span class="pulse-panel__sub" data-i18n="live_badge">Real-time telemetry</span>
+      </div>
+      <div class="pulse-panel__grid" id="processing-pulse-grid">
+        <!-- Rendered by citizen.js -->
+      </div>
+    </section>
+
+    <!-- 8. Accessibility Help Banner -->
+    <section class="assistance-banner" aria-label="Accessibility support">
+      <div class="assistance-banner__icon-box">
+        <span class="material-symbols-outlined">accessible</span>
+      </div>
+      <div>
+        <h2 class="assistance-banner__title" data-i18n="assist_support_title">Need accessibility assistance?</h2>
+        <p class="assistance-banner__desc" data-i18n="assist_desc">
+          Need priority accessibility or fast-track assistance? Special accommodations are available at token generation.
+        </p>
+        <a href="/citizen/issue.html?priority=senior_disabled" class="assistance-banner__link" id="services-accessibility-link">
+          <span data-i18n="assist_escort_btn">Request dedicated desk support</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Shared Bottom Navigation Target -->
+  <nav id="app-bottom-nav"></nav>
+
+  <!-- Page Script -->
+  <script type="module">
+    import { initCitizenServices } from '/assets/js/citizen.js';
+    import '/assets/js/a11y.js';
+    initCitizenServices();
+  </script>
+</body>
+</html>

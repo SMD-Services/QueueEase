@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('lang', lang);
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Civic Staff Portal Sign In - QueueEase OPS HUB</title>
+  <meta name="description" content="Secure terminal sign-in for QueueEase civic staff and counter registrars." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 20%, var(--surface-subtle, #F1F5F9) 0%, var(--surface-page, #E2E8F0) 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      margin: 0;
+    }
+
+    .login-card {
+      background-color: var(--surface-card, #FFFFFF);
+      border: 1px solid var(--border-subtle, var(--color-border));
+      border-radius: var(--radius-card-lg);
+      box-shadow: 0 20px 50px rgba(20, 45, 78, 0.08);
+      max-width: 580px;
+      width: 100%;
+      padding: clamp(24px, 4vw, 44px);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .login-card__top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #142D4E 0%, #2563EB 50%, #14B8A6 100%);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+    }
+
+    .login-autofill-banner {
+      background-color: var(--surface-subtle, #F8FAFC);
+      border: 1px solid var(--border-subtle, #DBEAFE);
+      border-radius: var(--radius-card);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: var(--space-5) 0;
+      flex-wrap: wrap;
+    }
+
+    .form-group-staff {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group-staff label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--font-label-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-heading, var(--color-primary));
+      margin-bottom: 6px;
+    }
+
+    .form-group-staff .sub-label {
+      font-size: 11px;
+      color: var(--text-muted, var(--color-muted));
+      font-weight: var(--font-weight-medium);
+    }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+
+    .input-icon-wrap .material-symbols-outlined {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted, var(--color-muted));
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    .input-icon-wrap input,
+    .input-icon-wrap select {
+      width: 100%;
+      height: 46px;
+      padding: 0 42px 0 42px;
+      border: 1px solid var(--border-subtle, var(--color-border));
+      border-radius: var(--radius-control);
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text-body, var(--color-text));
+      background-color: var(--surface-card, #FFFFFF);
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .input-icon-wrap input:focus,
+    .input-icon-wrap select:focus {
+      outline: none;
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .input-toggle-pwd {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted, var(--color-muted));
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-footer-meta {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 11px;
+      color: var(--text-muted, #64748B);
+      margin-top: var(--space-6);
+      flex-wrap: wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <main class="login-card" role="main" aria-labelledby="signin-title">
+    <div class="login-card__top-bar"></div>
+
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-4);">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:38px; height:38px; border-radius:8px; background:var(--color-primary); color:#FFFFFF; display:flex; align-items:center; justify-content:center;">
+          <span class="material-symbols-outlined" style="font-size:22px;">confirmation_number</span>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:1.15rem; font-weight:var(--font-weight-bold); color:var(--text-heading, var(--color-primary));">QueueEase</span>
+            <span style="background:#0F234A; color:#60A5FA; font-size:10px; font-weight:var(--font-weight-bold); padding:2px 6px; border-radius:4px;">OPS HUB</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted, var(--color-text-secondary)); text-transform:uppercase; letter-spacing:0.04em;">
+            STAFF & COUNTER PORTAL • Civic Operations
+          </div>
+        </div>
+      </div>
+
+      <div class="status-pill status-pill--completed" style="font-size:10px; padding:3px 8px;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+        <span>NODE G-104 ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- Title & Description -->
+    <h1 id="signin-title" style="font-size:1.6rem; font-weight:var(--font-weight-bold); color:var(--text-heading, var(--color-primary)); margin-bottom:4px;">
+      Civic Staff Portal Sign In
+    </h1>
+    <p style="font-size:var(--font-body-sm); color:var(--text-muted, var(--color-text-secondary)); line-height:1.5; margin:0;">
+      Enter your official personnel credentials to initialize your assigned counter terminal.
+    </p>
+
+    <!-- Quick Autofill Session Card -->
+    <div class="login-autofill-banner">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar" style="width:36px; height:36px; background:#EFF6FF; color:#2563EB; font-weight:var(--font-weight-bold); font-size:13px; display:flex; align-items:center; justify-content:center; border-radius:50%;">
+          MJ
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:var(--font-weight-semibold); color:var(--text-heading, var(--color-primary));">
+            Direct Terminal Access: <span style="color:#2563EB;">Officer Mark Jenkins</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted, var(--color-text-secondary));">
+            Desk 02 (Room 104) • ID: STF-4409
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn--secondary" id="btn-autofill" style="min-height:36px; padding:6px 12px; font-size:12px; border-color:#93C5FD;">
+        <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">bolt</span>
+        <span>Autofill Session</span>
+      </button>
+    </div>
+
+    <!-- Sign In Form -->
+    <form id="staff-login-form" novalidate>
+      <!-- Username / Staff ID -->
+      <div class="form-group-staff">
+        <label for="staff-id">
+          <span>Official Username / Staff ID</span>
+          <span class="sub-label">Badge or System User</span>
+        </label>
+        <div class="input-icon-wrap">
+          <span class="material-symbols-outlined">badge</span>
+          <input type="text" id="staff-id" name="username" placeholder="e.g. officer.jenkins or STF-4409" required autocomplete="username" />
+        </div>
+        <div class="field-error" id="id-error" style="display:none; color:var(--color-danger); font-size:11px; margin-top:4px;"></div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group-staff">
+        <label for="staff-pwd">
+          <span>Official Security Password</span>
+          <span class="sub-label">RSA Token / Password</span>
+        </label>
+        <div class="input-icon-wrap">
+          <span class="material-symbols-outlined">key</span>
+          <input type="password" id="staff-pwd" name="password" placeholder="••••••••••••" required autocomplete="current-password" />
+          <button type="button" class="input-toggle-pwd" id="pwd-toggle" aria-label="Toggle password visibility">
+            <span class="material-symbols-outlined" id="pwd-icon">visibility</span>
+          </button>
+        </div>
+        <div class="field-error" id="pwd-error" style="display:none; color:var(--color-danger); font-size:11px; margin-top:4px;"></div>
+      </div>
+
+      <!-- Workstation / Service Desk Select -->
+      <div class="form-group-staff">
+        <label for="workstation-select">
+          <span>Select Workstation / Service Desk</span>
+          <span class="sub-label" style="color:#059669; display:inline-flex; align-items:center; gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:12px;">wifi</span>
+            Connected
+          </span>
+        </label>
+        <div class="input-icon-wrap">
+          <span class="material-symbols-outlined">desktop_windows</span>
+          <select id="workstation-select" name="workstation">
+            <option value="cnt-2" selected>Counter 02 - Certificate Application (Ground Floor Room 104)</option>
+            <option value="cnt-1">Counter 01 - Civil Registry (Ground Floor Room 102)</option>
+            <option value="cnt-3">Counter 03 - Express Notary & Attestation (Room 106)</option>
+            <option value="cnt-4">Counter 04 - Biometrics & Identity Capture (Room 108)</option>
+            <option value="cnt-5">Counter 05 - Public Enquiry & General Forms (Room 110)</option>
+            <option value="cnt-6">Counter 06 - Relief Standby & Overflow (Room 112)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Remember & Forgot Password -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-5); font-size:12px;">
+        <label class="custom-checkbox" style="gap:8px; display:inline-flex; align-items:center;">
+          <input type="checkbox" id="remember-me" checked />
+          <span class="checkbox-box"></span>
+          <span style="color:var(--text-body, var(--color-text));">Remember this workstation terminal</span>
+        </label>
+        <a href="#" onclick="alert('Please contact Supervisor Desk Ext. 402 or Municipal IT Dispatch.'); return false;" style="color:var(--color-secondary); text-decoration:none; font-weight:var(--font-weight-semibold); display:inline-flex; align-items:center; gap:4px;">
+          <span class="material-symbols-outlined" style="font-size:14px;">support_agent</span>
+          <span>Forgot Password</span>
+        </a>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn--primary" id="btn-submit" style="width:100%; min-height:48px; justify-content:center; font-size:14px;">
+        <span class="material-symbols-outlined">lock_open</span>
+        <span>Sign In to Counter Terminal</span>
+      </button>
+
+      <!-- Loading feedback -->
+      <div id="login-feedback" style="display:none; text-align:center; margin-top:12px; font-size:12px; color:var(--color-secondary); font-weight:var(--font-weight-semibold);">
+        <span style="display:inline-block; width:12px; height:12px; border:2px solid #2563EB; border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px;"></span>
+        <span>Validating credentials against Civic Directory...</span>
+      </div>
+    </form>
+
+    <!-- Security notice -->
+    <div style="margin-top:var(--space-6); padding-top:var(--space-4); border-top:1px solid var(--border-subtle, #F1F5F9); text-align:center;">
+      <div style="display:inline-flex; align-items:center; gap:6px; font-size:11px; font-weight:var(--font-weight-bold); color:var(--text-muted, var(--color-muted)); letter-spacing:0.04em;">
+        <span class="material-symbols-outlined" style="font-size:15px; color:#14B8A6;">verified_user</span>
+        RESTRICTED PUBLIC SERVICE INFRASTRUCTURE
+      </div>
+      <p style="font-size:11px; color:var(--text-muted, #94A3B8); margin:4px 0 0; line-height:1.4;">
+        Encrypted 256-bit GovLink • Session audited under Municipal IT Directive 2025. Unauthorized access attempts are monitored and recorded.
+      </p>
+    </div>
+
+    <!-- Error fallback container -->
+    <div id="error-fallback" style="display:none; margin-top:16px; padding:16px; background-color:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; text-align:center;">
+      <p id="error-fallback-msg" style="color:#991B1B; font-size:13px; margin:0 0 12px 0; font-weight:600;"></p>
+      <a href="../index.html" class="btn btn--secondary" style="font-size:12px; text-decoration:none;">Return to Home</a>
+    </div>
+  </main>
+
+  <!-- Bottom Meta Info -->
+  <footer class="login-footer-meta" role="contentinfo">
+    <div style="display:flex; align-items:center; gap:4px;">
+      <span class="material-symbols-outlined" style="font-size:14px;">schedule</span>
+      <span>Terminal Shift: Morning Cycle (08:00 - 16:30)</span>
+    </div>
+    <span>•</span>
+    <div style="display:flex; align-items:center; gap:4px;">
+      <span class="material-symbols-outlined" style="font-size:14px;">public</span>
+      <span>District Hub 07 - Central Metro Hall</span>
+    </div>
+    <span>•</span>
+    <div style="display:flex; align-items:center; gap:4px;">
+      <span class="material-symbols-outlined" style="font-size:14px;">code</span>
+      <span>v4.18.2-civic</span>
+    </div>
+  </footer>
+
+  <script type="module">
+    import { getStaffSession, staffLogin } from '../assets/js/staff.js';
+    import { showToast } from '../assets/js/ui.js';
+
+    try {
+      // 1. If already authenticated, redirect to staff dashboard immediately
+      if (getStaffSession()) {
+        window.location.replace('../staff/dashboard.html');
+      }
+    } catch (err) {
+      console.warn('Auth guard check non-fatal error:', err);
+    }
+
+    try {
+      // Elements
+      const autofillBtn = document.getElementById('btn-autofill');
+      const staffIdInput = document.getElementById('staff-id');
+      const staffPwdInput = document.getElementById('staff-pwd');
+      const pwdToggle = document.getElementById('pwd-toggle');
+      const pwdIcon = document.getElementById('pwd-icon');
+      const form = document.getElementById('staff-login-form');
+      const submitBtn = document.getElementById('btn-submit');
+      const feedback = document.getElementById('login-feedback');
+
+      if (autofillBtn) {
+        autofillBtn.addEventListener('click', () => {
+          if (staffIdInput) staffIdInput.value = 'STF-4409';
+          if (staffPwdInput) staffPwdInput.value = 'civic123';
+          showToast('Autofilled demo session for Officer Mark Jenkins');
+        });
+      }
+
+      // Password show/hide toggle
+      if (pwdToggle && staffPwdInput && pwdIcon) {
+        pwdToggle.addEventListener('click', () => {
+          const isPwd = staffPwdInput.type === 'password';
+          staffPwdInput.type = isPwd ? 'text' : 'password';
+          pwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
+        });
+      }
+
+      // Form submit
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const idVal = staffIdInput ? staffIdInput.value.trim() : '';
+          const pwdVal = staffPwdInput ? staffPwdInput.value : '';
+          const deskSelect = document.getElementById('workstation-select');
+          const deskVal = deskSelect ? deskSelect.value : 'cnt-2';
+
+          if (!idVal) {
+            showToast('Please enter your Official Staff ID', 'error');
+            if (staffIdInput) staffIdInput.focus();
+            return;
+          }
+          if (!pwdVal) {
+            showToast('Please enter your Security Password', 'error');
+            if (staffPwdInput) staffPwdInput.focus();
+            return;
+          }
+
+          if (submitBtn) submitBtn.disabled = true;
+          if (feedback) feedback.style.display = 'block';
+
+          setTimeout(() => {
+            try {
+              staffLogin(idVal, pwdVal, deskVal);
+              showToast('Credentials verified. Opening terminal...', 'success');
+              setTimeout(() => {
+                window.location.replace('../staff/dashboard.html');
+              }, 300);
+            } catch (err) {
+              if (submitBtn) submitBtn.disabled = false;
+              if (feedback) feedback.style.display = 'none';
+              showToast(err.message, 'error');
+            }
+          }, 800);
+        });
+      }
+    } catch (err) {
+      console.error('Staff Login Script Error:', err);
+      const fallback = document.getElementById('error-fallback');
+      const fallbackMsg = document.getElementById('error-fallback-msg');
+      if (fallback && fallbackMsg) {
+        fallbackMsg.textContent = 'Portal error: ' + err.message;
+        fallback.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

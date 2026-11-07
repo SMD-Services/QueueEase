@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Staff Counter Terminal - QueueEase OPS HUB</title>
+  <meta name="description" content="Official counter dispatch terminal for Officer Mark Jenkins. Summon citizens, manage active sessions, and execute queue transitions." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+</head>
+<body class="dashboard-layout has-console-bar">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Navy Sidebar -->
+  <aside class="dashboard-sidebar" id="dashboard-sidebar" role="navigation" aria-label="Staff Operations Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/staff/dashboard.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box">
+          <span class="material-symbols-outlined" style="font-size:22px;">confirmation_number</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">PUBLIC SERVICE OS</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge">
+        <span style="width:6px; height:6px; border-radius:50%; background:#34D399;"></span>
+        <span>Staff Operations Hub</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/staff/dashboard.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/staff/console.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">groups</span>
+        <span>Queue Management</span>
+      </a>
+      <a href="/staff/history.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>Token History</span>
+      </a>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('settings-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">tune</span>
+        <span>Counter Settings</span>
+      </button>
+      <a href="/display/signage.html" class="dashboard-nav-link" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">tv</span>
+        <span>Live Signage Display</span>
+      </a>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:var(--font-weight-bold);">Desk Station Active</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Lat: 12ms • Sync OK</div>
+      </div>
+
+      <button type="button" class="btn btn--ghost btn-staff-logout" style="color:#F87171; width:100%; justify-content:flex-start; padding:8px 12px; font-size:13px;">
+        <span class="material-symbols-outlined" style="font-size:18px;">logout</span>
+        <span>Log Out</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="dashboard-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+
+        <div class="dashboard-topbar__search-wrap">
+          <span class="material-symbols-outlined dashboard-topbar__search-icon">search</span>
+          <input type="text" class="dashboard-topbar__search-input" placeholder="Search tokens, citizen names, reference IDs..." aria-label="Search records" />
+        </div>
+      </div>
+
+      <div class="dashboard-topbar__right">
+        <div class="status-pill status-pill--completed" id="terminal-status-indicator" style="font-size:11px; padding:4px 12px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+          <span>Counter 02 • Certificate Desk | ONLINE / ACTIVE</span>
+        </div>
+
+        <button type="button" class="btn btn--ghost" onclick="showToast('No new urgent dispatch alerts.')" aria-label="Notifications" style="position:relative; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">notifications</span>
+          <span style="position:absolute; top:8px; right:8px; width:7px; height:7px; background:#EF4444; border-radius:50%;"></span>
+        </button>
+
+        <div class="dashboard-user-badge">
+          <div style="text-align:right;" class="hide-mobile">
+            <div style="font-size:13px; font-weight:var(--font-weight-bold); color:var(--color-primary);">Officer Mark Jenkins</div>
+            <div style="font-size:11px; color:var(--color-text-secondary);">Senior Registrar</div>
+          </div>
+          <div class="avatar" style="width:36px; height:36px; background:#142D4E; color:#FFFFFF; font-weight:var(--font-weight-bold); font-size:13px;">
+            MJ
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Console Body -->
+    <main class="dashboard-body">
+      <!-- Workstation Header Bar -->
+      <section style="display:flex; align-items:center; justify-content:space-between; gap:var(--space-4); flex-wrap:wrap; padding-bottom:var(--space-2); border-bottom:1px solid #E2E8F0;">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <div style="width:48px; height:48px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+            <span class="material-symbols-outlined" style="font-size:26px;">desktop_windows</span>
+          </div>
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h1 style="font-size:1.35rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+                Counter 02
+              </h1>
+              <span style="background:#F1F5F9; color:#475569; font-size:11px; font-weight:var(--font-weight-semibold); padding:2px 8px; border-radius:4px;">
+                Ground Floor • Room 104
+              </span>
+            </div>
+            <div style="font-size:12px; color:var(--color-text-secondary);">
+              Civil Registration & Certificate Desk • Officer Mark Jenkins (STF-4409)
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="btn btn--secondary" id="btn-toggle-break" style="padding:8px 14px; font-size:12px;">
+            <span class="material-symbols-outlined" style="font-size:16px;">coffee</span>
+            <span id="break-btn-text">Take 10m Break</span>
+          </button>
+          <button type="button" class="btn btn--ghost" id="btn-chime-desk" style="padding:8px 14px; font-size:12px; border:1px solid var(--color-border); background:#FFFFFF;">
+            <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">notifications_active</span>
+            <span>Chime Desk 02 Alert</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Main Layout: Active Hero (Left 65%) / Telemetry (Right 35%) -->
+      <section style="display:grid; grid-template-columns:1fr; gap:var(--space-4);" class="grid-desktop-2col">
+        <!-- Left: Active Citizen Serving Card -->
+        <div class="console-active-hero" id="active-session-card">
+          <!-- Top Session Status -->
+          <div class="console-active-hero__header">
+            <span class="status-pill status-pill--serving" style="background:#0D9488; color:#FFFFFF; border:none; font-size:11px; padding:4px 12px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#FFFFFF;"></span>
+              <span>CURRENTLY SERVING</span>
+            </span>
+
+            <div style="display:flex; align-items:center; gap:16px; font-size:12px; color:#93C5FD;">
+              <span style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:16px;">schedule</span>
+                <span>Session Duration: <strong id="console-timer" style="font-family:var(--font-family-mono); color:#FFFFFF;">04:21</strong></span>
+              </span>
+              <span style="color:#64748B;">•</span>
+              <span>Called at 10:45 AM</span>
+            </div>
+          </div>
+
+          <!-- Citizen Identification Box -->
+          <div class="console-active-hero__grid">
+            <!-- Big Token Number -->
+            <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-card); padding:18px; text-align:center;">
+              <div style="font-size:10px; font-weight:var(--font-weight-bold); letter-spacing:0.08em; text-transform:uppercase; color:#94A3B8; margin-bottom:4px;">
+                ACTIVE TOKEN
+              </div>
+              <div style="font-size:3.75rem; font-weight:var(--font-weight-bold); font-family:var(--font-family-mono); color:#FFFFFF; line-height:1;" id="active-token-display">
+                A008
+              </div>
+              <div style="margin-top:6px;">
+                <span style="background:rgba(37,99,235,0.4); color:#93C5FD; font-size:11px; font-weight:bold; padding:2px 8px; border-radius:4px;">
+                  Standard Lane
+                </span>
+              </div>
+              <div style="margin-top:10px; font-size:11px; color:#34D399; display:flex; align-items:center; justify-content:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:14px;">verified</span>
+                <span>Identity Document Cleared</span>
+              </div>
+            </div>
+
+            <!-- Citizen Details -->
+            <div style="display:flex; flex-direction:column; justify-content:center;">
+              <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:4px;">
+                <h2 style="font-size:1.75rem; font-weight:var(--font-weight-bold); color:#FFFFFF; margin:0;" id="active-citizen-name">
+                  Eleanor Vance
+                </h2>
+                <span style="font-size:12px; font-family:var(--font-family-mono); color:#94A3B8;">ID: •••• 9124</span>
+              </div>
+              <div style="font-size:14px; color:#38BDF8; font-weight:var(--font-weight-semibold); margin-bottom:12px;">
+                Birth Certificate Verification & Apostille Seal
+              </div>
+
+              <div style="display:flex; flex-direction:column; gap:6px; font-size:12px; color:#94A3B8;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:16px; color:#60A5FA;">touch_app</span>
+                  <span>Kiosk Terminal #01 Check-in (10:31 AM)</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span class="material-symbols-outlined" style="font-size:16px; color:#F59E0B;">timer</span>
+                  <span>14m Total Lounge Wait Prior to Calling</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Action Buttons Bar -->
+          <div class="console-action-btns-row">
+            <!-- Mark Completed -->
+            <button type="button" class="btn" id="btn-complete-token" style="background:#0D9488; color:#FFFFFF; border:none;">
+              <span class="material-symbols-outlined">check_circle</span>
+              <span>Mark Completed</span>
+            </button>
+
+            <!-- Call Next Citizen -->
+            <button type="button" class="btn btn--primary" id="btn-call-next" style="background:#2563EB;">
+              <span class="material-symbols-outlined">headset_mic</span>
+              <span>Call Next Citizen</span>
+            </button>
+
+            <!-- Recall / Re-Chime -->
+            <button type="button" class="btn btn--secondary" id="btn-recall" style="background:rgba(255,255,255,0.08); color:#FFFFFF; border-color:rgba(255,255,255,0.2);">
+              <span class="material-symbols-outlined">volume_up</span>
+              <span>Recall / Re-Chime</span>
+            </button>
+
+            <!-- Skip (No Show) -->
+            <button type="button" class="btn btn--secondary" onclick="openModal('skip-confirm-modal')" style="background:rgba(245,158,11,0.1); color:#FBBF24; border-color:rgba(245,158,11,0.3);">
+              <span class="material-symbols-outlined">person_off</span>
+              <span>Skip (No Show)</span>
+            </button>
+
+            <!-- Transfer Desk -->
+            <button type="button" class="btn btn--secondary" onclick="openModal('transfer-desk-modal')" style="background:rgba(255,255,255,0.08); color:#FFFFFF; border-color:rgba(255,255,255,0.2);">
+              <span class="material-symbols-outlined">sync_alt</span>
+              <span>Transfer Desk</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Side: Station Velocity & Lounge PA -->
+        <div style="display:flex; flex-direction:column; gap:var(--space-4);">
+          <!-- Station Velocity Card -->
+          <div class="card" style="padding:var(--space-4);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">TODAY'S STATION VELOCITY</span>
+              <span style="font-size:11px; color:#64748B;">Target: 40</span>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+              <span style="font-size:2.25rem; font-weight:var(--font-weight-bold); font-family:var(--font-family-mono); color:var(--color-primary);" id="station-velocity-num">28</span>
+              <span style="font-size:12px; color:#10B981; font-weight:var(--font-weight-bold);">↑ +14% vs avg</span>
+            </div>
+            <div style="height:6px; background:#E2E8F0; border-radius:3px; overflow:hidden; margin-bottom:8px;">
+              <div style="width:70%; height:100%; background:linear-gradient(90deg, #2563EB, #14B8A6); border-radius:3px;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:11px; color:#64748B;">
+              <span>Avg Transaction: <strong>06m 12s</strong></span>
+              <span>Target: &lt; 08m</span>
+            </div>
+          </div>
+
+          <!-- Lounge PA System -->
+          <div class="card" style="padding:var(--space-4); border-left:4px solid #2563EB;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+              <div style="width:30px; height:30px; border-radius:6px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                <span class="material-symbols-outlined" style="font-size:18px;">campaign</span>
+              </div>
+              <div>
+                <strong style="color:var(--color-primary); font-size:13px;">Lounge PA System</strong>
+                <div style="font-size:11px; color:#64748B;">Zone: Civil Ground Floor</div>
+              </div>
+            </div>
+
+            <div style="background:#F8FAFC; border:1px solid #E2E8F0; border-radius:var(--radius-sm); padding:8px 10px; font-size:12px; margin-bottom:8px; display:flex; align-items:center; justify-content:space-between;">
+              <span>Next: <em>"Token A007 to Desk 02"</em></span>
+              <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+            </div>
+
+            <div style="display:flex; gap:6px;">
+              <button type="button" class="btn btn--ghost" onclick="speakAnnouncement('A-007', 'Counter 02', 'Certificate Desk', 'Room 104'); showToast('Broadcasted PA Voice.');" style="flex:1; font-size:11px; padding:6px; border:1px solid #E2E8F0;">
+                <span class="material-symbols-outlined" style="font-size:14px;">translate</span>
+                <span>Dual English/ES</span>
+              </button>
+              <button type="button" class="btn btn--ghost" onclick="playChime(); showToast('Gong tone broadcasted.');" style="flex:1; font-size:11px; padding:6px; border:1px solid #E2E8F0;">
+                <span class="material-symbols-outlined" style="font-size:14px;">notifications</span>
+                <span>Priority Gong</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Assigned Hall Wait Status -->
+          <div class="card" style="padding:var(--space-4); display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <span style="font-size:11px; font-weight:var(--font-weight-bold); color:var(--color-muted); text-transform:uppercase;">ASSIGNED HALL WAIT</span>
+              <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin-top:2px;">
+                14 Citizens Waiting
+              </div>
+              <div style="font-size:11px; color:#F59E0B; margin-top:2px; display:flex; align-items:center; gap:4px;">
+                <span class="material-symbols-outlined" style="font-size:13px;">warning</span>
+                <span>Peak load interval (10 AM - 12 PM)</span>
+              </div>
+            </div>
+            <div style="width:48px; height:48px; border-radius:50%; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center; font-size:1.25rem; font-weight:bold; font-family:var(--font-family-mono);">
+              14
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom: Waiting Queue Roster (14 Total) -->
+      <section class="card" style="padding:var(--space-5);">
+        <!-- Roster Top Bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; margin-bottom:16px; padding-bottom:12px; border-bottom:1px solid #E2E8F0;">
+          <div>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h2 style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+                Waiting Queue Roster
+              </h2>
+              <span style="background:#EFF6FF; color:#2563EB; font-size:11px; font-weight:bold; padding:2px 8px; border-radius:var(--radius-full);">
+                14 Total
+              </span>
+            </div>
+            <div style="font-size:12px; color:var(--color-text-secondary); margin-top:2px;">
+              Live queue sorted by arrival order and priority dispatch protocol.
+            </div>
+          </div>
+
+          <!-- Filter Tabs & Quick Search -->
+          <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+            <div class="segmented-control" style="background:#F1F5F9; padding:3px; border-radius:var(--radius-control);">
+              <button type="button" class="segment-btn segment-btn--active" data-filter="all" style="padding:6px 12px; font-size:12px;">All Waiting (14)</button>
+              <button type="button" class="segment-btn" data-filter="standard" style="padding:6px 12px; font-size:12px;">Standard (11)</button>
+              <button type="button" class="segment-btn" data-filter="priority" style="padding:6px 12px; font-size:12px; color:#D97706;">• Priority / Assisted (3)</button>
+            </div>
+
+            <div style="position:relative;">
+              <input type="text" id="roster-search" placeholder="Filter roster..." style="height:36px; padding:0 10px 0 32px; border:1px solid var(--color-border); border-radius:var(--radius-control); font-size:12px;" />
+              <span class="material-symbols-outlined" style="position:absolute; left:8px; top:50%; transform:translateY(-50%); font-size:18px; color:#94A3B8;">search</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Responsive Table (Becomes Stacked Cards <768px) -->
+        <div class="data-table-wrap">
+          <table class="data-table data-table-responsive" id="waiting-roster-table">
+            <thead>
+              <tr>
+                <th>TOKEN ID</th>
+                <th>CITIZEN NAME</th>
+                <th>SERVICE REQUESTED</th>
+                <th>ARRIVAL TIME</th>
+                <th>WAIT DURATION</th>
+                <th>QUEUE STATE</th>
+                <th style="text-align:right;">DESK ACTIONS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Row 1 -->
+              <tr data-type="standard">
+                <td data-label="TOKEN ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:#2563EB;">A007</strong>
+                    <span style="background:#2563EB; color:#FFFFFF; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:3px;">NEXT IN LINE</span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div>
+                    <strong style="color:var(--color-primary);">David Cho</strong>
+                    <div style="font-size:11px; color:#64748B;">Verified ID: •••• 4410</div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#64748B;">description</span>
+                    <span>Certificate Application</span>
+                  </div>
+                </td>
+                <td data-label="ARRIVAL TIME">
+                  <div>
+                    <div>10:32 AM</div>
+                    <div style="font-size:10px; color:#64748B;">Self-Service Kiosk</div>
+                  </div>
+                </td>
+                <td data-label="WAIT DURATION">
+                  <span style="background:#FEE2E2; color:#DC2626; font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:4px;">
+                    <span class="material-symbols-outlined" style="font-size:12px;">timer</span>
+                    16 mins
+                  </span>
+                </td>
+                <td data-label="QUEUE STATE">
+                  <span style="display:flex; align-items:center; gap:6px; color:#2563EB; font-weight:bold; font-size:12px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#2563EB;"></span>
+                    <span>Staged at Door B</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="text-align:right;">
+                  <button type="button" class="btn btn--primary" onclick="callSpecificToken('A007', 'David Cho')" style="padding:6px 14px; font-size:12px;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">campaign</span>
+                    <span>Call Immediately</span>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Row 2 (Priority) -->
+              <tr data-type="priority">
+                <td data-label="TOKEN ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:#D97706;">P003</strong>
+                    <span style="background:#FEF3C7; color:#D97706; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:3px; display:inline-flex; align-items:center; gap:2px;">
+                      <span class="material-symbols-outlined" style="font-size:11px;">elderly</span>
+                      Senior 65+
+                    </span>
+                  </div>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div>
+                    <strong style="color:var(--color-primary);">Margaret Wilson</strong>
+                    <div style="font-size:11px; color:#64748B;">Assisted Desk Registered</div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#D97706;">account_balance</span>
+                    <span>Pension Certificate & Verification</span>
+                  </div>
+                </td>
+                <td data-label="ARRIVAL TIME">
+                  <div>
+                    <div>10:35 AM</div>
+                    <div style="font-size:10px; color:#64748B;">Front Concierge Desk</div>
+                  </div>
+                </td>
+                <td data-label="WAIT DURATION">
+                  <span style="font-size:12px; font-weight:semibold; color:var(--color-primary);">13 mins</span>
+                </td>
+                <td data-label="QUEUE STATE">
+                  <span style="display:flex; align-items:center; gap:6px; color:#D97706; font-weight:bold; font-size:12px;">
+                    <span style="width:6px; height:6px; border-radius:50%; background:#D97706;"></span>
+                    <span>Priority Fast-Track</span>
+                  </span>
+                </td>
+                <td data-label="ACTIONS" style="text-align:right;">
+                  <button type="button" class="btn btn--secondary" onclick="callSpecificToken('P003', 'Margaret Wilson')" style="padding:6px 14px; font-size:12px; color:#D97706; border-color:#FCD34D;">
+                    <span class="material-symbols-outlined" style="font-size:16px;">accessible_forward</span>
+                    <span>Call to Desk</span>
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Row 3 -->
+              <tr data-type="standard">
+                <td data-label="TOKEN ID">
+                  <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:var(--color-primary);">A009</strong>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div>
+                    <strong style="color:var(--color-primary);">Samuel O'Connor</strong>
+                    <div style="font-size:11px; color:#64748B;">Verified ID: •••• 7821</div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#64748B;">verified</span>
+                    <span>Marriage Attestation Notarization</span>
+                  </div>
+                </td>
+                <td data-label="ARRIVAL TIME">
+                  <div>
+                    <div>10:38 AM</div>
+                    <div style="font-size:10px; color:#64748B;">Mobile Check-In</div>
+                  </div>
+                </td>
+                <td data-label="WAIT DURATION">
+                  <span style="font-size:12px; color:var(--color-text-secondary);">10 mins</span>
+                </td>
+                <td data-label="QUEUE STATE">
+                  <span class="status-pill status-pill--waiting" style="font-size:10px;">Waiting in Lounge</span>
+                </td>
+                <td data-label="ACTIONS" style="text-align:right;">
+                  <button type="button" class="btn btn--ghost" onclick="callSpecificToken('A009', 'Samuel O\'Connor')" style="padding:6px 12px; font-size:12px; border:1px solid #E2E8F0;">
+                    Call Now
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Row 4 -->
+              <tr data-type="standard">
+                <td data-label="TOKEN ID">
+                  <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:var(--color-primary);">A010</strong>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div>
+                    <strong style="color:var(--color-primary);">Fatima Al-Mansoor</strong>
+                    <div style="font-size:11px; color:#64748B;">Verified ID: •••• 3302</div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#64748B;">home_pin</span>
+                    <span>Residency Certificate Issuance</span>
+                  </div>
+                </td>
+                <td data-label="ARRIVAL TIME">
+                  <div>
+                    <div>10:41 AM</div>
+                    <div style="font-size:10px; color:#64748B;">Kiosk Terminal #03</div>
+                  </div>
+                </td>
+                <td data-label="WAIT DURATION">
+                  <span style="font-size:12px; color:var(--color-text-secondary);">7 mins</span>
+                </td>
+                <td data-label="QUEUE STATE">
+                  <span class="status-pill status-pill--waiting" style="font-size:10px;">Waiting in Lounge</span>
+                </td>
+                <td data-label="ACTIONS" style="text-align:right;">
+                  <button type="button" class="btn btn--ghost" onclick="callSpecificToken('A010', 'Fatima Al-Mansoor')" style="padding:6px 12px; font-size:12px; border:1px solid #E2E8F0;">
+                    Call Now
+                  </button>
+                </td>
+              </tr>
+
+              <!-- Row 5 -->
+              <tr data-type="standard">
+                <td data-label="TOKEN ID">
+                  <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:var(--color-primary);">A011</strong>
+                </td>
+                <td data-label="CITIZEN NAME">
+                  <div>
+                    <strong style="color:var(--color-primary);">Lucas Tremblay</strong>
+                    <div style="font-size:11px; color:#64748B;">Verified ID: •••• 5619</div>
+                  </div>
+                </td>
+                <td data-label="SERVICE">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#64748B;">badge</span>
+                    <span>Identity Card Verification</span>
+                  </div>
+                </td>
+                <td data-label="ARRIVAL TIME">
+                  <div>
+                    <div>10:44 AM</div>
+                    <div style="font-size:10px; color:#64748B;">Mobile Check-In</div>
+                  </div>
+                </td>
+                <td data-label="WAIT DURATION">
+                  <span style="font-size:12px; color:var(--color-text-secondary);">4 mins</span>
+                </td>
+                <td data-label="QUEUE STATE">
+                  <span class="status-pill status-pill--waiting" style="font-size:10px;">Waiting in Lounge</span>
+                </td>
+                <td data-label="ACTIONS" style="text-align:right;">
+                  <button type="button" class="btn btn--ghost" onclick="callSpecificToken('A011', 'Lucas Tremblay')" style="padding:6px 12px; font-size:12px; border:1px solid #E2E8F0;">
+                    Call Now
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Roster Bottom Bar -->
+        <div style="display:flex; align-items:center; justify-content:space-between; margin-top:16px; padding-top:12px; border-top:1px solid #F1F5F9; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span class="material-symbols-outlined" style="font-size:16px; color:#10B981;">sync</span>
+            <span>Automatic Real-time Sync Active • Socket latency: 14ms</span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:12px;">
+            <span>Showing 5 of 14 waiting tokens</span>
+            <button type="button" class="btn btn--secondary" onclick="showToast('Loaded 9 additional queue records.')" style="padding:4px 10px; font-size:11px;">
+              Load Next 9
+            </button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Action Bar (phones <768px) -->
+  <aside class="console-mobile-bar" role="toolbar" aria-label="Mobile Quick Console Actions">
+    <button type="button" class="btn" id="mobile-btn-complete" style="background:#0D9488; color:#FFFFFF; border:none; flex:1; justify-content:center; padding:8px 6px; font-size:12px;">
+      <span class="material-symbols-outlined" style="font-size:18px;">check</span>
+      <span>Complete</span>
+    </button>
+    <button type="button" class="btn btn--primary" id="mobile-btn-call-next" style="flex:1.4; justify-content:center; padding:8px 8px; font-size:12px;">
+      <span class="material-symbols-outlined" style="font-size:18px;">headset_mic</span>
+      <span>Call Next</span>
+    </button>
+    <button type="button" class="btn btn--secondary" id="mobile-btn-chime" style="background:rgba(255,255,255,0.1); color:#FFFFFF; border-color:rgba(255,255,255,0.2); padding:8px; min-width:44px; justify-content:center;">
+      <span class="material-symbols-outlined" style="font-size:18px;">volume_up</span>
+    </button>
+    <button type="button" class="btn btn--secondary" onclick="openModal('skip-confirm-modal')" style="background:rgba(245,158,11,0.1); color:#FBBF24; border-color:rgba(245,158,11,0.3); padding:8px; min-width:44px; justify-content:center;">
+      <span class="material-symbols-outlined" style="font-size:18px;">person_off</span>
+    </button>
+  </aside>
+
+  <!-- Modal 1: Skip Confirmation Modal -->
+  <div class="sheet-backdrop" id="skip-confirm-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="skip-confirm-modal" role="dialog" aria-labelledby="skip-title" aria-modal="true" aria-hidden="true" style="max-width:440px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px; color:#D97706;">
+        <span class="material-symbols-outlined" style="font-size:28px;">warning</span>
+        <h3 id="skip-title" style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+          Confirm Skip Token?
+        </h3>
+      </div>
+
+      <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); line-height:1.5; margin-bottom:16px;">
+        Are you sure you want to skip token <strong id="skip-token-name" style="color:var(--color-primary);">A008 (Eleanor Vance)</strong>? The citizen will be recorded as a No-Show and removed from the active queue roster.
+      </p>
+
+      <div style="margin-bottom:16px;">
+        <label for="skip-reason" style="display:block; font-size:12px; font-weight:bold; margin-bottom:4px;">No-Show Reason</label>
+        <select id="skip-reason" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+          <option>Citizen did not present after 3 audio chimes</option>
+          <option>Missing prerequisite government documentation</option>
+          <option>Citizen departed reception area</option>
+          <option>Requested rescheduling</option>
+        </select>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--danger" id="btn-confirm-skip" style="flex:1; justify-content:center; background:#EF4444; color:#FFFFFF; border:none;">
+          <span class="material-symbols-outlined">person_off</span>
+          <span>Confirm Skip Token</span>
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('skip-confirm-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 2: Transfer Desk Sheet / Modal -->
+  <div class="sheet-backdrop" id="transfer-desk-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="transfer-desk-modal" role="dialog" aria-labelledby="transfer-title" aria-modal="true" aria-hidden="true" style="max-width:480px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h3 id="transfer-title" style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0;">
+          Transfer Citizen to Another Desk
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('transfer-desk-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); margin-bottom:16px;">
+        Transfer token <strong>A008</strong> to another specialized civil window with existing priority preserved.
+      </p>
+
+      <div style="margin-bottom:14px;">
+        <label for="transfer-counter" style="display:block; font-size:12px; font-weight:bold; margin-bottom:6px;">Select Destination Counter</label>
+        <select id="transfer-counter" style="width:100%; height:42px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:14px;">
+          <option value="cnt-1">Counter 01 - Civil Registry & Vital Statistics (Room 102)</option>
+          <option value="cnt-3">Counter 03 - Express Notary & Attestation (Room 106)</option>
+          <option value="cnt-4">Counter 04 - Biometrics & Identity Capture (Room 108)</option>
+          <option value="cnt-5">Counter 05 - Public Enquiry & General Forms (Room 110)</option>
+          <option value="cnt-6">Counter 06 - Relief Standby & Case Escalation (Room 112)</option>
+        </select>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label for="transfer-notes" style="display:block; font-size:12px; font-weight:bold; margin-bottom:6px;">Caseworker Transfer Notes</label>
+        <textarea id="transfer-notes" rows="2" placeholder="e.g. Identity verified; requires notarized seal at Counter 03..." style="width:100%; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:8px 10px; font-size:13px; font-family:inherit;"></textarea>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--primary" id="btn-confirm-transfer" style="flex:1; justify-content:center;">
+          <span class="material-symbols-outlined">sync_alt</span>
+          <span>Execute Transfer</span>
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('transfer-desk-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initDashboardShell, startSessionTimer, resetSessionTimer } from '../assets/js/staff.js';
+    import { playChime, speakAnnouncement } from '../assets/js/signage.js';
+    import { showToast, closeModal, openModal } from '../assets/js/ui.js';
+    import { Store } from '../assets/js/store.js';
+
+    // 1. Initialize shell
+    initDashboardShell('console');
+
+    // 2. Start session elapsed timer
+    startSessionTimer('console-timer');
+
+    // State
+    let currentToken = {
+      id: 'tok-a008',
+      num: 'A008',
+      name: 'Eleanor Vance',
+      service: 'Birth Certificate Verification & Apostille Seal'
+    };
+    let isBreak = false;
+
+    // 3. Complete Token Action
+    function completeCurrent() {
+      try {
+        Store.completeToken(currentToken.id, 'Verified and sealed by Officer Mark Jenkins.');
+        showToast(`Token ${currentToken.num} marked COMPLETED.`, 'success');
+        
+        // Update velocity
+        const velEl = document.getElementById('station-velocity-num');
+        if (velEl) velEl.textContent = parseInt(velEl.textContent, 10) + 1;
+
+        // Auto call next
+        callNext();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // 4. Call Next Action
+    function callNext() {
+      try {
+        const next = Store.callNext('srv-1', 'cnt-2');
+        if (next) {
+          currentToken = {
+            id: next.id,
+            num: next.tokenNumber,
+            name: next.citizenName,
+            service: next.serviceName || 'Certificate Application'
+          };
+
+          document.getElementById('active-token-display').textContent = currentToken.num;
+          document.getElementById('active-citizen-name').textContent = currentToken.name;
+          resetSessionTimer();
+
+          // Play audio and speak
+          playChime();
+          speakAnnouncement(currentToken.num, 'Counter 02', 'Certificate Desk', 'Room 104');
+          showToast(`Now Serving: ${currentToken.num} - ${currentToken.name}`, 'success');
+        } else {
+          showToast('Waiting queue is currently empty. Desk station idle.');
+        }
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // 5. Skip Current Action
+    function confirmSkip() {
+      const reason = document.getElementById('skip-reason').value;
+      try {
+        Store.skipToken(currentToken.id, reason);
+        closeModal('skip-confirm-modal');
+        showToast(`Token ${currentToken.num} SKIPPED (${reason})`, 'warning');
+        callNext();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // 6. Transfer Current Action
+    function confirmTransfer() {
+      const targetCounter = document.getElementById('transfer-counter').value;
+      const notes = document.getElementById('transfer-notes').value;
+      try {
+        Store.transferToken(currentToken.id, 'srv-2', targetCounter, notes);
+        closeModal('transfer-desk-modal');
+        showToast(`Token ${currentToken.num} transferred to ${targetCounter}.`, 'success');
+        callNext();
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+    }
+
+    // 7. Toggle 10m Break
+    const breakBtn = document.getElementById('btn-toggle-break');
+    const breakBtnText = document.getElementById('break-btn-text');
+    const indicator = document.getElementById('terminal-status-indicator');
+
+    breakBtn.addEventListener('click', () => {
+      isBreak = !isBreak;
+      if (isBreak) {
+        breakBtnText.textContent = 'Resume Duty';
+        breakBtn.classList.add('btn--danger');
+        indicator.className = 'status-pill status-pill--priority';
+        indicator.innerHTML = '<span style="width:6px; height:6px; border-radius:50%; background:#F59E0B;"></span><span>Counter 02 • ON RECESS (10m)</span>';
+        showToast('Desk marked ON RECESS. Active tokens routed to overflow desks.');
+      } else {
+        breakBtnText.textContent = 'Take 10m Break';
+        breakBtn.classList.remove('btn--danger');
+        indicator.className = 'status-pill status-pill--completed';
+        indicator.innerHTML = '<span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span><span>Counter 02 • ONLINE / ACTIVE</span>';
+        showToast('Desk RESUMED. Ready for dispatch.', 'success');
+      }
+    });
+
+    // 8. Chime Desk
+    const chimeBtn = document.getElementById('btn-chime-desk');
+    chimeBtn.addEventListener('click', () => {
+      playChime();
+      speakAnnouncement(currentToken.num, 'Counter 02', 'Certificate Desk', 'Room 104');
+      showToast(`Chime and voice announcement dispatched for ${currentToken.num}`);
+    });
+
+    const recallBtn = document.getElementById('btn-recall');
+    recallBtn.addEventListener('click', () => {
+      playChime();
+      speakAnnouncement(currentToken.num, 'Counter 02', 'Certificate Desk', 'Room 104');
+      showToast(`Re-calling Token ${currentToken.num}`);
+    });
+
+    // Event listeners
+    document.getElementById('btn-complete-token').addEventListener('click', completeCurrent);
+    document.getElementById('mobile-btn-complete').addEventListener('click', completeCurrent);
+
+    document.getElementById('btn-call-next').addEventListener('click', callNext);
+    document.getElementById('mobile-btn-call-next').addEventListener('click', callNext);
+
+    document.getElementById('mobile-btn-chime').addEventListener('click', () => {
+      playChime();
+      showToast('Chime emitted.');
+    });
+
+    document.getElementById('btn-confirm-skip').addEventListener('click', confirmSkip);
+    document.getElementById('btn-confirm-transfer').addEventListener('click', confirmTransfer);
+
+    // Call specific from table
+    window.callSpecificToken = function(num, name) {
+      const called = Store.callToken(num, 'cnt-2');
+      currentToken = {
+        id: called ? called.id : 'tok-' + num.toLowerCase(),
+        num: num,
+        name: name,
+        service: called?.serviceName || 'Certificate Application'
+      };
+      document.getElementById('active-token-display').textContent = num;
+      document.getElementById('active-citizen-name').textContent = name;
+      resetSessionTimer();
+      playChime();
+      speakAnnouncement(num, 'Counter 02', 'Certificate Desk', 'Room 104');
+      showToast(`Called Token ${num} (${name}) directly to Counter 02`, 'success');
+    };
+
+    // Filter roster tabs
+    const segmentBtns = document.querySelectorAll('.segment-btn');
+    const tableRows = document.querySelectorAll('#waiting-roster-table tbody tr');
+
+    segmentBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        segmentBtns.forEach(b => b.classList.remove('segment-btn--active'));
+        btn.classList.add('segment-btn--active');
+        const filter = btn.getAttribute('data-filter');
+
+        tableRows.forEach(row => {
+          const type = row.getAttribute('data-type');
+          if (filter === 'all' || filter === type) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // Quick search roster
+    const rosterSearch = document.getElementById('roster-search');
+    if (rosterSearch) {
+      rosterSearch.addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase();
+        const rows = document.querySelectorAll('#waiting-roster-table tbody tr');
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          row.style.display = text.includes(q) ? '' : 'none';
+        });
+      });
+    }
+
+    // Dynamic Roster sync from reactive Store
+    function updateRosterFromStore() {
+      const queue = Store.getQueue('srv-1');
+      const tbody = document.querySelector('#waiting-roster-table tbody');
+      if (!tbody) return;
+
+      if (queue.length === 0) return;
+
+      tbody.innerHTML = queue.map((t, idx) => {
+        const isPriority = ['senior_disabled', 'mobility', 'expectant'].includes(t.priority);
+        const prioTag = t.priority === 'senior_disabled' ? 'Senior 65+' : (t.priority === 'mobility' ? 'Mobility' : (t.priority === 'expectant' ? 'Expectant' : 'Priority'));
+        const waitMins = Math.max(1, Math.round((Date.now() - t.createdAt) / 60000));
+
+        return `
+          <tr data-type="${isPriority ? 'priority' : 'standard'}">
+            <td data-label="TOKEN ID">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <strong style="font-size:1.15rem; font-family:var(--font-family-mono); color:${isPriority ? '#D97706' : '#2563EB'};">${t.tokenNumber}</strong>
+                ${idx === 0 ? '<span style="background:#2563EB; color:#FFFFFF; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:3px;">NEXT IN LINE</span>' : ''}
+                ${isPriority ? `<span style="background:#FEF3C7; color:#D97706; font-size:9px; font-weight:bold; padding:2px 6px; border-radius:3px;">${prioTag}</span>` : ''}
+              </div>
+            </td>
+            <td data-label="CITIZEN NAME">
+              <div>
+                <strong style="color:var(--color-primary);">${t.citizenName}</strong>
+                <div style="font-size:11px; color:#64748B;">${t.phone || 'In-Person Kiosk'}</div>
+              </div>
+            </td>
+            <td data-label="SERVICE">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:16px; color:#64748B;">description</span>
+                <span>Certificate Application</span>
+              </div>
+            </td>
+            <td data-label="ARRIVAL TIME">
+              <div>${new Date(t.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</div>
+            </td>
+            <td data-label="WAIT DURATION">
+              <span style="background:#EFF6FF; color:#1D4ED8; font-size:11px; font-weight:bold; padding:3px 8px; border-radius:4px;">
+                ${waitMins} mins
+              </span>
+            </td>
+            <td data-label="QUEUE STATE">
+              <span style="display:flex; align-items:center; gap:6px; color:${isPriority ? '#D97706' : '#2563EB'}; font-weight:bold; font-size:12px;">
+                <span style="width:6px; height:6px; border-radius:50%; background:${isPriority ? '#D97706' : '#2563EB'};"></span>
+                <span>${isPriority ? 'Priority Fast-Track' : 'Waiting in Lounge'}</span>
+              </span>
+            </td>
+            <td data-label="ACTIONS" style="text-align:right;">
+              <button type="button" class="btn btn--primary" onclick="callSpecificToken('${t.tokenNumber}', '${t.citizenName}')" style="padding:6px 14px; font-size:12px;">
+                <span>Call Immediately</span>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    Store.subscribe(() => {
+      updateRosterFromStore();
+    });
+  </script>
+</body>
+</html>

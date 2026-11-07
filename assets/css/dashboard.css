@@ -1,0 +1,729 @@
+/* ==========================================================================
+   QueueEase Staff & Admin Dashboard Styles
+   assets/css/dashboard.css
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. Dashboard Shell Layout
+   -------------------------------------------------------------------------- */
+.app,
+.dashboard-layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  min-height: 100dvh;
+  background-color: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-family);
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+/* Sidebar (Desktop 1024px+) */
+.dashboard-sidebar {
+  width: 260px;
+  background-color: var(--color-primary);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  position: sticky;
+  top: 0;
+  height: 100dvh;
+  overflow-y: auto;
+  z-index: 30;
+  box-sizing: border-box;
+}
+
+.dashboard-sidebar__header {
+  padding: var(--space-5) var(--space-4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.dashboard-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: #FFFFFF;
+  margin-bottom: var(--space-3);
+}
+
+.dashboard-sidebar__logo-box {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-control);
+  background: var(--color-secondary);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dashboard-sidebar__hub-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  background: rgba(16, 185, 129, 0.15);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #34D399;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.04em;
+}
+
+.dashboard-sidebar__nav {
+  flex: 1;
+  padding: var(--space-4) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.dashboard-nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: var(--radius-control);
+  color: #94A3B8;
+  font-size: var(--font-body-sm);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: none;
+  transition: all 0.15s ease;
+}
+
+.dashboard-nav-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-nav-link[aria-current="page"],
+.dashboard-nav-link.dashboard-nav-link--active {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+}
+.dashboard-nav-link[aria-current="page"]:hover,
+.dashboard-nav-link.dashboard-nav-link--active:hover {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+}
+
+.dashboard-sidebar__footer {
+  padding: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.sidebar-station-info {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94A3B8;
+}
+
+/* Mobile Off-Canvas Left Side Drawer (<1024px) */
+@media (max-width: 1023px) {
+  .app,
+  .dashboard-layout {
+    display: block;
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: clamp(240px, 33.33vw, 420px);
+    height: 100dvh;
+    transform: translateX(-100%);
+    visibility: hidden;
+    pointer-events: none;
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.45);
+    z-index: 100;
+    transition: transform 220ms ease, visibility 220ms ease;
+  }
+  .dashboard-sidebar.dashboard-sidebar--open,
+  .dashboard-sidebar.is-open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw;
+    height: 100dvh;
+    background: rgba(20, 45, 78, 0.45);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+    z-index: 90;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 220ms ease, visibility 220ms ease;
+  }
+  .sidebar-backdrop.sidebar-backdrop--visible,
+  .sidebar-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  #dashboard-hamburger-btn,
+  #admin-hamburger-btn {
+    display: flex !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .app,
+  .dashboard-layout {
+    display: grid;
+    grid-template-columns: 260px minmax(0, 1fr);
+  }
+
+  .dashboard-sidebar {
+    position: sticky;
+    top: 0;
+    width: 260px;
+    height: 100dvh;
+    transform: none !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+    box-shadow: none !important;
+  }
+  .sidebar-backdrop {
+    display: none !important;
+  }
+  #dashboard-hamburger-btn,
+  #admin-hamburger-btn {
+    display: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-sidebar,
+  .sidebar-backdrop {
+    transition: none !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   2. Dashboard Main Content & Topbar
+   -------------------------------------------------------------------------- */
+.dashboard-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+  height: auto;
+  min-height: 0;
+}
+
+.dashboard-topbar {
+  background-color: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  padding: 10px clamp(16px, 2vw, 32px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  margin-top: 0 !important;
+}
+
+.dashboard-topbar__search-wrap {
+  flex: 1;
+  max-width: 440px;
+  position: relative;
+}
+
+.dashboard-topbar__search-input {
+  width: 100%;
+  height: 40px;
+  padding: 0 12px 0 38px;
+  border-radius: var(--radius-control);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-background);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-text);
+  transition: all 0.15s ease;
+}
+.dashboard-topbar__search-input:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  background-color: var(--color-card);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.dashboard-topbar__search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-muted);
+  font-size: 20px;
+  pointer-events: none;
+}
+
+.dashboard-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.dashboard-user-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px;
+  border-radius: var(--radius-control);
+  text-decoration: none;
+  color: var(--color-text);
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease;
+}
+.dashboard-user-badge:hover {
+  background-color: var(--color-card-subtle);
+}
+
+.dashboard-body {
+  flex: 1;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 1440px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dashboard-body > * {
+  margin-top: 0;
+}
+
+@media (min-width: 1024px) {
+  .dashboard-body {
+    padding: 24px;
+    gap: 24px;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   3. Metric Cards & Sparklines
+   -------------------------------------------------------------------------- */
+.dashboard-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+@media (min-width: 640px) {
+  .dashboard-stats-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+  .dashboard-stats-grid { grid-template-columns: repeat(4, 1fr); }
+}
+
+.stat-card-staff {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stat-card-staff--dark {
+  background: var(--color-primary-gradient);
+  border: 1.5px solid var(--color-secondary);
+  color: #FFFFFF;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.15);
+}
+
+.stat-card-staff__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+.stat-card-staff__value {
+  font-size: 2.25rem;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+  line-height: 1;
+  color: var(--color-primary);
+}
+.stat-card-staff--dark .stat-card-staff__value {
+  color: #FFFFFF;
+}
+
+.stat-sparkline {
+  width: 90px;
+  height: 28px;
+}
+
+/* --------------------------------------------------------------------------
+   4. Live Queue Velocity Chart & Event Feed
+   -------------------------------------------------------------------------- */
+.chart-and-feed-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+}
+@media (min-width: 1024px) {
+  .chart-and-feed-grid {
+    grid-template-columns: 1.7fr 1fr;
+  }
+}
+
+.chart-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+}
+
+.chart-svg-container {
+  width: 100%;
+  height: 220px;
+  margin: var(--space-4) 0 var(--space-3);
+  position: relative;
+}
+
+.chart-bar {
+  cursor: pointer;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+}
+.chart-bar:hover {
+  opacity: 0.85;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background: #0B1C30;
+  color: #FFFFFF;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+  font-size: 11px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+/* Live Event Stream */
+.event-stream-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+}
+
+.event-stream-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  flex: 1;
+}
+
+.event-stream-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border-subtle);
+}
+.event-stream-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.event-stream-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* --------------------------------------------------------------------------
+   5. Registry Counter Status Grid (6 Desks)
+   -------------------------------------------------------------------------- */
+.counter-status-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+@media (min-width: 640px) {
+  .counter-status-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1100px) {
+  .counter-status-grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+.desk-status-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-4);
+  box-shadow: var(--shadow-1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.desk-status-card--my-desk {
+  border: 2px solid var(--color-secondary);
+  background: var(--color-card);
+}
+
+.desk-status-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.desk-status-card__box {
+  background: var(--color-card-subtle);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-2);
+}
+
+/* --------------------------------------------------------------------------
+   6. Duty SLA Benchmark Ring
+   -------------------------------------------------------------------------- */
+.sla-ring-container {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  margin: var(--space-3) 0;
+}
+
+.sla-circle-svg {
+  width: 100px;
+  height: 100px;
+  transform: rotate(-90deg);
+}
+
+.sla-speed-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   7. Console View (S9) Specific Components
+   -------------------------------------------------------------------------- */
+.console-active-hero {
+  background: var(--color-primary-gradient);
+  border: 2px solid var(--color-secondary);
+  border-radius: var(--radius-card-lg);
+  padding: clamp(18px, 2.5vw, 32px);
+  color: #FFFFFF;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.2);
+}
+
+.console-active-hero__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-5);
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.console-active-hero__grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-5);
+  margin-bottom: var(--space-6);
+}
+@media (min-width: 768px) {
+  .console-active-hero__grid {
+    grid-template-columns: 1fr 1.4fr;
+  }
+}
+
+.console-action-btns-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.console-action-btns-row .btn {
+  min-height: 44px;
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+}
+
+/* Mobile Bottom Action Bar (phones) */
+.console-mobile-bar {
+  display: none;
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #0B1C30;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+  z-index: var(--z-header);
+  gap: 8px;
+}
+@media (max-width: 767px) {
+  .console-mobile-bar {
+    display: flex;
+  }
+  body.has-console-bar {
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+}
+
+/* --------------------------------------------------------------------------
+   8. Data Tables & Responsive Stacked Cards (<768px)
+   -------------------------------------------------------------------------- */
+.data-table-wrap {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-1);
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13px;
+}
+
+.data-table th {
+  background-color: var(--color-background);
+  padding: 12px 16px;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-muted);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.data-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--color-border-subtle);
+  vertical-align: middle;
+}
+
+.data-table tr:hover td {
+  background-color: var(--color-background);
+}
+
+/* Responsive Table into Stacked Cards on Mobile */
+@media (max-width: 767px) {
+  .data-table-responsive {
+    border: none;
+    background: transparent;
+    box-shadow: none;
+  }
+  .data-table-responsive thead {
+    display: none;
+  }
+  .data-table-responsive tbody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+  .data-table-responsive tr {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-1);
+  }
+  .data-table-responsive td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--color-border-subtle);
+  }
+  .data-table-responsive td:last-child {
+    border-bottom: none;
+    padding-top: 12px;
+    justify-content: flex-end;
+  }
+  .data-table-responsive td::before {
+    content: attr(data-label);
+    font-weight: var(--font-weight-bold);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--color-muted);
+    letter-spacing: 0.04em;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   9. Operational States Reference Cards (History S10)
+   -------------------------------------------------------------------------- */
+.operational-states-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  margin-top: var(--space-4);
+}
+@media (min-width: 900px) {
+  .operational-states-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.op-state-card {
+  background-color: var(--color-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-card);
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}

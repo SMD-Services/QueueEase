@@ -1,0 +1,509 @@
+/* ==========================================================================
+   QueueEase Full-Screen TV Signage Display Styles (16:9 Responsive)
+   assets/css/signage.css
+   ========================================================================== */
+
+:root {
+  --signage-bg: #070E1E;
+  --signage-panel-bg: #0D1B36;
+  --signage-panel-border: rgba(59, 130, 246, 0.25);
+  --signage-accent-blue: #2563EB;
+  --signage-accent-teal: #14B8A6;
+  --signage-accent-amber: #F59E0B;
+}
+
+body.signage-mode {
+  background-color: var(--signage-bg);
+  color: #FFFFFF;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family);
+  overflow-x: hidden;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --------------------------------------------------------------------------
+   1. Signage Top Header Bar
+   -------------------------------------------------------------------------- */
+.signage-header {
+  background-color: #0B162C;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
+  padding: 12px clamp(16px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.signage-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.signage-header__logo-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background: #064E3B;
+  color: #34D399;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.signage-header__title-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.signage-header__title {
+  font-size: clamp(1.25rem, 2vw, 1.85rem);
+  font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+  letter-spacing: -0.01em;
+}
+
+.signage-header__zone-tag {
+  background-color: #064E3B;
+  color: #6EE7B7;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.signage-header__sub {
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+  color: #94A3B8;
+}
+
+.signage-header__right {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2vw, 24px);
+}
+
+.signage-live-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background-color: rgba(6, 78, 59, 0.7);
+  color: #34D399;
+  font-size: 12px;
+  font-weight: var(--font-weight-bold);
+  border: 1px solid #059669;
+}
+
+.signage-clock-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.signage-clock-time {
+  font-size: clamp(1.5rem, 2.5vw, 2.25rem);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+  color: #FFFFFF;
+  line-height: 1;
+}
+
+.signage-clock-date {
+  font-size: 11px;
+  color: #94A3B8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   2. Signage Secondary Toolbar
+   -------------------------------------------------------------------------- */
+.signage-toolbar {
+  background-color: #0E1D3B;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 8px clamp(16px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.signage-toolbar__controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.signage-tool-btn {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  color: #94A3B8;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.signage-tool-btn:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+.signage-tool-btn--active {
+  background-color: var(--color-secondary);
+  color: #FFFFFF;
+  border-color: #60A5FA;
+}
+
+/* --------------------------------------------------------------------------
+   3. Signage Main Layout (Left 55% / Right 45% on 16:9)
+   -------------------------------------------------------------------------- */
+.signage-main-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(16px, 2vw, 28px);
+  padding: clamp(16px, 2.5vw, 32px);
+}
+
+@media (min-width: 1024px) {
+  .signage-main-grid {
+    grid-template-columns: 1.15fr 1fr;
+  }
+}
+
+/* Left Hero: Now Serving */
+.now-serving-hero-panel {
+  background: linear-gradient(135deg, #0F234A 0%, #0A1730 100%);
+  border: 2px solid #2563EB;
+  border-radius: var(--radius-card-lg);
+  padding: clamp(20px, 3vw, 36px);
+  box-shadow: 0 10px 40px rgba(37, 99, 235, 0.2);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.now-serving-hero-panel--flash {
+  animation: panel-summon-flash 1.2s ease 2;
+}
+
+@keyframes panel-summon-flash {
+  0% { box-shadow: 0 0 0 rgba(37, 99, 235, 0); border-color: #2563EB; }
+  50% { box-shadow: 0 0 60px rgba(20, 184, 166, 0.9); border-color: #2DD4BF; }
+  100% { box-shadow: 0 0 0 rgba(37, 99, 235, 0); border-color: #2563EB; }
+}
+
+.now-serving-hero__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--space-4);
+  gap: var(--space-2);
+}
+
+.now-serving-hero__badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.now-serving-hero__title {
+  font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+  font-weight: var(--font-weight-bold);
+  color: #38BDF8;
+  letter-spacing: 0.04em;
+}
+
+.now-serving-hero__sub {
+  font-size: 11px;
+  color: #94A3B8;
+  letter-spacing: 0.06em;
+  margin-top: 2px;
+}
+
+.now-serving-hero__proceed-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background-color: rgba(20, 184, 166, 0.2);
+  border: 1px solid #14B8A6;
+  color: #2DD4BF;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.05em;
+}
+
+/* Huge Number Box */
+.now-serving-hero__number-center {
+  text-align: center;
+  padding: clamp(16px, 2vw, 32px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.now-serving-hero__id-label {
+  font-size: 13px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #94A3B8;
+  margin-bottom: 8px;
+}
+
+.now-serving-hero__number {
+  font-size: clamp(4.5rem, 11vw, 9rem);
+  font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+  font-family: var(--font-family-mono);
+  line-height: 0.95;
+  letter-spacing: -0.04em;
+  text-shadow: 0 4px 30px rgba(0, 0, 0, 0.4);
+}
+
+.now-serving-hero__pills-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+  flex-wrap: wrap;
+}
+
+/* Assigned Station Footer Bar */
+.now-serving-hero__station-footer {
+  background-color: #071328;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--radius-card-sm);
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.now-serving-hero__counter-box {
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-sm);
+  background-color: #2563EB;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+}
+
+/* Right Column Panels */
+.signage-right-col {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(16px, 2vw, 24px);
+}
+
+.signage-sub-panel {
+  background-color: var(--signage-panel-bg);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-card);
+  padding: clamp(14px, 2vw, 20px);
+}
+
+.signage-sub-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.signage-sub-panel__title {
+  font-size: clamp(0.9rem, 1.2vw, 1.15rem);
+  font-weight: var(--font-weight-bold);
+  color: #FFFFFF;
+  letter-spacing: 0.03em;
+}
+
+/* 4 Up Next Tiles */
+.up-next-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.up-next-card {
+  background-color: #FFFFFF;
+  color: #0B1C30;
+  border-radius: var(--radius-card-sm);
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 104px;
+}
+
+.up-next-card--priority {
+  background: linear-gradient(135deg, #042F2E 0%, #064E3B 100%);
+  color: #FFFFFF;
+  border: 1.5px solid #14B8A6;
+}
+
+.up-next-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  color: #64748B;
+  text-transform: uppercase;
+}
+.up-next-card--priority .up-next-card__top {
+  color: #6EE7B7;
+}
+
+.up-next-card__num {
+  font-size: clamp(1.75rem, 2.5vw, 2.25rem);
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+  line-height: 1.1;
+  color: #0B1C30;
+}
+.up-next-card--priority .up-next-card__num {
+  color: #34D399;
+}
+
+.up-next-card__bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #64748B;
+  font-weight: var(--font-weight-medium);
+}
+.up-next-card--priority .up-next-card__bottom {
+  color: #A7F3D0;
+}
+
+/* 6 Counters Fleet Overview */
+.counters-fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-2);
+}
+
+.counter-fleet-card {
+  background-color: #08142C;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-sm);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.counter-fleet-card--active {
+  background: #102A5C;
+  border-color: #3B82F6;
+}
+
+.counter-fleet-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 11px;
+  color: #94A3B8;
+  font-weight: var(--font-weight-semibold);
+  margin-bottom: 2px;
+}
+
+.counter-fleet-card__token {
+  font-size: 1.25rem;
+  font-weight: var(--font-weight-bold);
+  font-family: var(--font-family-mono);
+  color: #FFFFFF;
+}
+
+.counter-fleet-card__sub {
+  font-size: 10px;
+  color: #64748B;
+}
+
+/* --------------------------------------------------------------------------
+   4. Bottom Document Banner & Ticker
+   -------------------------------------------------------------------------- */
+.signage-bottom-notice {
+  background-color: #0F203E;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 10px clamp(16px, 3vw, 36px);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 12px;
+  flex-wrap: wrap;
+}
+
+.signage-ticker-bar {
+  background-color: #050B17;
+  border-top: 1px solid #DC2626;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+
+.signage-ticker-label {
+  background-color: #EF4444;
+  color: #FFFFFF;
+  font-size: 11px;
+  font-weight: var(--font-weight-bold);
+  letter-spacing: 0.06em;
+  padding: 0 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+  z-index: 2;
+}
+
+.signage-ticker-marquee {
+  flex: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.signage-ticker-text {
+  display: inline-block;
+  padding-left: 100%;
+  animation: marquee-scroll 25s linear infinite;
+  font-size: 13px;
+  color: #F8FAFC;
+  font-weight: var(--font-weight-medium);
+}
+
+@keyframes marquee-scroll {
+  0%   { transform: translate(0, 0); }
+  100% { transform: translate(-100%, 0); }
+}

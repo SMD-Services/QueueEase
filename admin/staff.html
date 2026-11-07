@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Civic Staff & Operator Directory - QueueEase Enterprise</title>
+  <meta name="description" content="Municipal personnel roster, counter station linkages, security tiers, and shift handover control for Regional Director Marcus Vance." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+</head>
+<body class="dashboard-layout">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Admin Sidebar -->
+  <aside class="dashboard-sidebar" id="admin-sidebar" role="navigation" aria-label="Administrative Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/admin/overview.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box" style="background:#0F234A;">
+          <span class="material-symbols-outlined" style="font-size:22px;">account_balance</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">ENTERPRISE CONSOLE</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge" style="background:rgba(37,99,235,0.2); border-color:#3B82F6; color:#93C5FD;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#60A5FA;"></span>
+        <span>CIVIC HUB 07</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/admin/overview.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/admin/counters.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">storefront</span>
+        <span>Manage Counters</span>
+      </a>
+      <a href="/admin/staff.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">badge</span>
+        <span>Manage Staff</span>
+      </a>
+      <a href="/staff/history.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>All Tokens</span>
+      </a>
+      <a href="/display/signage.html" class="dashboard-nav-link" target="_blank" rel="noopener">
+        <span class="material-symbols-outlined">tv</span>
+        <span>Lounge Display</span>
+      </a>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('add-staff-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">person_add</span>
+        <span>Add Personnel</span>
+      </button>
+      <button type="button" class="dashboard-nav-link" onclick="openModal('lockout-modal')" style="background:none; border:none; width:100%; text-align:left; cursor:pointer;">
+        <span class="material-symbols-outlined">lock_reset</span>
+        <span>Terminal Lockout</span>
+      </button>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:bold;">Cluster Node G-104</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Online • Latency 8ms</div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:var(--radius-control); padding:8px 10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="avatar" style="width:32px; height:32px; background:#2563EB; color:#FFFFFF; font-weight:bold; font-size:12px;">MV</div>
+          <div>
+            <div style="font-size:12px; font-weight:bold; color:#FFFFFF;">Marcus Vance</div>
+            <div style="font-size:10px; color:#94A3B8;">Regional Director</div>
+          </div>
+        </div>
+        <button type="button" class="btn-admin-logout" aria-label="Sign Out" style="background:none; border:none; color:#F87171; cursor:pointer; padding:4px;">
+          <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="admin-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+
+        <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:bold; color:var(--color-primary);" class="hide-mobile">
+          <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">domain</span>
+          <span>Central Metro Hall</span>
+          <span style="color:#94A3B8;">›</span>
+          <span style="color:#2563EB;">Civic Hub 07</span>
+        </div>
+
+        <div class="dashboard-topbar__search-wrap">
+          <span class="material-symbols-outlined dashboard-topbar__search-icon">search</span>
+          <input type="text" class="dashboard-topbar__search-input" placeholder="Search tokens, counters, staff, service codes..." aria-label="Global search" />
+        </div>
+      </div>
+
+      <div class="dashboard-topbar__right">
+        <a href="/citizen/issue.html" class="btn btn--primary" style="padding:8px 14px; font-size:12px; text-decoration:none;">
+          <span class="material-symbols-outlined" style="font-size:16px;">add_circle</span>
+          <span>Quick Issue Token</span>
+        </a>
+
+        <button type="button" class="btn btn--ghost" onclick="showToast('Regional telemetry synchronized.');" aria-label="Notifications" style="position:relative; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">notifications</span>
+          <span style="position:absolute; top:8px; right:8px; width:7px; height:7px; background:#EF4444; border-radius:50%;"></span>
+        </button>
+
+        <div class="avatar" style="width:36px; height:36px; background:#0F234A; color:#FFFFFF; font-weight:bold; font-size:13px;">
+          MV
+        </div>
+      </div>
+    </header>
+
+    <!-- Staff Body -->
+    <main class="dashboard-body">
+      <!-- Title & Live Status -->
+      <section style="display:flex; align-items:flex-start; justify-content:space-between; gap:var(--space-4); flex-wrap:wrap;">
+        <div>
+          <div style="display:inline-flex; align-items:center; gap:8px; font-size:11px; font-weight:bold; color:#2563EB; letter-spacing:0.04em; margin-bottom:4px;">
+            <span style="width:6px; height:6px; border-radius:50%; background:#2563EB;"></span>
+            <span>HUMAN RESOURCES & STATION ALLOCATION</span>
+            <span style="color:#CBD5E1;">•</span>
+            <span style="color:#64748B;">NODE CLUSTER G-104</span>
+          </div>
+          <h1 style="font-size:clamp(1.5rem, 2.2vw, 2rem); font-weight:bold; color:var(--color-primary); margin:0 0 4px;">
+            Civic Staff & Operator Directory
+          </h1>
+          <div style="font-size:var(--font-body-sm); color:var(--color-text-secondary); max-width:840px;">
+            Manage counter personnel, authentication privileges, shift assignments, and counter linkages across civic service bays.
+          </div>
+        </div>
+
+        <div class="status-pill status-pill--completed" style="font-size:11px; padding:6px 14px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+          <span>TELEMETRY STREAM • Live • Sync Interval 3s</span>
+        </div>
+      </section>
+
+      <!-- 4 KPI Tiles Grid -->
+      <section class="dashboard-stats-grid" aria-label="Staff Metrics">
+        <!-- 1. Total Registered -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">TOTAL STAFF REGISTERED</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">badge</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="stat-card-staff__value" id="staff-total-count">24</span>
+            <span style="font-size:12px; color:#64748B;">credentialed users</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:10px; font-size:11px; color:#059669;">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span>
+            <span>All background checks verified</span>
+          </div>
+        </div>
+
+        <!-- 2. Active on Duty -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">ACTIVE ON DUTY</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">desktop_windows</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="stat-card-staff__value">18</span>
+            <span style="font-size:12px; color:#64748B;">/ 20 operational stations</span>
+          </div>
+          <div style="height:5px; background:#E2E8F0; border-radius:3px; overflow:hidden; margin-top:10px;">
+            <div style="width:90%; height:100%; background:#10B981; border-radius:3px;"></div>
+          </div>
+        </div>
+
+        <!-- 3. Scheduled Shift -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">SCHEDULED SHIFT</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#EFF6FF; color:#3B82F6; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">schedule</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="stat-card-staff__value">4</span>
+            <span style="font-size:12px; color:#64748B;">entering at 14:00</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:10px; font-size:11px; color:#64748B;">
+            <span class="material-symbols-outlined" style="font-size:14px; color:#F59E0B;">update</span>
+            <span>Evening changeover in 42m</span>
+          </div>
+        </div>
+
+        <!-- 4. Admin Supervisors -->
+        <div class="stat-card-staff">
+          <div class="stat-card-staff__top">
+            <span style="font-size:11px; font-weight:bold; color:var(--color-muted); text-transform:uppercase;">ADMIN SUPERVISORS</span>
+            <div style="width:32px; height:32px; border-radius:6px; background:#FAF5FF; color:#9333EA; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">security</span>
+            </div>
+          </div>
+          <div style="display:flex; align-items:baseline; gap:8px;">
+            <span class="stat-card-staff__value" style="color:#9333EA;">2</span>
+            <span style="font-size:12px; color:#64748B;">Tier-4 clearance</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px; margin-top:10px; font-size:11px; color:#059669;">
+            <span class="material-symbols-outlined" style="font-size:14px;">verified</span>
+            <span>Floor escalations armed</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Search & Filter Controls -->
+      <section class="card" style="padding:var(--space-4);">
+        <div style="display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+          <div style="flex:1; min-width:260px; position:relative;">
+            <input type="text" id="staff-search-input" placeholder="Filter by officer name, STF identifier, counter..." style="width:100%; height:40px; padding:0 12px 0 38px; border:1px solid var(--color-border); border-radius:var(--radius-control); font-size:13px;" />
+            <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:#94A3B8; font-size:18px;">search</span>
+          </div>
+
+          <select id="staff-role-filter" style="height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:13px;">
+            <option value="all">Role: All Roles</option>
+            <option value="Senior Registrar">Senior Registrar</option>
+            <option value="Counter Officer">Counter Officer</option>
+            <option value="Verification Specialist">Verification Specialist</option>
+            <option value="Operations Lead">Operations Lead</option>
+          </select>
+
+          <select id="staff-shift-filter" style="height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 12px; font-size:13px;">
+            <option value="all">Shift: All Shifts</option>
+            <option value="Morning Shift">Morning Shift (08:00 - 14:00)</option>
+            <option value="Evening Shift">Evening Shift (14:00 - 20:00)</option>
+            <option value="Rotation Shift">Rotation Shift</option>
+          </select>
+
+          <button type="button" class="btn btn--secondary" onclick="exportTokensCSV()" style="height:40px; padding:0 14px; font-size:12px;">
+            <span class="material-symbols-outlined">download</span>
+            <span>Export Roster CSV</span>
+          </button>
+
+          <button type="button" class="btn btn--primary" onclick="openModal('add-staff-modal')" style="height:40px; padding:0 16px; font-size:12px; background:#0F234A;">
+            <span class="material-symbols-outlined">person_add</span>
+            <span>+ Add New Staff Member</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Active Roster & Station Linkages Table -->
+      <section class="card" style="padding:0; overflow:hidden;">
+        <div style="padding:14px 20px; border-bottom:1px solid #E2E8F0; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <h2 style="font-size:1.15rem; font-weight:bold; color:var(--color-primary); margin:0;">
+              Active Roster & Station Linkages
+            </h2>
+            <span style="background:#F1F5F9; color:#475569; font-size:10px; font-weight:bold; padding:2px 8px; border-radius:4px;">
+              5 Officers Listed
+            </span>
+          </div>
+
+          <div style="display:flex; align-items:center; gap:16px; font-size:11px; color:#64748B;">
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+              <span>Active Counter Linked</span>
+            </span>
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#F59E0B;"></span>
+              <span>Break / Hold</span>
+            </span>
+            <span style="display:flex; align-items:center; gap:6px;">
+              <span style="width:6px; height:6px; border-radius:50%; background:#94A3B8;"></span>
+              <span>Off-duty Scheduled</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="data-table-wrap" style="border:none; box-shadow:none;">
+          <table class="data-table data-table-responsive" id="staff-roster-table">
+            <thead>
+              <tr>
+                <th>STAFF ID & AVATAR</th>
+                <th>OFFICIAL IDENTITY</th>
+                <th>USERNAME</th>
+                <th>COUNTER & STATION</th>
+                <th>ROLE & SECURITY TIER</th>
+                <th>DUTY SHIFT & STATE</th>
+                <th style="text-align:right;">TODAY'S SLA METRICS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Officer 1 -->
+              <tr onclick="openReassignModal('Officer Mark Jenkins', 'Counter 02', 'STF-4409')" style="cursor:pointer;">
+                <td data-label="STAFF ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:34px; height:34px; background:#142D4E; color:#FFFFFF; font-weight:bold; font-size:12px;">MJ</div>
+                    <div>
+                      <strong style="font-family:var(--font-family-mono); color:var(--color-primary);">STF-4409</strong>
+                      <div style="font-size:10px; color:#059669;">Biometric: OK</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="OFFICIAL IDENTITY">
+                  <div>
+                    <strong style="color:var(--color-primary);">Officer Mark Jenkins</strong>
+                    <div style="font-size:11px; color:#64748B;">m.jenkins@civic.metro.gov</div>
+                  </div>
+                </td>
+                <td data-label="USERNAME">
+                  <span style="font-family:var(--font-family-mono); font-size:12px; color:#2563EB;">@m.jenkins</span>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">storefront</span>
+                    <div>
+                      <strong>Counter 02</strong>
+                      <div style="font-size:10px; color:#64748B;">Room 104 • East Hall</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="ROLE">
+                  <div>
+                    <span style="background:#EFF6FF; color:#1E40AF; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">Senior Registrar</span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Tier-3 Clearance</div>
+                  </div>
+                </td>
+                <td data-label="SHIFT">
+                  <div>
+                    <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 6px;">
+                      <span style="width:5px; height:5px; border-radius:50%; background:#059669;"></span>
+                      <span>On Duty • Active</span>
+                    </span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Morning Shift (08:00 - 14:00)</div>
+                  </div>
+                </td>
+                <td data-label="METRICS" style="text-align:right;">
+                  <div>
+                    <strong style="color:var(--color-primary);">6m 12s avg</strong>
+                    <span style="color:#059669; font-weight:bold; font-size:11px;"> 99.1% SLA</span>
+                    <div style="font-size:10px; color:#64748B;">88 tokens served today</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Officer 2 -->
+              <tr onclick="openReassignModal('Officer Sarah Chen', 'Counter 01', 'STF-3210')" style="cursor:pointer;">
+                <td data-label="STAFF ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:34px; height:34px; background:#0D9488; color:#FFFFFF; font-weight:bold; font-size:12px;">SC</div>
+                    <div>
+                      <strong style="font-family:var(--font-family-mono); color:var(--color-primary);">STF-3210</strong>
+                      <div style="font-size:10px; color:#059669;">Biometric: OK</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="OFFICIAL IDENTITY">
+                  <div>
+                    <strong style="color:var(--color-primary);">Officer Sarah Chen</strong>
+                    <div style="font-size:11px; color:#64748B;">s.chen@civic.metro.gov</div>
+                  </div>
+                </td>
+                <td data-label="USERNAME">
+                  <span style="font-family:var(--font-family-mono); font-size:12px; color:#2563EB;">@s.chen</span>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">storefront</span>
+                    <div>
+                      <strong>Counter 01</strong>
+                      <div style="font-size:10px; color:#64748B;">Room 102 • Priority Bay</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="ROLE">
+                  <div>
+                    <span style="background:#F0FDF4; color:#166534; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">Counter Officer (Grade A)</span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Tier-2 Clearance</div>
+                  </div>
+                </td>
+                <td data-label="SHIFT">
+                  <div>
+                    <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 6px;">
+                      <span style="width:5px; height:5px; border-radius:50%; background:#059669;"></span>
+                      <span>On Duty • Active</span>
+                    </span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Morning Shift (08:00 - 14:00)</div>
+                  </div>
+                </td>
+                <td data-label="METRICS" style="text-align:right;">
+                  <div>
+                    <strong style="color:var(--color-primary);">5m 40s avg</strong>
+                    <span style="color:#059669; font-weight:bold; font-size:11px;"> 98.4% SLA</span>
+                    <div style="font-size:10px; color:#64748B;">94 tokens served today</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Officer 3 -->
+              <tr onclick="openReassignModal('Officer Elena Rostova', 'Counter 03', 'STF-8812')" style="cursor:pointer;">
+                <td data-label="STAFF ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:34px; height:34px; background:#D97706; color:#FFFFFF; font-weight:bold; font-size:12px;">ER</div>
+                    <div>
+                      <strong style="font-family:var(--font-family-mono); color:var(--color-primary);">STF-8812</strong>
+                      <div style="font-size:10px; color:#059669;">Biometric: OK</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="OFFICIAL IDENTITY">
+                  <div>
+                    <strong style="color:var(--color-primary);">Officer Elena Rostova</strong>
+                    <div style="font-size:11px; color:#64748B;">e.rostova@civic.metro.gov</div>
+                  </div>
+                </td>
+                <td data-label="USERNAME">
+                  <span style="font-family:var(--font-family-mono); font-size:12px; color:#2563EB;">@e.rostova</span>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">storefront</span>
+                    <div>
+                      <strong>Counter 03</strong>
+                      <div style="font-size:10px; color:#64748B;">Desk 106 • West Wing</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="ROLE">
+                  <div>
+                    <span style="background:#F1F5F9; color:#475569; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">Verification Specialist</span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Tier-2 Clearance</div>
+                  </div>
+                </td>
+                <td data-label="SHIFT">
+                  <div>
+                    <span class="status-pill status-pill--priority" style="font-size:10px; padding:2px 6px; background:#FEF3C7; color:#D97706;">
+                      <span style="width:5px; height:5px; border-radius:50%; background:#D97706;"></span>
+                      <span>On Recess (15m remaining)</span>
+                    </span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Morning Shift • Returns 12:45</div>
+                  </div>
+                </td>
+                <td data-label="METRICS" style="text-align:right;">
+                  <div>
+                    <strong style="color:var(--color-primary);">7m 05s avg</strong>
+                    <span style="color:#059669; font-weight:bold; font-size:11px;"> 97.8% SLA</span>
+                    <div style="font-size:10px; color:#64748B;">61 tokens served today</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Officer 4 -->
+              <tr onclick="openReassignModal('Officer James Thorne', 'Counter 04', 'STF-9021')" style="cursor:pointer;">
+                <td data-label="STAFF ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:34px; height:34px; background:#64748B; color:#FFFFFF; font-weight:bold; font-size:12px;">JT</div>
+                    <div>
+                      <strong style="font-family:var(--font-family-mono); color:var(--color-primary);">STF-9021</strong>
+                      <div style="font-size:10px; color:#059669;">Biometric: OK</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="OFFICIAL IDENTITY">
+                  <div>
+                    <strong style="color:var(--color-primary);">Officer James Thorne</strong>
+                    <div style="font-size:11px; color:#64748B;">j.thorne@civic.metro.gov</div>
+                  </div>
+                </td>
+                <td data-label="USERNAME">
+                  <span style="font-family:var(--font-family-mono); font-size:12px; color:#2563EB;">@j.thorne</span>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#94A3B8;">storefront</span>
+                    <div>
+                      <strong>Counter 04</strong>
+                      <div style="font-size:10px; color:#64748B;">Desk 108 • South Bay</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="ROLE">
+                  <div>
+                    <span style="background:#F1F5F9; color:#475569; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">Floor Greeter & Triage</span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Tier-1 Clearance</div>
+                  </div>
+                </td>
+                <td data-label="SHIFT">
+                  <div>
+                    <span class="status-pill status-pill--waiting" style="font-size:10px; padding:2px 6px;">
+                      <span>Shift Scheduled</span>
+                    </span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Evening Shift (Starts 14:00)</div>
+                  </div>
+                </td>
+                <td data-label="METRICS" style="text-align:right;">
+                  <div>
+                    <span style="font-size:11px; color:#64748B;">-- Pending check-in</span>
+                    <div style="font-size:10px; color:#64748B;">Last shift: 72 tokens</div>
+                  </div>
+                </td>
+              </tr>
+
+              <!-- Officer 5 -->
+              <tr onclick="openReassignModal('Supervisor Robert Vance', 'Command Kiosk', 'STF-1104')" style="cursor:pointer;">
+                <td data-label="STAFF ID">
+                  <div style="display:flex; align-items:center; gap:8px;">
+                    <div class="avatar" style="width:34px; height:34px; background:#4F46E5; color:#FFFFFF; font-weight:bold; font-size:12px;">RV</div>
+                    <div>
+                      <strong style="font-family:var(--font-family-mono); color:var(--color-primary);">STF-1104</strong>
+                      <div style="font-size:10px; color:#2563EB;">SecKey: 2FA Active</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="OFFICIAL IDENTITY">
+                  <div>
+                    <div style="display:flex; align-items:center; gap:4px;">
+                      <strong style="color:var(--color-primary);">Supervisor Robert Vance</strong>
+                      <span class="material-symbols-outlined" style="font-size:15px; color:#2563EB;">verified</span>
+                    </div>
+                    <div style="font-size:11px; color:#64748B;">r.vance@civic.metro.gov</div>
+                  </div>
+                </td>
+                <td data-label="USERNAME">
+                  <span style="font-family:var(--font-family-mono); font-size:12px; color:#2563EB;">@r.vance</span>
+                </td>
+                <td data-label="COUNTER">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:16px; color:#9333EA;">visibility</span>
+                    <div>
+                      <strong>Floating Supervisor</strong>
+                      <div style="font-size:10px; color:#64748B;">All Zones • Command Kiosk</div>
+                    </div>
+                  </div>
+                </td>
+                <td data-label="ROLE">
+                  <div>
+                    <span style="background:#FAF5FF; color:#7E22CE; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">Operations Lead</span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Tier-4 Master Clearance</div>
+                  </div>
+                </td>
+                <td data-label="SHIFT">
+                  <div>
+                    <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 6px;">
+                      <span style="width:5px; height:5px; border-radius:50%; background:#059669;"></span>
+                      <span>Floor Oversight Active</span>
+                    </span>
+                    <div style="font-size:10px; color:#64748B; margin-top:2px;">Rotation Shift (07:30 - 16:30)</div>
+                  </div>
+                </td>
+                <td data-label="METRICS" style="text-align:right;">
+                  <div>
+                    <strong style="color:var(--color-primary);">14 Overrides</strong>
+                    <span style="color:#059669; font-weight:bold; font-size:11px;"> 100% Resolved</span>
+                    <div style="font-size:10px; color:#64748B;">42 counter reassignments</div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:16px 20px; border-top:1px solid #F1F5F9; font-size:12px; color:#64748B; flex-wrap:wrap; gap:8px;">
+          <span>Displaying <strong>1 - 5</strong> of <strong>24</strong> authorized civic staff records</span>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <button type="button" class="btn btn--ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--color-border);">‹ Previous</button>
+            <button type="button" class="btn btn--primary" style="padding:4px 10px; font-size:12px; min-width:30px; justify-content:center;">1</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">2</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">3</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">4</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 10px; font-size:12px; border:1px solid var(--color-border);">5</button>
+            <button type="button" class="btn btn--ghost" style="padding:4px 8px; font-size:12px; border:1px solid var(--color-border);">Next ›</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom 3 Panels: Staffing Matrix, Shift Handover, Lockout -->
+      <section style="display:grid; grid-template-columns:1fr; gap:var(--space-4);" class="grid-desktop-3col">
+        <!-- Panel 1: Counter Staffing Matrix -->
+        <div class="card" style="padding:var(--space-4); display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#2563EB;">domain</span>
+                <h3 style="font-size:1.05rem; font-weight:bold; color:var(--color-primary); margin:0;">
+                  Counter Staffing Matrix
+                </h3>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 6px;">Real-time</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:12px;">
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Citizenship Registry (01-03)</span>
+                  <strong style="color:#059669;">100% Staffed</strong>
+                </div>
+                <div style="height:6px; background:#E2E8F0; border-radius:3px; overflow:hidden;">
+                  <div style="width:100%; height:100%; background:#10B981; border-radius:3px;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Civil Records & Licensing (04-08)</span>
+                  <strong style="color:#2563EB;">80% Staffed (4/5)</strong>
+                </div>
+                <div style="height:6px; background:#E2E8F0; border-radius:3px; overflow:hidden;">
+                  <div style="width:80%; height:100%; background:#2563EB; border-radius:3px;"></div>
+                </div>
+              </div>
+
+              <div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+                  <span>Express Permit Validation (09-12)</span>
+                  <strong style="color:#D97706;">75% Staffed (3/4)</strong>
+                </div>
+                <div style="height:6px; background:#E2E8F0; border-radius:3px; overflow:hidden;">
+                  <div style="width:75%; height:100%; background:#F59E0B; border-radius:3px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; border-top:1px solid #F1F5F9; padding-top:10px; margin-top:14px; font-size:11px;">
+            <span style="color:#64748B;">Required minimum ratio: <strong>70%</strong></span>
+            <a href="#" onclick="showToast('Facility graph generated.'); return false;" style="color:#2563EB; font-weight:bold; text-decoration:none;">View Facility Graph →</a>
+          </div>
+        </div>
+
+        <!-- Panel 2: Shift Handover Notice -->
+        <div class="card" style="padding:var(--space-4); display:flex; flex-direction:column; justify-content:space-between; border-left:4px solid #F59E0B;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#F59E0B;">notifications_active</span>
+                <h3 style="font-size:1.05rem; font-weight:bold; color:var(--color-primary); margin:0;">
+                  Shift Handover Notice
+                </h3>
+              </div>
+              <span style="width:8px; height:8px; border-radius:50%; background:#F59E0B;"></span>
+            </div>
+
+            <div style="background:#FEF3C7; border:1px solid #FDE68A; border-radius:var(--radius-control); padding:10px 12px; font-size:12px; color:#92400E; margin-bottom:12px;">
+              <div style="font-weight:bold; margin-bottom:2px;">14:00 Rotation Notice • T-minus 42 min</div>
+              4 relief officers checked into the security perimeter. Automatic token hold triggers at 13:55 for pending tickets.
+            </div>
+
+            <div style="font-size:11px; color:#64748B;">
+              Handover supervisor: <strong style="color:var(--color-primary);">Supervisor Robert Vance</strong>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--secondary" onclick="showToast('Pre-shift station diagnostic broadcast complete.', 'success');" style="margin-top:14px; width:100%; justify-content:center; font-size:12px;">
+            Trigger Pre-Shift Station Test
+          </button>
+        </div>
+
+        <!-- Panel 3: Terminal Token Lockout -->
+        <div class="card" style="padding:var(--space-4); display:flex; flex-direction:column; justify-content:space-between;">
+          <div>
+            <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span class="material-symbols-outlined" style="font-size:20px; color:#DC2626;">key</span>
+                <h3 style="font-size:1.05rem; font-weight:bold; color:var(--color-primary); margin:0;">
+                  Terminal Token Lockout
+                </h3>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:10px; padding:2px 6px;">Zero Violations</span>
+            </div>
+
+            <p style="font-size:11px; color:var(--color-text-secondary); line-height:1.5; margin:0 0 12px;">
+              Hardware token keys and smart card sessions are synchronized with directory credentials. Emergency counter lockdown halts token generation immediately.
+            </p>
+
+            <div style="display:flex; flex-direction:column; gap:6px; font-size:11px;">
+              <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#F8FAFC; border-radius:4px;">
+                <span>Emergency Station Freeze</span>
+                <strong style="color:#DC2626;">Armed</strong>
+              </div>
+              <div style="display:flex; justify-content:space-between; padding:6px 8px; background:#F8FAFC; border-radius:4px;">
+                <span>Auto-Idle Lock Timeout</span>
+                <strong>180 seconds</strong>
+              </div>
+            </div>
+          </div>
+
+          <a href="#" onclick="openModal('lockout-modal'); return false;" style="display:inline-block; margin-top:14px; font-size:11px; font-weight:bold; color:#2563EB; text-decoration:none;">
+            Review Hardware Security Policies →
+          </a>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal 1: Add New Staff Member Modal -->
+  <div class="sheet-backdrop" id="add-staff-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="add-staff-modal" role="dialog" aria-labelledby="add-staff-title" aria-modal="true" aria-hidden="true" style="max-width:500px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <h3 id="add-staff-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Add New Civic Operator
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('add-staff-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="add-staff-form" style="display:flex; flex-direction:column; gap:12px;">
+        <div>
+          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Full Legal Name</label>
+          <input type="text" id="new-staff-name" placeholder="e.g. Officer Daniel Gomez" required style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;" />
+        </div>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Staff ID Code</label>
+            <input type="text" id="new-staff-id" placeholder="STF-5582" required style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;" />
+          </div>
+          <div>
+            <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Assigned Station</label>
+            <select id="new-staff-desk" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 8px; font-size:13px;">
+              <option value="Counter 01">Counter 01 - Civil Registry</option>
+              <option value="Counter 02">Counter 02 - Certificate Desk</option>
+              <option value="Counter 03">Counter 03 - Verification Hub</option>
+              <option value="Counter 04">Counter 04 - Special Assistance</option>
+              <option value="Counter 05">Counter 05 - Public Enquiry</option>
+              <option value="Counter 06">Counter 06 - Auxiliary Overflow</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">Role & Security Tier</label>
+          <select id="new-staff-role" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+            <option>Counter Officer (Grade A) Tier-2</option>
+            <option>Senior Registrar Tier-3</option>
+            <option>Verification Specialist Tier-2</option>
+            <option>Floor Greeter & Triage Tier-1</option>
+          </select>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-top:6px;">
+          <button type="submit" class="btn btn--primary" style="flex:1; justify-content:center; background:#0F234A;">
+            <span>Save & Authorize Officer</span>
+          </button>
+          <button type="button" class="btn btn--secondary" onclick="closeModal('add-staff-modal')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Reassign Officer Modal -->
+  <div class="sheet-backdrop" id="reassign-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="reassign-modal" role="dialog" aria-labelledby="reassign-title" aria-modal="true" aria-hidden="true" style="max-width:460px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px;">
+        <h3 id="reassign-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Reassign Officer Station Linkage
+        </h3>
+        <button type="button" class="btn btn--ghost" onclick="closeModal('reassign-modal')" style="min-width:36px; min-height:36px; padding:4px;">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); margin-bottom:14px;">
+        Reallocate <strong id="reassign-officer-name" style="color:var(--color-primary);">Officer Mark Jenkins</strong> to a different civic bay or overflow window.
+      </p>
+
+      <div style="margin-bottom:14px;">
+        <label for="reassign-target-desk" style="font-size:12px; font-weight:bold; display:block; margin-bottom:4px;">New Target Counter</label>
+        <select id="reassign-target-desk" style="width:100%; height:40px; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:0 10px; font-size:13px;">
+          <option>Counter 01 - Room 102 (Civil Registry)</option>
+          <option>Counter 03 - Desk 106 (Verification Hub)</option>
+          <option>Counter 04 - Desk 108 (Special Assistance)</option>
+          <option>Counter 05 - Room 110 (Public Enquiry)</option>
+          <option>Counter 06 - Room 112 (Relief & Overflow)</option>
+        </select>
+      </div>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--primary" id="btn-save-reassign" style="flex:1; justify-content:center;">
+          <span>Update Counter Linkage</span>
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('reassign-modal')">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal 3: Terminal Token Lockout Modal -->
+  <div class="sheet-backdrop" id="lockout-modal-backdrop" aria-hidden="true"></div>
+  <div class="bottom-sheet" id="lockout-modal" role="dialog" aria-labelledby="lockout-title" aria-modal="true" aria-hidden="true" style="max-width:460px;">
+    <div class="sheet-drag-handle"></div>
+    <div style="padding:16px 20px 24px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; color:#DC2626;">
+        <span class="material-symbols-outlined" style="font-size:26px;">lock_clock</span>
+        <h3 id="lockout-title" style="font-size:1.2rem; font-weight:bold; color:var(--color-primary); margin:0;">
+          Emergency Terminal Lockout
+        </h3>
+      </div>
+
+      <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); line-height:1.5; margin-bottom:16px;">
+        Immediately freeze kiosk pass generation and terminate all active staff sessions. To be executed only under direct order of the Regional Director or during mandatory civic building evacuations.
+      </p>
+
+      <div style="display:flex; gap:10px;">
+        <button type="button" class="btn btn--danger" onclick="closeModal('lockout-modal'); showToast('Emergency Lockout Armed: Kiosk terminals frozen.', 'warning');" style="flex:1; justify-content:center; background:#DC2626; color:#FFFFFF; border:none;">
+          <span class="material-symbols-outlined">lock</span>
+          <span>Execute Facility Lockdown</span>
+        </button>
+        <button type="button" class="btn btn--secondary" onclick="closeModal('lockout-modal')">Dismiss</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initAdminShell } from '../assets/js/admin.js';
+    import { exportTokensCSV } from '../assets/js/staff.js';
+    import { openModal, closeModal, showToast } from '../assets/js/ui.js';
+
+    // 1. Initialize shell
+    initAdminShell('staff');
+
+    // 2. Reassign modal handler
+    window.openReassignModal = function(name, desk, id) {
+      document.getElementById('reassign-officer-name').textContent = `${name} (${id})`;
+      openModal('reassign-modal');
+    };
+
+    document.getElementById('btn-save-reassign').addEventListener('click', () => {
+      const target = document.getElementById('reassign-target-desk').value;
+      closeModal('reassign-modal');
+      showToast(`Station linkage updated: Assigned to ${target}.`, 'success');
+    });
+
+    // 3. Add staff form
+    document.getElementById('add-staff-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('new-staff-name').value;
+      const id = document.getElementById('new-staff-id').value;
+      const desk = document.getElementById('new-staff-desk').value;
+
+      closeModal('add-staff-modal');
+      showToast(`New operator ${name} (${id}) added to ${desk}.`, 'success');
+      
+      const countEl = document.getElementById('staff-total-count');
+      if (countEl) countEl.textContent = parseInt(countEl.textContent, 10) + 1;
+    });
+
+    // 4. Client Search & Filtering
+    const searchInput = document.getElementById('staff-search-input');
+    const roleFilter = document.getElementById('staff-role-filter');
+    const shiftFilter = document.getElementById('staff-shift-filter');
+    const rows = document.querySelectorAll('#staff-roster-table tbody tr');
+
+    function filterStaff() {
+      const q = searchInput.value.toLowerCase().trim();
+      const role = roleFilter.value;
+      const shift = shiftFilter.value;
+
+      rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        const matchesQuery = !q || text.includes(q);
+        const matchesRole = role === 'all' || text.includes(role.toLowerCase());
+        const matchesShift = shift === 'all' || text.includes(shift.toLowerCase());
+
+        row.style.display = (matchesQuery && matchesRole && matchesShift) ? '' : 'none';
+      });
+    }
+
+    searchInput.addEventListener('input', filterStaff);
+    roleFilter.addEventListener('change', filterStaff);
+    shiftFilter.addEventListener('change', filterStaff);
+  </script>
+</body>
+</html>

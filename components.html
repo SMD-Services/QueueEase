@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase Component Style Guide (390px Mobile & Desktop)</title>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+
+  <style>
+    /* Style-guide specific section wrappers */
+    .guide-section {
+      margin-bottom: var(--space-8);
+      padding-bottom: var(--space-6);
+      border-bottom: 1px dashed var(--color-border);
+    }
+    .guide-section__title {
+      font-size: var(--font-headline-md);
+      font-weight: var(--font-weight-bold);
+      color: var(--color-primary);
+      margin-bottom: var(--space-2);
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+    .guide-section__desc {
+      font-size: var(--font-body-sm);
+      color: var(--color-muted);
+      margin-bottom: var(--space-4);
+    }
+    .guide-code-tag {
+      font-family: var(--font-family-mono);
+      font-size: 11px;
+      padding: 2px 6px;
+      background: #E2E8F0;
+      border-radius: 4px;
+      color: var(--color-primary);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. Shared App Header Injected Target -->
+  <header id="app-header"></header>
+
+  <main class="container" style="padding-top: var(--space-6);">
+
+    <!-- Header Banner -->
+    <div class="card card--navy flow-col gap-3" style="margin-bottom: var(--space-6);">
+      <div class="flow-row justify-between items-center">
+        <span class="badge--live">
+          <span class="badge--live-dot"></span>
+          CIVIC FLOW DESIGN SYSTEM
+        </span>
+        <span class="text-label-xs color-muted">v2.0 • 390px First</span>
+      </div>
+      <h1 class="text-headline-lg font-bold">Component Style Guide</h1>
+      <p class="text-body-sm" style="color: rgba(255,255,255,0.8);">
+        Comprehensive, pixel-accurate showcase of all QueueEase atomic components, tokens, inputs, and interactive sheets.
+      </p>
+      <div class="flow-row gap-2">
+        <button type="button" class="btn btn--secondary btn--sm" id="btn-test-toast">
+          <span class="material-symbols-outlined" style="font-size:16px;">notifications_active</span>
+          Test Toast
+        </button>
+        <button type="button" class="btn btn--tertiary-teal btn--sm" id="btn-test-sheet">
+          <span class="material-symbols-outlined" style="font-size:16px;">vertical_align_top</span>
+          Test Bottom Sheet
+        </button>
+      </div>
+    </div>
+
+    <!-- 2. Typography Scale -->
+    <section class="guide-section" id="typography">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">text_fields</span>
+        Typography Scale
+      </h2>
+      <p class="guide-section__desc">Hanken Grotesk with high-contrast hierarchy and line heights.</p>
+      
+      <div class="card flow-col gap-3">
+        <div>
+          <span class="guide-code-tag">.text-display-2xl (44px)</span>
+          <div class="text-display-2xl font-bold color-primary">A008</div>
+        </div>
+        <div>
+          <span class="guide-code-tag">.text-headline-lg (28px)</span>
+          <div class="text-headline-lg font-bold color-primary">Welcome to QueueEase</div>
+        </div>
+        <div>
+          <span class="guide-code-tag">.text-title-lg (20px)</span>
+          <div class="text-title-lg font-semibold color-primary">Certificate Application</div>
+        </div>
+        <div>
+          <span class="guide-code-tag">.text-body-lg (16px)</span>
+          <div class="text-body-lg">Seamless digital access to civic departments and queues.</div>
+        </div>
+        <div>
+          <span class="guide-code-tag">.text-body-sm (14px)</span>
+          <div class="text-body-sm color-muted">Birth certificates, marriage records, and citizenship permits.</div>
+        </div>
+        <div>
+          <span class="guide-code-tag">.text-label-xs (11px uppercase)</span>
+          <div class="text-label-xs color-muted font-bold" style="letter-spacing: 0.05em;">ESTIMATED WAIT TIME • 15 MINS</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Buttons -->
+    <section class="guide-section" id="buttons">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">smart_button</span>
+        Buttons
+      </h2>
+      <p class="guide-section__desc">Touch-target min 44x44px with active tactile response.</p>
+
+      <div class="flow-col gap-3">
+        <button type="button" class="btn btn--primary btn--full">
+          <span>Generate Token Now</span>
+          <span class="material-symbols-outlined">arrow_forward</span>
+        </button>
+
+        <button type="button" class="btn btn--navy btn--full">
+          <span class="material-symbols-outlined">confirmation_number</span>
+          <span>Claim Queue Number</span>
+        </button>
+
+        <div class="flow-row gap-2">
+          <button type="button" class="btn btn--secondary flex-1">
+            <span class="material-symbols-outlined">download</span>
+            <span>Download</span>
+          </button>
+          <button type="button" class="btn btn--secondary flex-1">
+            <span class="material-symbols-outlined">print</span>
+            <span>Print</span>
+          </button>
+        </div>
+
+        <div class="flow-row gap-2">
+          <button type="button" class="btn btn--tertiary-teal flex-1">
+            <span class="material-symbols-outlined">check_circle</span>
+            <span>Accept Call</span>
+          </button>
+          <button type="button" class="btn btn--ghost flex-1">
+            <span>Dismiss</span>
+          </button>
+          <button type="button" class="btn btn--danger flex-1">
+            <span>No-Show</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Status Pills & Badges -->
+    <section class="guide-section" id="status-pills">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">label</span>
+        Status Pills & Badges
+      </h2>
+      <p class="guide-section__desc">Semantic state pills matching exact color rules.</p>
+
+      <div class="flow-row flex-wrap gap-2 items-center">
+        <span class="status-pill status-pill--waiting">
+          <span class="status-pill__dot"></span>
+          Waiting
+        </span>
+        <span class="status-pill status-pill--calling">
+          <span class="status-pill__dot"></span>
+          Calling
+        </span>
+        <span class="status-pill status-pill--serving">
+          <span class="status-pill__dot"></span>
+          Now Serving
+        </span>
+        <span class="status-pill status-pill--completed">
+          <span class="status-pill__dot"></span>
+          Completed
+        </span>
+        <span class="status-pill status-pill--skipped">
+          <span class="status-pill__dot"></span>
+          Skipped
+        </span>
+        <span class="status-pill status-pill--priority">
+          <span class="material-symbols-outlined" style="font-size:12px;">accessible</span>
+          Priority
+        </span>
+        <span class="badge--live">
+          <span class="badge--live-dot"></span>
+          LIVE DESK
+        </span>
+      </div>
+    </section>
+
+    <!-- 5. Metric Cards -->
+    <section class="guide-section" id="metric-cards">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">analytics</span>
+        Metric Cards
+      </h2>
+      <p class="guide-section__desc">Key civic metrics with counters and trends.</p>
+
+      <div class="flow-grid gap-3" style="grid-template-columns: repeat(2, 1fr);">
+        <div class="metric-card">
+          <div class="metric-card__header">
+            <span class="metric-card__label">Avg Wait</span>
+            <div class="metric-card__icon">
+              <span class="material-symbols-outlined">hourglass_empty</span>
+            </div>
+          </div>
+          <div class="metric-card__value" id="demo-counter-1">12m</div>
+          <div class="metric-card__subtext metric-card__subtext--trend-up">
+            <span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span>
+            <span>4m faster</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card__header">
+            <span class="metric-card__label">Active Desks</span>
+            <div class="metric-card__icon">
+              <span class="material-symbols-outlined">desktop_windows</span>
+            </div>
+          </div>
+          <div class="metric-card__value">8/10</div>
+          <div class="metric-card__subtext">
+            <span>2 on recess</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card__header">
+            <span class="metric-card__label">Total Today</span>
+            <div class="metric-card__icon">
+              <span class="material-symbols-outlined">confirmation_number</span>
+            </div>
+          </div>
+          <div class="metric-card__value" id="demo-counter-2">148</div>
+          <div class="metric-card__subtext metric-card__subtext--trend-up">
+            <span class="material-symbols-outlined" style="font-size:14px;">trending_up</span>
+            <span>+12% daily avg</span>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-card__header">
+            <span class="metric-card__label">Served</span>
+            <div class="metric-card__icon">
+              <span class="material-symbols-outlined">verified</span>
+            </div>
+          </div>
+          <div class="metric-card__value" id="demo-counter-3">420+</div>
+          <div class="metric-card__subtext">
+            <span>Citizens today</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. Filter Chips & Horizontal Scroll -->
+    <section class="guide-section" id="chips">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">filter_alt</span>
+        Horizontal Filter Chips
+      </h2>
+      <p class="guide-section__desc">Smooth touch scrolling with zero horizontal layout break.</p>
+
+      <div class="chips-container" id="filter-chips-demo">
+        <button type="button" class="chip chip--active">All Services</button>
+        <button type="button" class="chip">Civil Registry</button>
+        <button type="button" class="chip">Documentation</button>
+        <button type="button" class="chip">Public Enquiry</button>
+        <button type="button" class="chip">Welfare & Grants</button>
+      </div>
+    </section>
+
+    <!-- 7. Form Controls -->
+    <section class="guide-section" id="forms">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">edit_note</span>
+        Form Controls & Inputs
+      </h2>
+      <p class="guide-section__desc">16px font to prevent iOS zoom, accessible labels & focus rings.</p>
+
+      <form onsubmit="event.preventDefault();" class="flow-col gap-4">
+        <!-- Standard text input -->
+        <div class="form-group">
+          <label class="input-label" for="citizen-name">
+            <span>Citizen Legal Name <span class="input-label__required">*</span></span>
+          </label>
+          <input type="text" id="citizen-name" class="input-field" value="Eleanor Vance" placeholder="e.g. John Doe" />
+          <span class="input-label__hint">Name as shown on government issued identity document.</span>
+        </div>
+
+        <!-- Input group with locate button -->
+        <div class="form-group">
+          <label class="input-label" for="search-token">
+            <span>Track Existing Token</span>
+            <span class="status-pill status-pill--completed" style="font-size:10px; padding: 2px 6px;">Kiosk & Mobile</span>
+          </label>
+          <div class="input-group">
+            <div class="input-group__icon">
+              <span class="material-symbols-outlined">search</span>
+            </div>
+            <input type="text" id="search-token" class="input-group__input" placeholder="E.G. A008 OR T-209" />
+            <button type="button" class="btn btn--navy input-group__action">
+              <span>Locate</span>
+              <span class="material-symbols-outlined" style="font-size:16px;">near_me</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Custom Checkbox Card -->
+        <div class="checkbox-card checkbox-card--active" id="demo-checkbox">
+          <div class="custom-checkbox custom-checkbox--checked">
+            <span class="material-symbols-outlined">check</span>
+          </div>
+          <div class="flow-col">
+            <span class="text-body-md font-semibold">Live SMS Dispatch Notification</span>
+            <span class="text-body-sm color-muted">Receive real-time alerts when your counter is approaching (Recommended).</span>
+          </div>
+        </div>
+
+        <!-- Priority Radio Cards 2x2 Grid -->
+        <div class="form-group">
+          <label class="input-label">Priority & Accessibility Queue</label>
+          <div class="flow-grid gap-2" style="grid-template-columns: repeat(2, 1fr);" id="priority-selector">
+            <div class="radio-card radio-card--selected" data-val="standard">
+              <div class="radio-card__header">
+                <span class="material-symbols-outlined" style="font-size:20px;">schedule</span>
+                <span class="material-symbols-outlined" style="font-size:18px;">check_circle</span>
+              </div>
+              <div>
+                <div class="radio-card__title">Standard Queue</div>
+                <div class="radio-card__subtitle">Standard lane</div>
+              </div>
+            </div>
+
+            <div class="radio-card" data-val="senior">
+              <div class="radio-card__header">
+                <span class="material-symbols-outlined" style="font-size:20px;">elderly</span>
+              </div>
+              <div>
+                <div class="radio-card__title">Senior (65+)</div>
+                <div class="radio-card__subtitle">Priority Lane 1</div>
+              </div>
+            </div>
+
+            <div class="radio-card" data-val="mobility">
+              <div class="radio-card__header">
+                <span class="material-symbols-outlined" style="font-size:20px;">accessible</span>
+              </div>
+              <div>
+                <div class="radio-card__title">Mobility Support</div>
+                <div class="radio-card__subtitle">Step-free desk</div>
+              </div>
+            </div>
+
+            <div class="radio-card" data-val="expectant">
+              <div class="radio-card__header">
+                <span class="material-symbols-outlined" style="font-size:20px;">pregnant_woman</span>
+              </div>
+              <div>
+                <div class="radio-card__title">Expectant Mother</div>
+                <div class="radio-card__subtitle">Priority seating</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Segmented Control -->
+        <div class="form-group">
+          <label class="input-label">Counter Desk Mode</label>
+          <div class="segmented-control" id="demo-segmented">
+            <div class="segmented-control__item segmented-control__item--active">Active Duty</div>
+            <div class="segmented-control__item">Express Pass</div>
+            <div class="segmented-control__item">Floor Relief</div>
+          </div>
+        </div>
+
+        <!-- Toggle Switch -->
+        <div class="card card--sm flow-row justify-between items-center">
+          <div class="flow-col">
+            <span class="text-body-md font-semibold">Audible Voice Chime</span>
+            <span class="text-body-sm color-muted">Sound tone when your token is summoned</span>
+          </div>
+          <label class="toggle-switch">
+            <input type="checkbox" checked />
+            <span class="toggle-switch__slider"></span>
+          </label>
+        </div>
+      </form>
+    </section>
+
+    <!-- 8. Queue Row with Left Accent (Live Board) -->
+    <section class="guide-section" id="queue-rows">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">format_list_bulleted</span>
+        Queue Rows with Left Accent
+      </h2>
+      <p class="guide-section__desc">Visual status indicator via colored left accent bar.</p>
+
+      <div class="flow-col">
+        <!-- Serving -->
+        <div class="queue-row queue-row--serving">
+          <div class="queue-row__token color-tertiary">A005</div>
+          <div class="queue-row__info">
+            <span class="queue-row__title">Counter 02</span>
+            <span class="queue-row__subtext">Desk 104 • Identity Verification</span>
+          </div>
+          <span class="status-pill status-pill--serving">Now Serving</span>
+        </div>
+
+        <!-- Calling -->
+        <div class="queue-row queue-row--calling">
+          <div class="queue-row__token color-secondary">A006</div>
+          <div class="queue-row__info">
+            <span class="queue-row__title">Counter 01</span>
+            <span class="queue-row__subtext">Room 102 • Calling citizen</span>
+          </div>
+          <span class="status-pill status-pill--calling">Calling</span>
+        </div>
+
+        <!-- User's Token -->
+        <div class="queue-row queue-row--you">
+          <div class="queue-row__token" style="color: var(--color-tertiary-light);">A008</div>
+          <div class="queue-row__info">
+            <span class="queue-row__title" style="color:#FFF;">Eleanor Vance (You)</span>
+            <span class="queue-row__subtext">Assigned: Counter 02 • Desk 104</span>
+          </div>
+          <span class="status-pill status-pill--priority">Your Turn Soon</span>
+        </div>
+
+        <!-- Waiting -->
+        <div class="queue-row">
+          <div class="queue-row__token color-muted">A009</div>
+          <div class="queue-row__info">
+            <span class="queue-row__title">Queue Waiting</span>
+            <span class="queue-row__subtext">General Intake • Lounge Area B</span>
+          </div>
+          <span class="status-pill status-pill--waiting">Waiting</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 9. Stepper Component -->
+    <section class="guide-section" id="stepper">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">linear_scale</span>
+        Horizontal Stepper
+      </h2>
+      <p class="guide-section__desc">Citizen queue progression tracker.</p>
+
+      <div class="card card--sm flow-col gap-4">
+        <div class="flow-row justify-between items-center">
+          <span class="text-title-md font-bold">Queue Stepper</span>
+          <span class="status-pill status-pill--calling">Step 3 of 4: Approaching</span>
+        </div>
+
+        <div class="stepper">
+          <div class="stepper__progress-line" style="width: 75%;"></div>
+
+          <!-- Step 1 -->
+          <div class="stepper__step stepper__step--completed">
+            <div class="stepper__indicator">
+              <span class="material-symbols-outlined" style="font-size:18px;">check</span>
+            </div>
+            <span class="stepper__label">A005</span>
+            <span class="stepper__status">Served</span>
+          </div>
+
+          <!-- Step 2 -->
+          <div class="stepper__step stepper__step--completed">
+            <div class="stepper__indicator">
+              <span class="material-symbols-outlined" style="font-size:18px;">check</span>
+            </div>
+            <span class="stepper__label">A006</span>
+            <span class="stepper__status">Called</span>
+          </div>
+
+          <!-- Step 3 -->
+          <div class="stepper__step stepper__step--active">
+            <div class="stepper__indicator">
+              <span class="material-symbols-outlined" style="font-size:18px;">fiber_manual_record</span>
+            </div>
+            <span class="stepper__label">A007</span>
+            <span class="stepper__status" style="color:var(--color-secondary);">Next</span>
+          </div>
+
+          <!-- Step 4 (You) -->
+          <div class="stepper__step stepper__step--current-you">
+            <div class="stepper__indicator">
+              <span class="material-symbols-outlined" style="font-size:18px;">person</span>
+            </div>
+            <span class="stepper__label" style="color:var(--color-primary);">A008</span>
+            <span class="stepper__status" style="color:var(--color-tertiary-dark); font-weight:bold;">You</span>
+          </div>
+
+          <!-- Step 5 -->
+          <div class="stepper__step">
+            <div class="stepper__indicator">5</div>
+            <span class="stepper__label">A009</span>
+            <span class="stepper__status">Wait</span>
+          </div>
+        </div>
+
+        <div class="card card--blue-surface card--sm flow-row items-center gap-3">
+          <span class="material-symbols-outlined color-secondary">speed</span>
+          <span class="text-body-sm">
+            Estimated <strong>80% completed</strong>. Counters are running smoothly with average service speed of 4.8m.
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10. Timeline Component -->
+    <section class="guide-section" id="timeline">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">timeline</span>
+        Status Timeline
+      </h2>
+      <p class="guide-section__desc">Chronological civic process logs.</p>
+
+      <div class="card card--sm">
+        <div class="timeline">
+          <div class="timeline__item">
+            <div class="timeline__dot timeline__dot--success"></div>
+            <div class="timeline__title">3 citizens remaining in queue</div>
+            <div class="timeline__meta">10:50 AM • Average processing 4m 30s</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot timeline__dot--active"></div>
+            <div class="timeline__title">Assigned to Counter 02 (Certificate Desk)</div>
+            <div class="timeline__meta">10:45 AM • Civic Official J. Miller</div>
+          </div>
+          <div class="timeline__item">
+            <div class="timeline__dot"></div>
+            <div class="timeline__title">Token A008 generated online</div>
+            <div class="timeline__meta">10:42 AM • QueueEase Mobile App</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11. Progress Bar & Skeleton -->
+    <section class="guide-section" id="progress-skeleton">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">hourglass_top</span>
+        Progress & Skeleton Loaders
+      </h2>
+      <p class="guide-section__desc">Visual load feedback with zero layout shifts.</p>
+
+      <div class="flow-col gap-4">
+        <div class="card card--sm flow-col gap-2">
+          <div class="flow-row justify-between text-label-sm font-semibold">
+            <span>Center Daily Capacity</span>
+            <span class="color-secondary">74%</span>
+          </div>
+          <div class="progress-bar progress-bar--lg">
+            <div class="progress-bar__fill" style="width: 74%;"></div>
+          </div>
+        </div>
+
+        <div class="card card--sm flow-col gap-3">
+          <span class="text-label-sm color-muted">SKELETON SHIMMER STATE</span>
+          <div class="flow-row items-center gap-3">
+            <div class="skeleton skeleton--avatar"></div>
+            <div class="flow-col flex-1">
+              <div class="skeleton skeleton--text" style="width: 70%;"></div>
+              <div class="skeleton skeleton--text-sm" style="width: 40%;"></div>
+            </div>
+          </div>
+          <div class="skeleton skeleton--card"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 12. Empty State -->
+    <section class="guide-section" id="empty-state">
+      <h2 class="guide-section__title">
+        <span class="material-symbols-outlined">inbox</span>
+        Empty State
+      </h2>
+      <p class="guide-section__desc">Clear civic empty prompt.</p>
+
+      <div class="empty-state">
+        <div class="empty-state__icon">
+          <span class="material-symbols-outlined">receipt_long</span>
+        </div>
+        <h3 class="empty-state__title">No Active Token In Wait</h3>
+        <p class="empty-state__desc">
+          You are not currently in any waiting list. Tap the generate pass button or choose a service below.
+        </p>
+        <button type="button" class="btn btn--secondary">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span>Claim Queue Number</span>
+        </button>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- 13. Shared Bottom Navigation Injected Target -->
+  <nav id="app-bottom-nav"></nav>
+
+  <!-- JavaScript Initializations -->
+  <script type="module">
+    import { initHeader, initBottomNav, showToast, openSheet, closeSheet, animateCounter } from '/assets/js/ui.js';
+    import { Store } from '/assets/js/store.js';
+
+    // 1. Initialize Shared Header & Bottom Navigation
+    initHeader({
+      targetSelector: '#app-header',
+      subtitle: 'Component Style Guide • Design System Civic Flow',
+      showLive: true
+    });
+
+    initBottomNav({
+      targetSelector: '#app-bottom-nav',
+      activeTab: 'home'
+    });
+
+    // 2. Animate Demo Counters
+    animateCounter(document.getElementById('demo-counter-1'), 12, 1000);
+    animateCounter(document.getElementById('demo-counter-2'), 148, 1200);
+    animateCounter(document.getElementById('demo-counter-3'), 420, 1400);
+
+    // 3. Interactive Filter Chips
+    const chipsContainer = document.getElementById('filter-chips-demo');
+    if (chipsContainer) {
+      chipsContainer.addEventListener('click', (e) => {
+        const chip = e.target.closest('.chip');
+        if (!chip) return;
+        chipsContainer.querySelectorAll('.chip').forEach(c => c.classList.remove('chip--active'));
+        chip.classList.add('chip--active');
+        showToast(`Filtered by: ${chip.textContent.trim()}`, 'info');
+      });
+    }
+
+    // 4. Interactive Priority Radio Cards
+    const prioritySelector = document.getElementById('priority-selector');
+    if (prioritySelector) {
+      prioritySelector.addEventListener('click', (e) => {
+        const card = e.target.closest('.radio-card');
+        if (!card) return;
+        prioritySelector.querySelectorAll('.radio-card').forEach(c => {
+          c.classList.remove('radio-card--selected');
+          const check = c.querySelector('.material-symbols-outlined:last-child');
+          if (check && check.textContent === 'check_circle') check.remove();
+        });
+        card.classList.add('radio-card--selected');
+        const header = card.querySelector('.radio-card__header');
+        if (header && !header.querySelector('.material-symbols-outlined[style*="font-size:18px"]')) {
+          const checkIcon = document.createElement('span');
+          checkIcon.className = 'material-symbols-outlined';
+          checkIcon.style.fontSize = '18px';
+          checkIcon.textContent = 'check_circle';
+          header.appendChild(checkIcon);
+        }
+        showToast(`Selected priority: ${card.querySelector('.radio-card__title').textContent}`, 'info');
+      });
+    }
+
+    // 5. Interactive Checkbox
+    const demoCheckbox = document.getElementById('demo-checkbox');
+    if (demoCheckbox) {
+      demoCheckbox.addEventListener('click', () => {
+        const box = demoCheckbox.querySelector('.custom-checkbox');
+        const isChecked = box.classList.toggle('custom-checkbox--checked');
+        demoCheckbox.classList.toggle('checkbox-card--active', isChecked);
+        showToast(`Live SMS Alerts: ${isChecked ? 'Enabled' : 'Disabled'}`, isChecked ? 'success' : 'warning');
+      });
+    }
+
+    // 6. Interactive Segmented Control
+    const segControl = document.getElementById('demo-segmented');
+    if (segControl) {
+      segControl.addEventListener('click', (e) => {
+        const item = e.target.closest('.segmented-control__item');
+        if (!item) return;
+        segControl.querySelectorAll('.segmented-control__item').forEach(i => i.classList.remove('segmented-control__item--active'));
+        item.classList.add('segmented-control__item--active');
+        showToast(`Desk Mode: ${item.textContent.trim()}`, 'info');
+      });
+    }
+
+    // 7. Interactive Toast Test
+    document.getElementById('btn-test-toast').addEventListener('click', () => {
+      showToast('Queue token A008 summoned to Counter 02 (Room 104)', 'success', 3500);
+    });
+
+    // 8. Interactive Bottom Sheet Test
+    document.getElementById('btn-test-sheet').addEventListener('click', () => {
+      openSheet(`
+        <div class="flow-col gap-4">
+          <div class="card card--navy flow-col gap-2">
+            <span class="text-label-xs color-muted">ACTIVE PASS PREVIEW</span>
+            <span class="text-display-xl font-bold" style="color:var(--color-tertiary-light);">A008</span>
+            <span class="text-body-sm">Assigned: Counter 02 • Desk 104</span>
+          </div>
+          <p class="text-body-sm color-muted">
+            This bottom-sheet automatically transforms into a centered modal on desktop viewports (>= 768px). Supports focus-trapping and Escape key to close.
+          </p>
+          <div class="flow-row gap-2">
+            <button type="button" class="btn btn--secondary flex-1" onclick="window.closeSheet()">Dismiss</button>
+            <button type="button" class="btn btn--primary flex-1" onclick="window.closeSheet(); showToast('Pass confirmed!', 'success');">Confirm</button>
+          </div>
+        </div>
+      `, 'Interactive Sheet Demo');
+    });
+  </script>
+</body>
+</html>

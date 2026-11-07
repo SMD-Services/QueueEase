@@ -1,0 +1,6 @@
+{
+  "name": "QueueEase - Smart Civic Queue Management",
+  "description": "Smart queue management system for public service centers, government offices, and hospitals with digital mobile tokens, live display, staff counter console, and admin controls.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

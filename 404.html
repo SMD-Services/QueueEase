@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>404 - Municipal Route Not Found - QueueEase</title>
+  <meta name="description" content="The requested public civic service route could not be located in the municipal directory." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+
+  <style>
+    body {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-background, #F8FAFC);
+    }
+    .not-found-container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .not-found-card {
+      max-width: 520px;
+      width: 100%;
+      background: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card-lg, 16px);
+      padding: clamp(24px, 5vw, 40px);
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    }
+    .not-found-icon-box {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      background: #EFF6FF;
+      color: #2563EB;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .quick-route-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 10px;
+      margin: 24px 0 20px;
+      text-align: left;
+    }
+    .quick-route-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 14px;
+      background: #F8FAFC;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-control);
+      color: var(--color-primary);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.15s ease;
+    }
+    .quick-route-link:hover {
+      background: #EFF6FF;
+      border-color: #BFDBFE;
+      color: #1D4ED8;
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Minimal Header -->
+  <header style="background:#0F234A; color:#FFFFFF; padding:14px 20px;">
+    <div style="max-width:1120px; margin:0 auto; display:flex; align-items:center; justify-content:space-between;">
+      <a href="/" style="display:flex; align-items:center; gap:8px; color:#FFFFFF; text-decoration:none;">
+        <span class="material-symbols-outlined" style="font-size:24px; color:#60A5FA;">confirmation_number</span>
+        <span style="font-size:1.15rem; font-weight:bold; letter-spacing:-0.02em;">QueueEase</span>
+      </a>
+      <span style="font-size:11px; background:rgba(255,255,255,0.12); color:#93C5FD; padding:3px 8px; border-radius:4px; font-weight:600;">
+        Civic Routing System
+      </span>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="not-found-container" role="main">
+    <div class="not-found-card">
+      <div class="not-found-icon-box">
+        <span class="material-symbols-outlined" style="font-size:38px;">wrong_location</span>
+      </div>
+
+      <div style="font-family:var(--font-family-mono); font-size:12px; font-weight:700; color:#2563EB; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:6px;">
+        HTTP STATUS 404
+      </div>
+
+      <h1 style="font-size:clamp(1.5rem, 3vw, 1.85rem); font-weight:bold; color:var(--color-primary); margin:0 0 10px; line-height:1.2;">
+        Municipal Route Not Found
+      </h1>
+
+      <p style="font-size:14px; color:var(--color-text-secondary); margin:0 0 20px; line-height:1.5;">
+        The civic service desk, portal window, or queue reference you requested could not be located in the current municipal cluster directory.
+      </p>
+
+      <div style="font-size:12px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em; text-align:left;">
+        Direct Navigation Routes:
+      </div>
+
+      <nav class="quick-route-grid" aria-label="Quick directory links">
+        <a href="/citizen/home.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#2563EB;">home</span>
+          <span>Citizen Portal Home</span>
+        </a>
+
+        <a href="/citizen/services.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#2563EB;">view_cozy</span>
+          <span>Service Categories</span>
+        </a>
+
+        <a href="/citizen/track.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#2563EB;">radar</span>
+          <span>Live Queue Tracking</span>
+        </a>
+
+        <a href="/citizen/assist.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#2563EB;">accessibility_new</span>
+          <span>Accessibility Care</span>
+        </a>
+
+        <a href="/staff/index.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#059669;">badge</span>
+          <span>Staff Counter Terminal</span>
+        </a>
+
+        <a href="/admin/index.html" class="quick-route-link">
+          <span class="material-symbols-outlined" style="color:#D97706;">admin_panel_settings</span>
+          <span>Admin Operations</span>
+        </a>
+      </nav>
+
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <button type="button" class="btn btn--secondary" onclick="window.history.back()">
+          <span class="material-symbols-outlined">arrow_back</span>
+          <span>Go Back</span>
+        </button>
+        <a href="/" class="btn btn--primary">
+          <span class="material-symbols-outlined">home</span>
+          <span>Return Home</span>
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer style="background:#FFFFFF; border-top:1px solid var(--color-border); padding:16px; text-align:center; font-size:12px; color:var(--color-text-muted);">
+    © 2026 QueueEase Inc. • Public Civic Infrastructure
+  </footer>
+
+</body>
+</html>

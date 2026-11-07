@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        document.documentElement.lang = lang;
+        document.documentElement.setAttribute('lang', lang);
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Administrative System Authentication - QueueEase Enterprise</title>
+  <meta name="description" content="Secure Tier-4 Administrative Sign-In for QueueEase municipal operations platform." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+
+  <style>
+    body {
+      background: radial-gradient(circle at 50% 20%, var(--surface-subtle, #F1F5F9) 0%, var(--surface-page, #E2E8F0) 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--space-4);
+      margin: 0;
+    }
+
+    .admin-login-card {
+      background-color: var(--surface-card, #FFFFFF);
+      border: 1px solid var(--border-subtle, var(--color-border));
+      border-radius: var(--radius-card-lg);
+      box-shadow: 0 25px 60px rgba(11, 28, 48, 0.1);
+      max-width: 640px;
+      width: 100%;
+      padding: clamp(24px, 4vw, 44px);
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .admin-card__top-bar {
+      height: 4px;
+      background: linear-gradient(90deg, #0F234A 0%, #2563EB 50%, #14B8A6 100%);
+      position: absolute;
+      top: 0; left: 0; right: 0;
+    }
+
+    .form-group-admin {
+      margin-bottom: var(--space-4);
+    }
+
+    .form-group-admin label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: var(--font-label-sm);
+      font-weight: var(--font-weight-bold);
+      color: var(--text-heading, var(--color-primary));
+      margin-bottom: 6px;
+    }
+
+    .input-icon-wrap {
+      position: relative;
+    }
+
+    .input-icon-wrap .material-symbols-outlined {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted, var(--color-muted));
+      font-size: 20px;
+      pointer-events: none;
+    }
+
+    .input-icon-wrap input {
+      width: 100%;
+      height: 46px;
+      padding: 0 42px 0 42px;
+      border: 1px solid var(--border-subtle, var(--color-border));
+      border-radius: var(--radius-control);
+      font-size: 16px;
+      font-family: inherit;
+      color: var(--text-body, var(--color-text));
+      background-color: var(--surface-card, #FFFFFF);
+      transition: all 0.15s ease;
+      box-sizing: border-box;
+    }
+
+    .input-icon-wrap input:focus {
+      outline: none;
+      border-color: var(--color-secondary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    }
+
+    .input-toggle-pwd {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: var(--text-muted, var(--color-muted));
+      cursor: pointer;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+    }
+
+    /* 6-Digit TOTP Input */
+    .totp-input-field {
+      letter-spacing: 0.4em;
+      font-family: var(--font-family-mono);
+      font-size: 18px !important;
+      font-weight: bold;
+      text-align: center;
+      padding-left: 20px !important;
+    }
+
+    .admin-footer-strip {
+      background: var(--surface-subtle, #F8FAFC);
+      border: 1px solid var(--border-subtle, #E2E8F0);
+      border-radius: var(--radius-card-sm);
+      padding: 12px 16px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      text-align: center;
+      margin-top: var(--space-5);
+      font-size: 11px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Security Badges -->
+  <div style="display:flex; align-items:center; gap:16px; margin-bottom:14px; font-size:11px; font-weight:bold; letter-spacing:0.04em;">
+    <span class="status-pill status-pill--completed" style="font-size:11px; padding:3px 10px;">
+      <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+      <span>RESTRICTED ACCESS // TIER-4</span>
+    </span>
+    <span style="display:flex; align-items:center; gap:4px; color:#2563EB;">
+      <span class="material-symbols-outlined" style="font-size:16px;">verified_user</span>
+      <span>TLS 256-BIT GOVSEC CERTIFIED</span>
+    </span>
+  </div>
+
+  <main class="admin-login-card" role="main" aria-labelledby="admin-title">
+    <div class="admin-card__top-bar"></div>
+
+    <!-- Header -->
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-4);">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div style="width:40px; height:40px; border-radius:8px; background:#0F234A; color:#FFFFFF; display:flex; align-items:center; justify-content:center;">
+          <span class="material-symbols-outlined" style="font-size:24px;">account_balance</span>
+        </div>
+        <div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span style="font-size:1.2rem; font-weight:var(--font-weight-bold); color:var(--text-heading, var(--color-primary));">QueueEase</span>
+            <span style="background:#EFF6FF; color:#2563EB; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">OS v4.2</span>
+          </div>
+          <div style="font-size:10px; color:var(--text-muted, #64748B); text-transform:uppercase; letter-spacing:0.04em;">
+            MUNICIPAL OPERATIONS PLATFORM
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align:right;">
+        <div style="font-size:10px; color:var(--text-muted, #64748B); text-transform:uppercase;">TERMINAL PORT</div>
+        <div style="font-family:var(--font-family-mono); font-size:12px; font-weight:bold; color:var(--text-heading, var(--color-primary));">PORT-SEC-8491</div>
+      </div>
+    </div>
+
+    <h1 id="admin-title" style="font-size:1.6rem; font-weight:var(--font-weight-bold); color:var(--text-heading, var(--color-primary)); margin-bottom:4px;">
+      Administrative System Authentication
+    </h1>
+    <p style="font-size:var(--font-body-sm); color:var(--text-muted, var(--color-text-secondary)); line-height:1.5; margin:0 0 var(--space-4);">
+      Enter verified credentials to access municipal infrastructure, counter telemetry, and automated citizen flow controls.
+    </p>
+
+    <!-- Quick Autofill Session Banner -->
+    <div style="background:var(--surface-subtle, #F8FAFC); border:1px solid var(--border-subtle, #DBEAFE); border-radius:var(--radius-card); padding:12px 16px; display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:var(--space-4); flex-wrap:wrap;">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="avatar" style="width:36px; height:36px; background:#2563EB; color:#FFFFFF; font-weight:bold; font-size:12px; display:flex; align-items:center; justify-content:center; border-radius:50%;">
+          MV
+        </div>
+        <div>
+          <div style="font-size:12px; font-weight:bold; color:var(--text-heading, var(--color-primary));">
+            Marcus Vance • <span style="color:#2563EB;">STF-ADM-01</span>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted, #64748B);">
+            System Director (Super Admin Privilege)
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn--primary" id="btn-admin-autofill" style="background:#0F234A; min-height:36px; padding:6px 14px; font-size:12px;">
+        <span class="material-symbols-outlined" style="font-size:16px;">auto_awesome</span>
+        <span>Autofill Session</span>
+      </button>
+    </div>
+
+    <!-- Admin Form -->
+    <form id="admin-login-form" novalidate>
+      <!-- Identifier -->
+      <div class="form-group-admin">
+        <label for="admin-id">
+          <span>Administrative Identifier / Gov Email</span>
+          <span style="font-size:11px; color:var(--text-muted, #64748B);">SSO Integrated</span>
+        </label>
+        <div class="input-icon-wrap">
+          <span class="material-symbols-outlined">badge</span>
+          <input type="text" id="admin-id" placeholder="e.g. m.vance@civic.gov" required autocomplete="username" />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group-admin">
+        <label for="admin-pwd">
+          <span>Master Encryption Password</span>
+          <span style="font-size:11px; color:#059669; display:inline-flex; align-items:center; gap:4px;">
+            <span class="material-symbols-outlined" style="font-size:14px;">key</span>
+            Hardware Token / FIDO2 Ready
+          </span>
+        </label>
+        <div class="input-icon-wrap">
+          <span class="material-symbols-outlined">lock</span>
+          <input type="password" id="admin-pwd" placeholder="••••••••••••" required autocomplete="current-password" />
+          <button type="button" class="input-toggle-pwd" id="admin-pwd-toggle" aria-label="Toggle password visibility">
+            <span class="material-symbols-outlined" id="admin-pwd-icon">visibility</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- TOTP 6-Digit Field with 30s Countdown -->
+      <div class="form-group-admin">
+        <label for="admin-totp">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <span>Dual-Factor Verification Code</span>
+            <span style="background:#EFF6FF; color:#2563EB; font-size:10px; font-weight:bold; padding:2px 6px; border-radius:4px;">TOTP 6-Digit</span>
+          </div>
+          <span style="font-size:11px; color:#D97706; display:inline-flex; align-items:center; gap:4px;" id="totp-timer-label">
+            <span class="material-symbols-outlined" style="font-size:14px;">hourglass_bottom</span>
+            <span>Valid: <strong id="totp-countdown">21s</strong></span>
+          </span>
+        </label>
+        <div class="input-icon-wrap" style="display:flex; align-items:center;">
+          <span class="material-symbols-outlined">pin</span>
+          <input type="text" id="admin-totp" class="totp-input-field" maxlength="6" placeholder="0 0 0 0 0 0" required autocomplete="one-time-code" />
+          <span style="position:absolute; right:12px; font-size:10px; background:var(--surface-subtle, #F1F5F9); color:var(--text-muted, #475569); padding:2px 6px; border-radius:4px; font-weight:bold;">
+            RFC 6238
+          </span>
+        </div>
+      </div>
+
+      <!-- Remember & Reset -->
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:var(--space-5); font-size:12px;">
+        <label class="custom-checkbox" style="gap:8px; display:inline-flex; align-items:center;">
+          <input type="checkbox" id="admin-remember" checked />
+          <span class="checkbox-box"></span>
+          <span style="color:var(--text-body, var(--color-text));">Remember verified workstation (8h lease)</span>
+        </label>
+        <a href="#" onclick="alert('Contact Municipal IT Emergency Hotline Ext. 990'); return false;" style="color:var(--color-secondary); text-decoration:none; font-weight:bold;">
+          Reset Credentials / Ops Desk
+        </a>
+      </div>
+
+      <!-- Submit Button -->
+      <button type="submit" class="btn btn--primary" id="btn-admin-submit" style="width:100%; min-height:48px; justify-content:center; font-size:14px; background:#2563EB;">
+        <span class="material-symbols-outlined">lock_open</span>
+        <span>Sign In to Administrative Console</span>
+      </button>
+
+      <!-- Feedback -->
+      <div id="admin-login-feedback" style="display:none; text-align:center; margin-top:12px; font-size:12px; color:var(--color-secondary); font-weight:bold;">
+        <span style="display:inline-block; width:12px; height:12px; border:2px solid #2563EB; border-top-color:transparent; border-radius:50%; animation:spin 0.8s linear infinite; vertical-align:middle; margin-right:6px;"></span>
+        <span>Verifying dual-factor telemetry & cluster privileges...</span>
+      </div>
+    </form>
+
+    <!-- Session integrity notice -->
+    <div style="background:#F0FDF4; border:1px solid #BBF7D0; border-radius:var(--radius-card-sm); padding:10px 14px; margin-top:var(--space-4); display:flex; align-items:center; gap:10px; font-size:11px; color:#166534;">
+      <span class="material-symbols-outlined" style="font-size:18px; color:#16A34A; flex-shrink:0;">security</span>
+      <span>Session integrity monitored via hardware keystroke cadence & dynamic civic IP geofencing. Active session tokens expire automatically after inactivity.</span>
+    </div>
+
+    <!-- Error fallback container -->
+    <div id="admin-error-fallback" style="display:none; margin-top:16px; padding:16px; background-color:#FEF2F2; border:1px solid #FCA5A5; border-radius:8px; text-align:center;">
+      <p id="admin-error-fallback-msg" style="color:#991B1B; font-size:13px; margin:0 0 12px 0; font-weight:600;"></p>
+      <a href="../index.html" class="btn btn--secondary" style="font-size:12px; text-decoration:none;">Return to Home</a>
+    </div>
+
+    <!-- Cluster Bottom Strip -->
+    <div class="admin-footer-strip">
+      <div>
+        <div style="color:var(--text-muted, #64748B);">NODE CLUSTER</div>
+        <strong style="color:var(--text-heading, var(--color-primary)); font-family:var(--font-family-mono);">US-EAST-CIVIC-04</strong>
+      </div>
+      <div style="border-left:1px solid var(--border-subtle, #E2E8F0); border-right:1px solid var(--border-subtle, #E2E8F0);">
+        <div style="color:var(--text-muted, #64748B);">SESSION AUDIT</div>
+        <strong style="color:#2563EB; font-family:var(--font-family-mono);">AUD-2025-9941</strong>
+      </div>
+      <div>
+        <div style="color:var(--text-muted, #64748B);">GATEWAY LATENCY</div>
+        <strong style="color:#10B981; display:inline-flex; align-items:center; gap:4px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981;"></span>
+          6 ms
+        </strong>
+      </div>
+    </div>
+  </main>
+
+  <!-- Legal Disclaimer -->
+  <footer style="max-width:600px; text-align:center; margin-top:var(--space-4); font-size:11px; color:var(--text-muted, #64748B); line-height:1.5;">
+    <div style="font-weight:bold; color:var(--text-body, #475569); display:inline-flex; align-items:center; gap:6px; margin-bottom:4px;">
+      <span class="material-symbols-outlined" style="font-size:15px;">shield</span>
+      SECURE GOV CLOUD • ISO/IEC 27001 & SOC 2 TYPE II CERTIFIED
+    </div>
+    <div>Unauthorized access attempts or credential misuse are logged and prosecuted under Statutory Cyber Directives and Federal Information Security Controls (NIST SP 800-53).</div>
+  </footer>
+
+  <script type="module">
+    import { getAdminSession, adminLogin } from '../assets/js/admin.js';
+    import { showToast } from '../assets/js/ui.js';
+
+    try {
+      // 1. If already authenticated as admin, redirect to admin overview
+      if (getAdminSession()) {
+        window.location.replace('../admin/overview.html');
+      }
+    } catch (err) {
+      console.warn('Admin auth guard check non-fatal error:', err);
+    }
+
+    try {
+      // 1. Autofill Session
+      const autofillBtn = document.getElementById('btn-admin-autofill');
+      const idInput = document.getElementById('admin-id');
+      const pwdInput = document.getElementById('admin-pwd');
+      const totpInput = document.getElementById('admin-totp');
+      const submitBtn = document.getElementById('btn-admin-submit');
+      const feedback = document.getElementById('admin-login-feedback');
+      const form = document.getElementById('admin-login-form');
+
+      if (autofillBtn) {
+        autofillBtn.addEventListener('click', () => {
+          if (idInput) idInput.value = 'STF-ADM-01';
+          if (pwdInput) pwdInput.value = 'admin123';
+          if (totpInput) totpInput.value = '123456';
+          showToast('Autofilled verified credentials for Marcus Vance');
+        });
+      }
+
+      // 2. Password show/hide toggle
+      const pwdToggle = document.getElementById('admin-pwd-toggle');
+      const pwdIcon = document.getElementById('admin-pwd-icon');
+      if (pwdToggle && pwdInput && pwdIcon) {
+        pwdToggle.addEventListener('click', () => {
+          const isPwd = pwdInput.type === 'password';
+          pwdInput.type = isPwd ? 'text' : 'password';
+          pwdIcon.textContent = isPwd ? 'visibility_off' : 'visibility';
+        });
+      }
+
+      // 3. 30s TOTP Countdown Timer
+      let countdown = 21;
+      const countdownEl = document.getElementById('totp-countdown');
+      setInterval(() => {
+        countdown--;
+        if (countdown <= 0) countdown = 30;
+        if (countdownEl) countdownEl.textContent = `${countdown}s`;
+      }, 1000);
+
+      // 4. Form Submit
+      if (form) {
+        form.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const id = idInput ? idInput.value.trim() : '';
+          const pwd = pwdInput ? pwdInput.value : '';
+          const totp = totpInput ? totpInput.value.trim() : '';
+
+          if (!id || !pwd || !totp) {
+            showToast('Please fill in identifier, password, and 6-digit TOTP code.', 'error');
+            return;
+          }
+
+          if (submitBtn) submitBtn.disabled = true;
+          if (feedback) feedback.style.display = 'block';
+
+          setTimeout(() => {
+            try {
+              adminLogin(id, pwd, totp);
+              showToast('Administrative authorization granted. Initializing console...', 'success');
+              setTimeout(() => {
+                window.location.replace('../admin/overview.html');
+              }, 400);
+            } catch (err) {
+              if (submitBtn) submitBtn.disabled = false;
+              if (feedback) feedback.style.display = 'none';
+              showToast(err.message, 'error');
+            }
+          }, 800);
+        });
+      }
+    } catch (err) {
+      console.error('Admin Login Script Error:', err);
+      const fallback = document.getElementById('admin-error-fallback');
+      const fallbackMsg = document.getElementById('admin-error-fallback-msg');
+      if (fallback && fallbackMsg) {
+        fallbackMsg.textContent = 'Portal error: ' + err.message;
+        fallback.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

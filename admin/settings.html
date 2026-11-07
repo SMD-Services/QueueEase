@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>System Configuration & Operational Policies - QueueEase Enterprise</title>
+  <meta name="description" content="Configure municipal center parameters, operating hours, counter dispatch algorithms, and priority queue rules." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="../assets/css/tokens.css" />
+  <link rel="stylesheet" href="../assets/css/base.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/dashboard.css" />
+
+  <style>
+    .policy-block-card {
+      background: #FFFFFF;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-card);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .policy-block-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+    }
+    .policy-tag-badge {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #3B82F6;
+      margin-bottom: 4px;
+    }
+    .day-pill-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 12px;
+      border-radius: var(--radius-control);
+      border: 1px solid #BFDBFE;
+      background: #EFF6FF;
+      color: #1D4ED8;
+      cursor: pointer;
+      min-width: 68px;
+      transition: all 0.15s ease;
+    }
+    .day-pill-btn--closed {
+      background: #F1F5F9;
+      border-color: #CBD5E1;
+      color: #94A3B8;
+    }
+    .day-pill-btn:hover {
+      transform: translateY(-1px);
+    }
+    .ratio-btn {
+      padding: 6px 12px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background: #FFFFFF;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .ratio-btn--active {
+      background: #2563EB;
+      color: #FFFFFF;
+      border-color: #2563EB;
+    }
+    .policy-toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .policy-toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .policy-toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #CBD5E1;
+      transition: .2s;
+      border-radius: 24px;
+    }
+    .policy-toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .policy-toggle-slider {
+      background-color: #2563EB;
+    }
+    input:checked + .policy-toggle-slider:before {
+      transform: translateX(20px);
+    }
+    .settings-tab-nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      margin-bottom: 24px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .settings-tab-btn {
+      white-space: nowrap;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--color-text-secondary);
+      background: none;
+      border: none;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .settings-tab-btn:hover {
+      background: #F1F5F9;
+      color: var(--color-primary);
+    }
+    .settings-tab-btn--active {
+      background: #0F234A;
+      color: #FFFFFF;
+    }
+    .settings-tab-btn--active:hover {
+      background: #0F234A;
+      color: #FFFFFF;
+    }
+  </style>
+</head>
+<body class="dashboard-layout">
+
+  <!-- Mobile Drawer Backdrop -->
+  <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+  <!-- 1. Admin Sidebar -->
+  <aside class="dashboard-sidebar" id="admin-sidebar" role="navigation" aria-label="Administrative Navigation">
+    <div class="dashboard-sidebar__header">
+      <a href="/admin/overview.html" class="dashboard-sidebar__brand">
+        <div class="dashboard-sidebar__logo-box" style="background:#0F234A;">
+          <span class="material-symbols-outlined" style="font-size:22px;">account_balance</span>
+        </div>
+        <div>
+          <div style="font-size:1.15rem; font-weight:var(--font-weight-bold); letter-spacing:-0.01em;">QueueEase</div>
+          <div style="font-size:10px; color:#94A3B8; text-transform:uppercase; letter-spacing:0.04em;">ENTERPRISE CONSOLE</div>
+        </div>
+      </a>
+      <div class="dashboard-sidebar__hub-badge" style="background:rgba(37,99,235,0.2); border-color:#3B82F6; color:#93C5FD;">
+        <span style="width:6px; height:6px; border-radius:50%; background:#60A5FA;"></span>
+        <span>CIVIC HUB 07</span>
+      </div>
+    </div>
+
+    <nav class="dashboard-sidebar__nav">
+      <a href="/admin/overview.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">grid_view</span>
+        <span>Overview</span>
+      </a>
+      <a href="/admin/services.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">view_cozy</span>
+        <span>Manage Services</span>
+      </a>
+      <a href="/admin/counters.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">storefront</span>
+        <span>Manage Counters</span>
+      </a>
+      <a href="/admin/staff.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">badge</span>
+        <span>Manage Staff</span>
+      </a>
+      <a href="/admin/tokens.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">receipt_long</span>
+        <span>All Tokens</span>
+      </a>
+      <a href="/admin/reports.html" class="dashboard-nav-link">
+        <span class="material-symbols-outlined">bar_chart</span>
+        <span>Reports & Analytics</span>
+      </a>
+      <a href="/admin/settings.html" class="dashboard-nav-link dashboard-nav-link--active" aria-current="page">
+        <span class="material-symbols-outlined">tune</span>
+        <span>System Settings</span>
+      </a>
+    </nav>
+
+    <div class="dashboard-sidebar__footer">
+      <div class="sidebar-station-info">
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#10B981; box-shadow:0 0 6px #10B981;"></span>
+          <span style="color:#FFFFFF; font-weight:bold;">Cluster Node G-104</span>
+        </div>
+        <div style="font-family:var(--font-family-mono); font-size:10px;">Online • Latency 8ms</div>
+      </div>
+
+      <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(255,255,255,0.04); border-radius:var(--radius-control); padding:8px 10px;">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <div class="avatar" style="width:32px; height:32px; background:#2563EB; color:#FFFFFF; font-weight:bold; font-size:12px;">MV</div>
+          <div>
+            <div style="font-size:12px; font-weight:bold; color:#FFFFFF;">Marcus Vance</div>
+            <div style="font-size:10px; color:#94A3B8;">Regional Director</div>
+          </div>
+        </div>
+        <button type="button" class="btn-admin-logout" aria-label="Sign Out" style="background:none; border:none; color:#F87171; cursor:pointer; padding:4px;">
+          <span class="material-symbols-outlined" style="font-size:20px;">logout</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. Main Content Area -->
+  <div class="dashboard-main">
+    <!-- Topbar -->
+    <header class="dashboard-topbar" role="banner">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--ghost" id="admin-hamburger-btn" aria-label="Toggle Navigation Drawer" style="display:flex; min-width:40px; min-height:40px; padding:6px;">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
+        <div class="topbar-station-badge">
+          <span class="material-symbols-outlined" style="font-size:16px;">domain</span>
+          <span>Central Metro Hall • Civic Hub 07</span>
+        </div>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button type="button" class="btn btn--primary" id="btn-quick-token-header" style="padding:6px 14px; font-size:13px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">add_circle</span>
+          <span>Quick Issue</span>
+        </button>
+        <button type="button" class="topbar-icon-btn" aria-label="Notifications" id="btn-notifications">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="topbar-notification-dot"></span>
+        </button>
+        <div class="avatar" style="width:36px; height:36px; background:#142D4E; color:#FFFFFF; font-weight:bold; font-size:13px;">MV</div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="dashboard-content" role="main">
+      <!-- Status Badge & Header -->
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:20px;">
+        <div>
+          <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:var(--color-text-secondary); margin-bottom:6px;">
+            <span style="width:8px; height:8px; border-radius:50%; background:#2563EB;"></span>
+            <span style="color:#2563EB; font-weight:700;">NODE #G-104</span>
+            <span>•</span>
+            <span>Policy Engine Ver 4.2.1</span>
+            <span>•</span>
+            <span style="color:#059669; font-weight:600;">Operational Sync Active</span>
+          </div>
+          <h1 style="font-size:clamp(1.4rem, 2.5vw, 1.85rem); font-weight:var(--font-weight-bold); color:var(--color-primary); margin:0 0 6px; letter-spacing:-0.02em;">
+            System Configuration & Operational Policies
+          </h1>
+          <p style="font-size:var(--font-body-sm); color:var(--color-text-secondary); margin:0;">
+            Configure municipal center parameters, operating hours, counter dispatch algorithms, and priority queue rules.
+          </p>
+        </div>
+
+        <!-- Top Right Actions -->
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:10px;">
+          <button type="button" class="btn btn--secondary" id="btn-export-backup" style="padding:8px 14px; font-size:13px; font-weight:600;">
+            <span class="material-symbols-outlined" style="font-size:18px;">cloud_download</span>
+            <span>Export Backup</span>
+          </button>
+          <button type="button" class="btn btn--secondary" id="btn-revert-defaults" style="padding:8px 14px; font-size:13px; font-weight:600; color:var(--color-danger); border-color:#FECACA;">
+            <span class="material-symbols-outlined" style="font-size:18px;">history</span>
+            <span>Revert to Defaults</span>
+          </button>
+          <button type="button" class="btn btn--primary" id="btn-save-policies" style="padding:8px 18px; font-size:13px; font-weight:600; background:var(--color-secondary);">
+            <span class="material-symbols-outlined" style="font-size:18px;">save</span>
+            <span>Save Changes</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Status / Summary Cards -->
+      <section aria-label="System Policy Summary Metrics" style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:14px; margin-bottom:24px;">
+        <!-- Card 1 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">ACTIVE HALL CAP</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">groups</span>
+            </div>
+          </div>
+          <div style="font-size:1.6rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono); line-height:1.1;" id="summary-capacity-text">250 Persons</div>
+          <div style="display:flex; align-items:center; gap:4px; font-size:11px; color:#059669; font-weight:600; margin-top:6px;">
+            <span class="material-symbols-outlined" style="font-size:14px;">check_circle</span>
+            <span>Auto-overflow on</span>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">CURRENT ALGORITHM</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">alt_route</span>
+            </div>
+          </div>
+          <div style="font-size:1.6rem; font-weight:bold; color:var(--color-primary); line-height:1.1;">Adaptive FIFO</div>
+          <div style="font-size:11px; color:var(--color-text-muted); margin-top:6px;">
+            <span>Multi-Counter Balancing</span>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">PRIORITY RATIO</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#FEF3C7; color:#D97706; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">accessible</span>
+            </div>
+          </div>
+          <div style="font-size:1.6rem; font-weight:bold; color:var(--color-primary); font-family:var(--font-family-mono); line-height:1.1;" id="summary-ratio-text">1 : 2 Standard</div>
+          <div style="display:flex; align-items:center; gap:4px; font-size:11px; color:#2563EB; font-weight:600; margin-top:6px;">
+            <span style="font-size:10px; background:#EFF6FF; padding:1px 6px; border-radius:3px;">Strict Window</span>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card" style="padding:16px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+            <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em;">DISPATCH GATEWAYS</span>
+            <div style="width:32px; height:32px; border-radius:8px; background:#ECFDF5; color:#059669; display:flex; align-items:center; justify-content:center;">
+              <span class="material-symbols-outlined" style="font-size:18px;">sensors</span>
+            </div>
+          </div>
+          <div style="font-size:1.6rem; font-weight:bold; color:#059669; line-height:1.1;">All Linked</div>
+          <div style="font-size:11px; color:var(--color-text-muted); margin-top:6px;">
+            <span>Twilio Cloud & Audio #12</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section Tabs Filter -->
+      <nav class="settings-tab-nav" aria-label="Settings Policy Sections">
+        <button type="button" class="settings-tab-btn settings-tab-btn--active" data-section="all">
+          <span class="material-symbols-outlined" style="font-size:18px;">grid_view</span>
+          <span>All Sections</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-section="general">
+          <span class="material-symbols-outlined" style="font-size:18px;">account_balance</span>
+          <span>General Information</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-section="hours">
+          <span class="material-symbols-outlined" style="font-size:18px;">schedule</span>
+          <span>Operating Hours</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-section="counters">
+          <span class="material-symbols-outlined" style="font-size:18px;">storefront</span>
+          <span>Counter Configuration</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-section="algorithms">
+          <span class="material-symbols-outlined" style="font-size:18px;">alt_route</span>
+          <span>Queue & Dispatch Algorithms</span>
+        </button>
+        <button type="button" class="settings-tab-btn" data-section="priority">
+          <span class="material-symbols-outlined" style="font-size:18px;">accessible</span>
+          <span>Priority</span>
+        </button>
+      </nav>
+
+      <!-- Layout: Main Content + Right Context Sidebar -->
+      <div style="display:grid; grid-template-columns:1fr; gap:24px; align-items:start;" id="settings-grid-layout">
+        <div style="display:grid; grid-template-columns:1fr; gap:0;" id="settings-main-column">
+
+          <!-- POLICY BLOCK 01: Service Center Information -->
+          <section class="policy-block-card" id="section-general" aria-labelledby="heading-block-01">
+            <div class="policy-block-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:20px;">apartment</span>
+                </div>
+                <div>
+                  <div class="policy-tag-badge">POLICY BLOCK 01</div>
+                  <h2 id="heading-block-01" style="font-size:1.15rem; font-weight:700; color:var(--color-primary); margin:0;">
+                    Service Center Information
+                  </h2>
+                </div>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:11px;">Synchronized</span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr; gap:16px;">
+              <div>
+                <label for="center-name" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Civic Center Name</label>
+                <input type="text" id="center-name" class="form-control" style="width:100%; height:44px; font-size:14px; background:#F8FAFC;" value="Central Municipal Hall - District Civic Hub 07" />
+                <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">Displayed on citizen SMS alerts, printed tickets, and foyer wall-screens.</span>
+              </div>
+
+              <div>
+                <label for="facility-address" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Facility Address</label>
+                <div style="position:relative;">
+                  <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted);">location_on</span>
+                  <input type="text" id="facility-address" class="form-control" style="width:100%; height:44px; padding-left:38px; font-size:14px;" value="450 Civic Center Blvd, Suite 100, Capital Metro" />
+                </div>
+              </div>
+
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:14px;">
+                <div>
+                  <label for="timezone-select" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Timezone & Regional Localization</label>
+                  <div style="position:relative;">
+                    <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted);">language</span>
+                    <select id="timezone-select" class="form-control" style="width:100%; height:44px; padding-left:38px; font-size:13px;">
+                      <option value="est" selected>Eastern Standard Time (EST) • En-US</option>
+                      <option value="cst">Central Standard Time (CST) • En-US</option>
+                      <option value="pst">Pacific Standard Time (PST) • En-US</option>
+                      <option value="gmt">Greenwich Mean Time (GMT) • En-GB</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label for="max-hall-capacity" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Max Hall Citizen Capacity</label>
+                  <div style="position:relative;">
+                    <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted);">groups</span>
+                    <input type="number" id="max-hall-capacity" class="form-control" style="width:100%; height:44px; padding-left:38px; font-size:14px; font-family:var(--font-family-mono); font-weight:bold;" value="250" min="50" max="1000" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Automated Lounge Overflow Alert Callout -->
+              <div style="display:flex; align-items:center; justify-content:space-between; background:#FFFBEB; border:1px solid #FDE68A; border-radius:var(--radius-card); padding:16px; margin-top:6px;">
+                <div style="display:flex; align-items:flex-start; gap:12px; max-width:85%;">
+                  <span class="material-symbols-outlined" style="font-size:22px; color:#D97706; margin-top:2px;">notifications_active</span>
+                  <div>
+                    <h4 style="font-size:13px; font-weight:700; color:#92400E; margin:0 0 2px;">Automated Lounge Overflow Alert</h4>
+                    <p style="font-size:11px; color:#B45309; margin:0; line-height:1.4;">
+                      When active citizen token holding count reaches 90% (225 citizens), the self-serve check-in kiosks will display dynamic wait advisories and prompt citizens for optional mobile SMS virtual queueing.
+                    </p>
+                  </div>
+                </div>
+                <label class="policy-toggle-switch">
+                  <input type="checkbox" id="toggle-overflow-alert" checked />
+                  <span class="policy-toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <!-- POLICY BLOCK 02: Operating Hours & Dispatch Schedule -->
+          <section class="policy-block-card" id="section-hours" aria-labelledby="heading-block-02">
+            <div class="policy-block-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:20px;">calendar_month</span>
+                </div>
+                <div>
+                  <div class="policy-tag-badge">POLICY BLOCK 02</div>
+                  <h2 id="heading-block-02" style="font-size:1.15rem; font-weight:700; color:var(--color-primary); margin:0;">
+                    Operating Hours & Dispatch Schedule
+                  </h2>
+                </div>
+              </div>
+              <span class="status-pill status-pill--calling" style="font-size:11px;">5 Weekdays Active</span>
+            </div>
+
+            <!-- Two Sub-blocks in Row -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:18px;">
+              <!-- Left: Weekday Public Hours -->
+              <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px;">
+                <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-primary); margin-bottom:12px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">store</span>
+                  <span>Weekday Public Hours</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+                  <div>
+                    <label for="hours-doors-open" style="font-size:11px; color:var(--color-text-muted); display:block; margin-bottom:4px;">Doors Open</label>
+                    <input type="time" id="hours-doors-open" class="form-control" style="width:100%; height:38px; font-size:13px; font-weight:bold; font-family:var(--font-family-mono);" value="08:30" />
+                  </div>
+                  <div>
+                    <label for="hours-doors-close" style="font-size:11px; color:var(--color-text-muted); display:block; margin-bottom:4px;">Doors Close</label>
+                    <input type="time" id="hours-doors-close" class="form-control" style="width:100%; height:38px; font-size:13px; font-weight:bold; font-family:var(--font-family-mono);" value="16:30" />
+                  </div>
+                </div>
+                <span style="font-size:11px; color:var(--color-text-muted);">Public entry gates and reception turnstiles status.</span>
+              </div>
+
+              <!-- Right: Staff Shift Hours -->
+              <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px;">
+                <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:var(--color-primary); margin-bottom:12px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">badge</span>
+                  <span>Staff Shift Hours</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:8px;">
+                  <div>
+                    <label for="hours-staff-login" style="font-size:11px; color:var(--color-text-muted); display:block; margin-bottom:4px;">Shift Login</label>
+                    <input type="time" id="hours-staff-login" class="form-control" style="width:100%; height:38px; font-size:13px; font-weight:bold; font-family:var(--font-family-mono);" value="08:00" />
+                  </div>
+                  <div>
+                    <label for="hours-staff-signoff" style="font-size:11px; color:var(--color-text-muted); display:block; margin-bottom:4px;">Shift Signoff</label>
+                    <input type="time" id="hours-staff-signoff" class="form-control" style="width:100%; height:38px; font-size:13px; font-weight:bold; font-family:var(--font-family-mono);" value="17:00" />
+                  </div>
+                </div>
+                <span style="font-size:11px; color:var(--color-text-muted);">Includes 30 min morning briefing and closing audit.</span>
+              </div>
+            </div>
+
+            <!-- Cut-off & Recess Row -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:18px;">
+              <div>
+                <label for="cutoff-time-select" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Auto Token Generation Cut-off</label>
+                <select id="cutoff-time-select" class="form-control" style="width:100%; height:42px; font-size:13px;">
+                  <option value="30" selected>30 minutes before closing (04:00 PM)</option>
+                  <option value="45">45 minutes before closing (03:45 PM)</option>
+                  <option value="60">60 minutes before closing (03:30 PM)</option>
+                </select>
+                <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">Kiosks automatically switch to 'Closed for Today' intake state.</span>
+              </div>
+
+              <div>
+                <label for="recess-window-select" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Scheduled Recess Windows</label>
+                <select id="recess-window-select" class="form-control" style="width:100%; height:42px; font-size:13px;">
+                  <option value="rotational" selected>12:00 PM - 01:00 PM (Rotational Desk Recess)</option>
+                  <option value="staggered">11:30 AM - 01:30 PM (Staggered Batches)</option>
+                  <option value="fixed">12:30 PM - 01:15 PM (Fixed Floor Recess)</option>
+                </select>
+                <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">Engine staggers 50% counter availability automatically.</span>
+              </div>
+            </div>
+
+            <!-- Operational Days Pills -->
+            <div>
+              <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:8px; display:block;">
+                ACTIVE OPERATIONAL DAYS SCHEDULE
+              </span>
+              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="operational-days-container">
+                <button type="button" class="day-pill-btn" data-day="MON">
+                  <span style="font-weight:bold; font-size:12px;">MON</span>
+                  <span style="font-size:10px;">08:30-16:30</span>
+                </button>
+                <button type="button" class="day-pill-btn" data-day="TUE">
+                  <span style="font-weight:bold; font-size:12px;">TUE</span>
+                  <span style="font-size:10px;">08:30-16:30</span>
+                </button>
+                <button type="button" class="day-pill-btn" data-day="WED">
+                  <span style="font-weight:bold; font-size:12px;">WED</span>
+                  <span style="font-size:10px;">08:30-16:30</span>
+                </button>
+                <button type="button" class="day-pill-btn" data-day="THU">
+                  <span style="font-weight:bold; font-size:12px;">THU</span>
+                  <span style="font-size:10px;">08:30-16:30</span>
+                </button>
+                <button type="button" class="day-pill-btn" data-day="FRI">
+                  <span style="font-weight:bold; font-size:12px;">FRI</span>
+                  <span style="font-size:10px;">08:30-16:30</span>
+                </button>
+                <button type="button" class="day-pill-btn day-pill-btn--closed" data-day="SAT">
+                  <span style="font-weight:bold; font-size:12px;">SAT</span>
+                  <span style="font-size:10px;">Closed</span>
+                </button>
+                <button type="button" class="day-pill-btn day-pill-btn--closed" data-day="SUN">
+                  <span style="font-weight:bold; font-size:12px;">SUN</span>
+                  <span style="font-size:10px;">Closed</span>
+                </button>
+              </div>
+            </div>
+          </section>
+
+          <!-- POLICY BLOCK 03: Counter & Routing Configuration -->
+          <section class="policy-block-card" id="section-counters" aria-labelledby="heading-block-03">
+            <div class="policy-block-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:20px;">alt_route</span>
+                </div>
+                <div>
+                  <div class="policy-tag-badge">POLICY BLOCK 03</div>
+                  <h2 id="heading-block-03" style="font-size:1.15rem; font-weight:700; color:var(--color-primary); margin:0;">
+                    Counter & Routing Configuration
+                  </h2>
+                </div>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:11px;">14 Active Desks</span>
+            </div>
+
+            <div style="margin-bottom:16px;">
+              <label for="algorithm-select" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Queue Balancing Algorithm</label>
+              <div style="position:relative;">
+                <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted);">developer_board</span>
+                <select id="algorithm-select" class="form-control" style="width:100%; height:44px; padding-left:38px; font-size:13px; font-weight:600;">
+                  <option value="adaptive" selected>Adaptive Load Balancing (Dynamic Multi-Counter FIFO)</option>
+                  <option value="strict-fifo">Strict Sequential FIFO (Single-Hub Dedicated)</option>
+                  <option value="weighted-sla">Weighted SLA Minimization (Priority Escalation First)</option>
+                  <option value="round-robin">Desk Round-Robin Rotation</option>
+                </select>
+              </div>
+              <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">
+                Calculates current agent handling velocities and automatically pushes waiting citizens to the next clearing desk.
+              </span>
+            </div>
+
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+              <div>
+                <label for="recall-limit-select" class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Recall Frequency Limit</label>
+                <div style="position:relative;">
+                  <span class="material-symbols-outlined" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); font-size:18px; color:var(--color-text-muted);">repeat</span>
+                  <select id="recall-limit-select" class="form-control" style="width:100%; height:44px; padding-left:38px; font-size:13px;">
+                    <option value="3" selected>Maximum 3 Chimes before Auto-No-Show Deflect</option>
+                    <option value="2">Maximum 2 Chimes (Strict Velocity)</option>
+                    <option value="4">Maximum 4 Chimes (Extended Grace)</option>
+                  </select>
+                </div>
+                <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">
+                  Interval between automatic public announcements: 45 seconds.
+                </span>
+              </div>
+
+              <div>
+                <label class="form-label" style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Counter Chime Sound Tone</label>
+                <div style="display:flex; gap:8px;">
+                  <select id="chime-tone-select" class="form-control" style="flex:1; height:44px; font-size:13px;">
+                    <option value="standard" selected>Civic Standard Dual (523Hz &rarr; 659Hz)</option>
+                    <option value="tri-tone">Ascending Tri-Tone (440-554-659Hz)</option>
+                    <option value="gentle">Gentle Bell Ping (Single Tone)</option>
+                  </select>
+                  <button type="button" class="btn btn--primary" id="btn-preview-chime" style="height:44px; padding:0 14px; font-size:12px; background:#2563EB;">
+                    <span class="material-symbols-outlined" style="font-size:18px;">play_arrow</span>
+                    <span>Preview</span>
+                  </button>
+                </div>
+                <span style="font-size:11px; color:var(--color-text-muted); margin-top:4px; display:block;">
+                  Outputs to ceiling speaker zones A, B, and lounge displays.
+                </span>
+              </div>
+            </div>
+          </section>
+
+          <!-- POLICY BLOCK 04: Configurable Priority Queue Policy [ADA Compliant] -->
+          <section class="policy-block-card" id="section-priority" aria-labelledby="heading-block-04">
+            <div class="policy-block-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:20px;">accessible</span>
+                </div>
+                <div>
+                  <div class="policy-tag-badge">POLICY BLOCK 04 • CRUCIAL COMPLIANCE</div>
+                  <h2 id="heading-block-04" style="font-size:1.15rem; font-weight:700; color:var(--color-primary); margin:0;">
+                    Configurable Priority Queue Policy
+                  </h2>
+                </div>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:11px;">ADA Compliant</span>
+            </div>
+
+            <!-- Intercept Ratio Selector -->
+            <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:18px; margin-bottom:18px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                <div>
+                  <h3 style="font-size:14px; font-weight:700; color:var(--color-primary); margin:0 0 2px;">Priority Handling Intercept Ratio</h3>
+                  <div style="font-size:11px; color:var(--color-text-muted);">Controls interleaving frequency between priority category citizens and standard waiting queue.</div>
+                </div>
+                <div style="text-align:right;">
+                  <span style="font-size:10px; color:var(--color-text-muted); text-transform:uppercase; font-weight:700;">RATIO SET:</span>
+                  <div style="font-size:1.15rem; font-weight:bold; color:#2563EB; font-family:var(--font-family-mono);" id="ratio-display-badge">1 Priority : 2 Standard</div>
+                </div>
+              </div>
+
+              <!-- Interactive Ratio Buttons -->
+              <div style="display:flex; flex-wrap:wrap; gap:8px;" id="priority-ratio-group">
+                <button type="button" class="ratio-btn" data-ratio="1:1">1 : 1 (Max Urgency)</button>
+                <button type="button" class="ratio-btn ratio-btn--active" data-ratio="1:2">1 : 2 (Default Balanced)</button>
+                <button type="button" class="ratio-btn" data-ratio="1:3">1 : 3 (Moderate)</button>
+                <button type="button" class="ratio-btn" data-ratio="1:4">1 : 4</button>
+                <button type="button" class="ratio-btn" data-ratio="1:5">1 : 5 (Standard Priority)</button>
+              </div>
+            </div>
+
+            <!-- Eligible Categories (2x2 Grid of Checkable Cards) -->
+            <div style="margin-bottom:18px;">
+              <span style="font-size:11px; font-weight:700; color:var(--color-text-muted); text-transform:uppercase; letter-spacing:0.04em; margin-bottom:10px; display:block;">
+                ELIGIBLE PRIORITY CATEGORIES & VERIFICATION KEYS
+              </span>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(260px, 1fr)); gap:12px;">
+                <!-- Category 1 -->
+                <label style="display:flex; align-items:flex-start; gap:10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:14px; cursor:pointer;">
+                  <input type="checkbox" checked style="width:18px; height:18px; margin-top:2px; accent-color:#2563EB;" />
+                  <div>
+                    <div style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px; color:var(--color-primary);">
+                      <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">elderly</span>
+                      <span>Senior Citizens (65+)</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Verified via National ID card or birth record scan at reception.</div>
+                  </div>
+                </label>
+
+                <!-- Category 2 -->
+                <label style="display:flex; align-items:flex-start; gap:10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:14px; cursor:pointer;">
+                  <input type="checkbox" checked style="width:18px; height:18px; margin-top:2px; accent-color:#2563EB;" />
+                  <div>
+                    <div style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px; color:var(--color-primary);">
+                      <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">accessible</span>
+                      <span>Persons with Disabilities</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Assigned physical accessible desks (Counters 01 & 02 by default).</div>
+                  </div>
+                </label>
+
+                <!-- Category 3 -->
+                <label style="display:flex; align-items:flex-start; gap:10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:14px; cursor:pointer;">
+                  <input type="checkbox" checked style="width:18px; height:18px; margin-top:2px; accent-color:#2563EB;" />
+                  <div>
+                    <div style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px; color:var(--color-primary);">
+                      <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">pregnant_woman</span>
+                      <span>Expectant Mothers</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Applies automatic comfortable-lounge seating token zone.</div>
+                  </div>
+                </label>
+
+                <!-- Category 4 -->
+                <label style="display:flex; align-items:flex-start; gap:10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:14px; cursor:pointer;">
+                  <input type="checkbox" checked style="width:18px; height:18px; margin-top:2px; accent-color:#2563EB;" />
+                  <div>
+                    <div style="display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px; color:var(--color-primary);">
+                      <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">emergency</span>
+                      <span>Urgent Emergency Attestations</span>
+                    </div>
+                    <div style="font-size:11px; color:var(--color-text-muted); margin-top:2px;">Requires Floor Supervisor digital key authorization PIN.</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Auto-Elevate Threshold (10 Minutes) Callout -->
+            <div style="display:flex; align-items:center; justify-content:space-between; background:#F0FDFA; border:1px solid #99F6E4; border-radius:var(--radius-card); padding:16px;">
+              <div style="display:flex; align-items:center; gap:12px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#CCFBF1; color:#0F766E; display:flex; align-items:center; justify-content:center; font-weight:bold; font-family:var(--font-family-mono); font-size:16px;">
+                  10
+                </div>
+                <div>
+                  <h4 style="font-size:13px; font-weight:700; color:#115E59; margin:0 0 2px;">Auto-Elevate Threshold (10 Minutes)</h4>
+                  <p style="font-size:11px; color:#0F766E; margin:0;">
+                    If Priority Citizen wait exceeds 10 minutes, elevate to immediate Next-in-Line across all open counters.
+                  </p>
+                </div>
+              </div>
+              <span class="status-pill status-pill--completed" style="background:#CCFBF1; color:#0F766E; font-size:11px;">Active Escalation</span>
+            </div>
+          </section>
+
+          <!-- POLICY BLOCK 05: Notification & Gateway Integrations -->
+          <section class="policy-block-card" id="section-gateways" aria-labelledby="heading-block-05">
+            <div class="policy-block-header">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <div style="width:36px; height:36px; border-radius:8px; background:#EFF6FF; color:#2563EB; display:flex; align-items:center; justify-content:center;">
+                  <span class="material-symbols-outlined" style="font-size:20px;">hub</span>
+                </div>
+                <div>
+                  <div class="policy-tag-badge">POLICY BLOCK 05</div>
+                  <h2 id="heading-block-05" style="font-size:1.15rem; font-weight:700; color:var(--color-primary); margin:0;">
+                    Notification & Gateway Integrations
+                  </h2>
+                </div>
+              </div>
+              <span class="status-pill status-pill--completed" style="font-size:11px;">Gateways Online</span>
+            </div>
+
+            <!-- Two Gateway Cards in Row -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin-bottom:18px;">
+              <!-- Gateway 1: SMS -->
+              <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">sms</span>
+                    <h3 style="font-size:13px; font-weight:700; color:var(--color-primary); margin:0;">SMS Gateway Provider</h3>
+                  </div>
+                  <span class="status-pill status-pill--completed" style="font-size:10px;">Connected</span>
+                </div>
+                <div style="font-size:12px; font-weight:600; color:var(--color-text);">Twilio GovCloud Gateway</div>
+                <div style="font-size:11px; color:var(--color-text-muted); font-family:var(--font-family-mono); margin:2px 0 12px;">SID: AC9862••••••••••••391a • Latency: 140ms</div>
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn btn--secondary" id="btn-test-sms" style="flex:1; justify-content:center; font-size:11px; padding:6px 10px;">
+                    <span>Test Ping</span>
+                  </button>
+                  <button type="button" class="btn btn--secondary" id="btn-rotate-key" style="flex:1; justify-content:center; font-size:11px; padding:6px 10px;">
+                    <span>Rotate Key</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Gateway 2: Audio PA -->
+              <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <div style="display:flex; align-items:center; gap:6px;">
+                    <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">campaign</span>
+                    <h3 style="font-size:13px; font-weight:700; color:var(--color-primary); margin:0;">Public PA Audio Sync</h3>
+                  </div>
+                  <span class="status-pill status-pill--completed" style="font-size:10px;">Active</span>
+                </div>
+                <div style="font-size:12px; font-weight:600; color:var(--color-text);">Lounge Display Network Node #12</div>
+                <div style="font-size:11px; color:var(--color-text-muted); margin:2px 0 12px;">Synchronized with 8 Foyer LCD panels via WebSocket</div>
+                <div style="display:flex; gap:8px;">
+                  <button type="button" class="btn btn--secondary" id="btn-sync-test-tone" style="flex:1; justify-content:center; font-size:11px; padding:6px 10px;">
+                    <span>Sync Test Tone</span>
+                  </button>
+                  <button type="button" class="btn btn--secondary" id="btn-pa-diagnostics" style="flex:1; justify-content:center; font-size:11px; padding:6px 10px;">
+                    <span>Diagnostics</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- QR Expiry Policy Card -->
+            <div style="background:#EFF6FF; border:1px solid #BFDBFE; border-radius:var(--radius-card); padding:16px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="font-size:20px; color:#2563EB;">qr_code_2</span>
+                  <h3 style="font-size:13px; font-weight:700; color:#1E40AF; margin:0;">QR Code Token Expiry Time</h3>
+                </div>
+                <span style="font-size:10px; background:#DBEAFE; color:#1E40AF; padding:2px 6px; border-radius:4px; font-weight:bold;">Valid for current operating day only</span>
+              </div>
+              <div style="display:flex; flex-wrap:wrap; gap:16px; font-size:12px; color:var(--color-primary);">
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="qr-expiry" value="day-end" checked style="accent-color:#2563EB;" />
+                  <span>Operating Day End (05:00 PM Hard Reset)</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="qr-expiry" value="4h" style="accent-color:#2563EB;" />
+                  <span>Fixed 4 Hours from Issuance</span>
+                </label>
+                <label style="display:flex; align-items:center; gap:6px; cursor:pointer;">
+                  <input type="radio" name="qr-expiry" value="24h" style="accent-color:#2563EB;" />
+                  <span>24-Hour Multi-Session Pass</span>
+                </label>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <!-- Right Side Context Sidebar -->
+        <aside style="display:flex; flex-direction:column; gap:20px;" aria-label="System Security and Hardware Telemetry">
+          <!-- 1. Security Context -->
+          <div class="card" style="padding:18px; background:linear-gradient(135deg, #0F234A 0%, #1E3A8A 100%); color:#FFFFFF;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <span style="font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:#93C5FD;">SECURITY CONTEXT</span>
+              <span style="font-size:10px; background:rgba(255,255,255,0.15); color:#FFFFFF; padding:2px 6px; border-radius:4px; font-family:var(--font-family-mono);">Tier 3 Root</span>
+            </div>
+            <div style="font-size:11px; color:#BFDBFE; margin-bottom:2px;">Authenticated Administrator</div>
+            <div style="font-size:1.15rem; font-weight:bold; color:#FFFFFF; margin-bottom:4px;">Marcus Vance</div>
+            <div style="font-size:11px; color:#93C5FD; margin-bottom:14px;">Signed in via Capital Security FIDO2</div>
+
+            <div style="background:rgba(0,0,0,0.25); border-radius:var(--radius-control); padding:10px 12px; font-size:11px; line-height:1.4;">
+              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                <span style="color:#93C5FD;">Audit Trail Policy:</span>
+                <span style="color:#6EE7B7; font-weight:bold;">Immutable Ledger</span>
+              </div>
+              <span style="color:#CBD5E1; font-size:10px;">Any policy override is stamped with UTC timestamp and encrypted into Civic Hub Audit Chain.</span>
+            </div>
+          </div>
+
+          <!-- 2. Dispatch Load Simulation (Interactive SVG Curve) -->
+          <div class="card" style="padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">analytics</span>
+                <h3 style="font-size:13px; font-weight:700; color:var(--color-primary); margin:0;">Dispatch Load Simulation</h3>
+              </div>
+              <span style="font-size:11px; font-family:var(--font-family-mono); font-weight:bold; color:#2563EB;" id="simulated-eta-badge">Simulated ETA: 4.8m</span>
+            </div>
+            <p style="font-size:11px; color:var(--color-text-secondary); margin:0 0 10px; line-height:1.4;">
+              Live computational simulation of wait dynamics with current <strong id="sim-ratio-label">1:2</strong> priority ratio policy applied:
+            </p>
+
+            <!-- SVG Simulation Curve -->
+            <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-control); padding:12px; margin-bottom:10px;">
+              <svg viewBox="0 0 320 120" style="width:100%; height:auto; display:block;" role="img" aria-label="Simulated Queue Inflow vs Discharge Velocity Curve">
+                <title>Dispatch Queue Velocity Model</title>
+                <desc>Simulated throughput curves for standard and priority queue flows</desc>
+                <!-- Grid Lines -->
+                <line x1="20" y1="20" x2="300" y2="20" stroke="#E2E8F0" stroke-dasharray="3,3" />
+                <line x1="20" y1="55" x2="300" y2="55" stroke="#E2E8F0" stroke-dasharray="3,3" />
+                <line x1="20" y1="90" x2="300" y2="90" stroke="#CBD5E1" />
+                <!-- Standard Flow Curve (Blue) -->
+                <path id="curve-standard" d="M 20 85 Q 90 25, 170 65 T 300 45" fill="none" stroke="#2563EB" stroke-width="2.5" />
+                <!-- Priority Elevation Curve (Teal) -->
+                <path id="curve-priority" d="M 20 88 Q 100 45, 180 50 T 300 35" fill="none" stroke="#0D9488" stroke-width="2" stroke-dasharray="4,4" />
+                <!-- Dynamic Indicators -->
+                <circle cx="170" cy="65" r="4" fill="#2563EB" />
+                <circle cx="180" cy="50" r="4" fill="#0D9488" />
+              </svg>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:10px; color:var(--color-text-secondary);">
+              <span style="display:inline-flex; align-items:center; gap:4px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#2563EB;"></span>
+                <span>Standard Flow</span>
+              </span>
+              <span style="display:inline-flex; align-items:center; gap:4px;">
+                <span style="width:8px; height:8px; border-radius:50%; background:#0D9488;"></span>
+                <span>Priority Elevation</span>
+              </span>
+              <span style="color:#059669; font-weight:bold;">Stable</span>
+            </div>
+          </div>
+
+          <!-- 3. Connected Kiosk Terminals -->
+          <div class="card" style="padding:18px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+              <h3 style="font-size:13px; font-weight:700; color:var(--color-primary); margin:0;">Connected Kiosk Terminals</h3>
+              <span style="font-size:11px; font-family:var(--font-family-mono); font-weight:bold; color:var(--color-text-muted);">4 Active</span>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px; font-size:12px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-control);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">point_of_sale</span>
+                  <div>
+                    <strong style="color:var(--color-primary);">Kiosk-East-01</strong>
+                    <div style="font-size:10px; color:var(--color-text-muted);">Firmware v3.9 • Paper OK</div>
+                  </div>
+                </div>
+                <span style="width:8px; height:8px; border-radius:50%; background:#10B981;"></span>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-control);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">point_of_sale</span>
+                  <div>
+                    <strong style="color:var(--color-primary);">Kiosk-West-02</strong>
+                    <div style="font-size:10px; color:var(--color-text-muted);">Firmware v3.9 • Paper OK</div>
+                  </div>
+                </div>
+                <span style="width:8px; height:8px; border-radius:50%; background:#10B981;"></span>
+              </div>
+
+              <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 10px; background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-control);">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">connected_tv</span>
+                  <div>
+                    <strong style="color:var(--color-primary);">Main Wall Display A</strong>
+                    <div style="font-size:10px; color:var(--color-text-muted);">4K Signage Matrix • 60 FPS</div>
+                  </div>
+                </div>
+                <span style="width:8px; height:8px; border-radius:50%; background:#10B981;"></span>
+              </div>
+            </div>
+
+            <button type="button" class="btn btn--secondary" id="btn-broadcast-push" style="width:100%; justify-content:center; font-size:12px; padding:8px;">
+              <span class="material-symbols-outlined" style="font-size:16px; color:#2563EB;">broadcast_on_home</span>
+              <span>Broadcast Policy Push to All Terminals</span>
+            </button>
+          </div>
+
+          <!-- 4. Civic Compliance Reference -->
+          <div style="background:#F8FAFC; border:1px solid var(--color-border); border-radius:var(--radius-card); padding:16px;">
+            <div style="display:flex; align-items:center; gap:6px; margin-bottom:6px;">
+              <span class="material-symbols-outlined" style="font-size:18px; color:#2563EB;">verified_user</span>
+              <h3 style="font-size:12px; font-weight:700; color:var(--color-primary); margin:0;">Civic Compliance Reference</h3>
+            </div>
+            <p style="font-size:11px; color:var(--color-text-muted); line-height:1.4; margin:0;">
+              Configuration conforms to Municipal Administrative Ordinance 2024-B on equitable access to city welfare, licensing, and civil registry services.
+            </p>
+          </div>
+        </aside>
+      </div>
+
+      <!-- Sticky Bottom Save Bar (Appears when unsaved changes detected or user scrolls) -->
+      <div id="sticky-save-bar" style="position:sticky; bottom:16px; z-index:40; background:#0F234A; color:#FFFFFF; border-radius:var(--radius-card); padding:12px 20px; display:flex; justify-content:space-between; align-items:center; box-shadow:0 10px 25px rgba(0,0,0,0.2); margin-top:24px;">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <span class="material-symbols-outlined" style="font-size:22px; color:#60A5FA;">check_circle</span>
+          <div>
+            <div style="font-size:13px; font-weight:bold;">Policy Engine Ready</div>
+            <div style="font-size:11px; color:#94A3B8;">Changes take effect immediately on next 1.2s dispatch tick.</div>
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" class="btn btn--secondary" id="btn-discard-sticky" style="background:rgba(255,255,255,0.1); color:#FFFFFF; border:none; padding:6px 14px; font-size:12px;">Discard</button>
+          <button type="button" class="btn btn--primary" id="btn-save-sticky" style="background:#2563EB; border:none; padding:6px 16px; font-size:12px;">Save & Apply</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initAdminShell } from '../assets/js/admin.js';
+    import { showToast } from '../assets/js/ui.js';
+    import { playChime, speakAnnouncement } from '../assets/js/signage.js';
+
+    // 1. Initialize Admin Shell
+    initAdminShell('settings');
+
+    // 2. Chime Preview & Audio Tests
+    document.getElementById('btn-preview-chime').addEventListener('click', () => {
+      playChime();
+      showToast('Auditory chime played (523Hz &rarr; 659Hz).');
+    });
+
+    document.getElementById('btn-sync-test-tone').addEventListener('click', () => {
+      playChime();
+      showToast('Sync test tone broadcast to Lounge Display Network Node #12.', 'success');
+    });
+
+    document.getElementById('btn-pa-diagnostics').addEventListener('click', () => {
+      speakAnnouncement('Public address audio diagnostics complete. All 8 ceiling speakers online.');
+      showToast('Audio synthesis check passed.');
+    });
+
+    // 3. SMS Gateway Tests
+    document.getElementById('btn-test-sms').addEventListener('click', () => {
+      showToast('Twilio GovCloud Gateway ping: 140ms latency (OK).', 'success');
+    });
+
+    document.getElementById('btn-rotate-key').addEventListener('click', () => {
+      showToast('SMS Gateway API key rotated. New hash: ••••••••••••882c.', 'warning');
+    });
+
+    // 4. Operational Days Pills Interaction
+    const dayPills = document.querySelectorAll('.day-pill-btn');
+    dayPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const isClosed = pill.classList.contains('day-pill-btn--closed');
+        const day = pill.getAttribute('data-day');
+        if (isClosed) {
+          pill.classList.remove('day-pill-btn--closed');
+          pill.innerHTML = `<span style="font-weight:bold; font-size:12px;">${day}</span><span style="font-size:10px;">08:30-16:30</span>`;
+          showToast(`${day} enabled as operational day (08:30 - 16:30).`);
+        } else {
+          pill.classList.add('day-pill-btn--closed');
+          pill.innerHTML = `<span style="font-weight:bold; font-size:12px;">${day}</span><span style="font-size:10px;">Closed</span>`;
+          showToast(`${day} set to Closed.`);
+        }
+      });
+    });
+
+    // 5. Priority Ratio Group
+    const ratioBtns = document.querySelectorAll('.ratio-btn');
+    const ratioDisplay = document.getElementById('ratio-display-badge');
+    const summaryRatio = document.getElementById('summary-ratio-text');
+    const simRatioLabel = document.getElementById('sim-ratio-label');
+    const simulatedEta = document.getElementById('simulated-eta-badge');
+    const curveStandard = document.getElementById('curve-standard');
+    const curvePriority = document.getElementById('curve-priority');
+
+    ratioBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        ratioBtns.forEach(b => b.classList.remove('ratio-btn--active'));
+        btn.classList.add('ratio-btn--active');
+        const ratio = btn.getAttribute('data-ratio');
+        ratioDisplay.textContent = `1 Priority : ${ratio.split(':')[1]} Standard`;
+        summaryRatio.textContent = `1 : ${ratio.split(':')[1]} Standard`;
+        simRatioLabel.textContent = ratio;
+
+        // Animate simulation curve based on ratio
+        if (ratio === '1:1') {
+          simulatedEta.textContent = 'Simulated ETA: 3.2m';
+          curvePriority.setAttribute('d', 'M 20 90 Q 90 20, 170 30 T 300 20');
+        } else if (ratio === '1:2') {
+          simulatedEta.textContent = 'Simulated ETA: 4.8m';
+          curvePriority.setAttribute('d', 'M 20 88 Q 100 45, 180 50 T 300 35');
+        } else {
+          simulatedEta.textContent = 'Simulated ETA: 6.4m';
+          curvePriority.setAttribute('d', 'M 20 85 Q 110 55, 190 60 T 300 45');
+        }
+        showToast(`Priority ratio adjusted to ${ratio}.`);
+      });
+    });
+
+    // 6. Section Tabs Filter
+    const tabBtns = document.querySelectorAll('.settings-tab-btn');
+    tabBtns.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabBtns.forEach(t => t.classList.remove('settings-tab-btn--active'));
+        tab.classList.add('settings-tab-btn--active');
+
+        const section = tab.getAttribute('data-section');
+        const blocks = document.querySelectorAll('.policy-block-card');
+
+        blocks.forEach(block => {
+          if (section === 'all') {
+            block.style.display = '';
+          } else if (section === 'general' && block.id === 'section-general') {
+            block.style.display = '';
+          } else if (section === 'hours' && block.id === 'section-hours') {
+            block.style.display = '';
+          } else if (section === 'counters' && block.id === 'section-counters') {
+            block.style.display = '';
+          } else if (section === 'algorithms' && block.id === 'section-counters') {
+            block.style.display = '';
+          } else if (section === 'priority' && block.id === 'section-priority') {
+            block.style.display = '';
+          } else {
+            block.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // 7. Save and Export Backup
+    function handleSave() {
+      const config = {
+        centerName: document.getElementById('center-name').value,
+        address: document.getElementById('facility-address').value,
+        timezone: document.getElementById('timezone-select').value,
+        hallCapacity: document.getElementById('max-hall-capacity').value,
+        algorithm: document.getElementById('algorithm-select').value,
+        doorsOpen: document.getElementById('hours-doors-open').value,
+        doorsClose: document.getElementById('hours-doors-close').value,
+        updatedAt: new Date().toISOString()
+      };
+      localStorage.setItem('queueease_settings_backup', JSON.stringify(config));
+      showToast('Municipal operational policy changes saved and broadcast to all kiosks.', 'success');
+      playChime();
+    }
+
+    document.getElementById('btn-save-policies').addEventListener('click', handleSave);
+    document.getElementById('btn-save-sticky').addEventListener('click', handleSave);
+    document.getElementById('btn-discard-sticky').addEventListener('click', () => {
+      showToast('Pending configuration adjustments reverted.');
+    });
+
+    document.getElementById('btn-export-backup').addEventListener('click', () => {
+      const config = {
+        meta: {
+          node: 'G-104',
+          policyEngine: '4.2.1',
+          exportedBy: 'Marcus Vance (Regional Director)',
+          timestamp: new Date().toISOString()
+        },
+        settings: {
+          centerName: document.getElementById('center-name').value,
+          address: document.getElementById('facility-address').value,
+          hallCapacity: document.getElementById('max-hall-capacity').value,
+          doorsOpen: '08:30',
+          doorsClose: '16:30',
+          priorityRatio: document.getElementById('ratio-display-badge').textContent
+        }
+      };
+      const blob = new Blob([JSON.stringify(config, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `QueueEase_Policy_Backup_${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Operational policy configuration exported.', 'success');
+    });
+
+    document.getElementById('btn-revert-defaults').addEventListener('click', () => {
+      if (confirm('Revert all municipal policies to standard statutory defaults?')) {
+        showToast('Policies restored to statutory default profile.');
+      }
+    });
+
+    document.getElementById('btn-broadcast-push').addEventListener('click', () => {
+      showToast('Policy push broadcast to 4 kiosks and lounge signage.', 'success');
+    });
+  </script>
+</body>
+</html>

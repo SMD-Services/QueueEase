@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        if (['en', 'hi', 'mr'].indexOf(lang) !== -1) {
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.lang = lang;
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>QueueEase - Accessibility & Citizen Assistance</title>
+  <meta name="description" content="Inclusive civic tools designed to ensure every citizen accesses public services without barriers." />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet" />
+
+  <!-- Design System CSS -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+</head>
+<body>
+
+  <!-- Shared App Header Target -->
+  <header id="app-header"></header>
+
+  <main class="container" style="padding-top: var(--space-4);">
+
+    <!-- 1. Hero Card with WCAG 2.2 AAA Badge -->
+    <section class="card accessibility-hero flow-col gap-3" style="margin-bottom: var(--space-5);">
+      <div class="flow-row justify-between items-start">
+        <div class="accessibility-panel__icon-box" style="width:48px; height:48px; border-radius:var(--radius-md); display:flex; align-items:center; justify-content:center;">
+          <span class="material-symbols-outlined" style="font-size:26px;">accessible</span>
+        </div>
+        <span class="status-pill status-pill--completed" style="font-size:11px;">
+          <span class="status-pill__dot"></span>
+          <span data-i18n="assist_wcag_badge">WCAG 2.2 AAA COMPLIANT</span>
+        </span>
+      </div>
+
+      <div class="flow-col">
+        <h1 class="text-headline-md font-bold" style="line-height:1.2; margin-bottom:4px; color:var(--text-heading);" data-i18n="assist_heading">
+          Accessibility & Citizen Assistance
+        </h1>
+        <p class="text-body-sm" style="line-height:1.45; color:var(--text-body);" data-i18n="assist_desc">
+          Inclusive civic tools designed to ensure every citizen accesses public services without barriers.
+        </p>
+      </div>
+    </section>
+
+    <!-- 2. Interactive Assistive Toolset -->
+    <section style="margin-bottom: var(--space-6);">
+      <div class="section-header-row" style="margin-bottom: var(--space-3);">
+        <div class="flow-row items-center gap-2">
+          <span class="material-symbols-outlined color-secondary">tune</span>
+          <h2 class="section-header-title" data-i18n="assist_toolset_title">Interactive Assistive Toolset</h2>
+        </div>
+        <span class="status-pill status-pill--completed" style="font-size:11px;" data-i18n="live_badge">Device Synced</span>
+      </div>
+
+      <div class="flow-col gap-3">
+        <!-- Tool 1: Dark Mode -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row justify-between items-center">
+            <div class="flow-row items-center gap-3">
+              <div class="dept-card__icon-box">
+                <span class="material-symbols-outlined">dark_mode</span>
+              </div>
+              <div class="flow-col">
+                <span class="text-body-md font-bold color-primary" data-i18n="assist_dark_mode">Dark Mode</span>
+                <span class="text-label-xs color-muted" data-i18n="assist_dark_mode_desc">Easier on the eyes in low light</span>
+              </div>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle Dark Mode">
+              <input type="checkbox" id="toggle-dark-mode" data-a11y-toggle="dark" />
+              <span class="toggle-switch__slider"></span>
+            </label>
+          </div>
+
+          <!-- 3-Way Segmented Control: Light, Dark, Auto -->
+          <div class="segmented-control" id="theme-mode-segmented" role="radiogroup" aria-label="Theme Mode Selection" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="segmented-control__item" data-theme-choice="light" role="radio" aria-checked="false" tabindex="0">
+              <div class="flow-row items-center justify-center gap-1">
+                <span class="material-symbols-outlined" style="font-size:16px;">light_mode</span>
+                <span style="font-weight:600; font-size:12px;" data-i18n="assist_theme_light">Light</span>
+              </div>
+            </div>
+            <div class="segmented-control__item" data-theme-choice="dark" role="radio" aria-checked="false" tabindex="0">
+              <div class="flow-row items-center justify-center gap-1">
+                <span class="material-symbols-outlined" style="font-size:16px;">dark_mode</span>
+                <span style="font-weight:600; font-size:12px;" data-i18n="assist_theme_dark">Dark</span>
+              </div>
+            </div>
+            <div class="segmented-control__item segmented-control__item--active" data-theme-choice="auto" role="radio" aria-checked="true" tabindex="0">
+              <div class="flow-row items-center justify-center gap-1">
+                <span class="material-symbols-outlined" style="font-size:16px;">settings_brightness</span>
+                <span style="font-weight:600; font-size:12px;" data-i18n="assist_theme_auto">Auto</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Preview Bar -->
+          <div class="flow-row justify-between items-center" id="contrast-preview-box" style="border-radius:var(--radius-sm); padding:10px 12px; transition:all 200ms ease;">
+            <div class="flow-row items-center gap-2">
+              <div class="avatar" id="contrast-preview-avatar" style="width:26px; height:26px; font-size:11px; background:var(--color-primary); color:var(--color-text-inverse);">12</div>
+              <span class="text-body-sm font-semibold" id="contrast-preview-text">Preview: Token #B-402 Called to Counter 3</span>
+            </div>
+            <span class="status-pill status-pill--completed" id="contrast-preview-tag" style="font-size:10px; padding:2px 8px;">Active</span>
+          </div>
+        </div>
+
+        <!-- Tool 2: Text Size Scaling -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row justify-between items-center">
+            <div class="flow-row items-center gap-3">
+              <div class="dept-card__icon-box">
+                <span class="material-symbols-outlined">text_fields</span>
+              </div>
+              <div class="flow-col">
+                <span class="text-body-md font-bold color-primary" data-i18n="assist_text_scale">Text Size Scaling</span>
+                <span class="text-label-xs color-muted" data-i18n="assist_text_scale_desc">Adjust civic ticket and directions legibility</span>
+              </div>
+            </div>
+            <span class="status-pill status-pill--calling" id="text-size-val-pill" style="font-size:11px;">100% (Default)</span>
+          </div>
+
+          <!-- 4-Option Segmented Control -->
+          <div class="segmented-control" id="text-scale-selector" role="radiogroup" aria-label="Text Size Scaling">
+            <div class="segmented-control__item" data-size="compact" role="radio" aria-checked="false" tabindex="0">
+              <div class="flow-col items-center">
+                <span style="font-weight:bold;">A-</span>
+                <span style="font-size:10px; opacity:0.8;">Compact</span>
+              </div>
+            </div>
+            <div class="segmented-control__item segmented-control__item--active" data-size="default" role="radio" aria-checked="true" tabindex="0">
+              <div class="flow-col items-center">
+                <span style="font-weight:bold;">Default</span>
+                <span style="font-size:10px; opacity:0.8;">Standard</span>
+              </div>
+            </div>
+            <div class="segmented-control__item" data-size="large" role="radio" aria-checked="false" tabindex="0">
+              <div class="flow-col items-center">
+                <span style="font-weight:bold;">A+</span>
+                <span style="font-size:10px; opacity:0.8;">Large</span>
+              </div>
+            </div>
+            <div class="segmented-control__item" data-size="xlarge" role="radio" aria-checked="false" tabindex="0">
+              <div class="flow-col items-center">
+                <span style="font-weight:bold;">A++</span>
+                <span style="font-size:10px; opacity:0.8;">Extra Large</span>
+              </div>
+            </div>
+          </div>
+
+          <div style="background:var(--surface-subtle); border-radius:var(--radius-sm); padding:8px 12px; font-size:var(--font-body-sm); color:var(--text-muted); border:1px solid var(--border-subtle);" data-i18n="assist_text_sample">
+            Example text: "Desk 04 is currently preparing your digital biometric validation."
+          </div>
+        </div>
+
+        <!-- Tool 3: Auditory Guidance & Voice Call -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row justify-between items-center">
+            <div class="flow-row items-center gap-3">
+              <div class="dept-card__icon-box">
+                <span class="material-symbols-outlined">volume_up</span>
+              </div>
+              <div class="flow-col">
+                <span class="text-body-md font-bold color-primary" data-i18n="assist_audio_guidance">Auditory Guidance & Voice Call</span>
+                <span class="text-label-xs color-muted" data-i18n="assist_audio_guidance_desc">Reads ticket status and counter arrival prompts aloud</span>
+              </div>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle Auditory Guidance">
+              <input type="checkbox" id="toggle-audio-guidance" checked />
+              <span class="toggle-switch__slider"></span>
+            </label>
+          </div>
+
+          <button type="button" class="btn btn--secondary btn--full btn--sm" id="btn-test-speech-voice">
+            <span class="material-symbols-outlined">play_circle</span>
+            <span data-i18n="assist_btn_test_voice">Play Test Voice Announcement</span>
+          </button>
+        </div>
+
+        <!-- Tool 4: Primary Civic Language -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row items-center gap-3">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">translate</span>
+            </div>
+            <div class="flow-col">
+              <span class="text-body-md font-bold color-primary" data-i18n="assist_language_title">Primary Civic Language</span>
+              <span class="text-label-xs color-muted" data-i18n="assist_language_desc">Live dynamic portal and counter display language</span>
+            </div>
+          </div>
+
+          <!-- 3-Language Grid (English, Hindi, Marathi only) -->
+          <div class="flow-grid gap-2" style="grid-template-columns: repeat(3, 1fr);" id="lang-selector-grid">
+            <button type="button" class="btn btn--navy btn--sm justify-between" data-lang="en">
+              <span>English</span>
+              <span class="material-symbols-outlined" style="font-size:16px;">check</span>
+            </button>
+            <button type="button" class="btn btn--ghost btn--sm justify-between" data-lang="hi">
+              <span>हिन्दी</span>
+            </button>
+            <button type="button" class="btn btn--ghost btn--sm justify-between" data-lang="mr">
+              <span>मराठी</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Dedicated Civic Support & Accommodations -->
+    <section style="margin-bottom: var(--space-6);">
+      <div class="flow-row items-center gap-2" style="margin-bottom: var(--space-3);">
+        <span class="material-symbols-outlined color-primary">verified_user</span>
+        <h2 class="section-header-title" data-i18n="assist_support_title">Dedicated Civic Support & Accommodations</h2>
+      </div>
+
+      <div class="flow-col gap-3">
+        <!-- Direct Floor Dispatch Card -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row items-start gap-3">
+            <div class="dept-card__icon-box" style="background:var(--color-secondary); color:#FFFFFF; width:44px; height:44px;">
+              <span class="material-symbols-outlined">support_agent</span>
+            </div>
+            <div class="flow-col">
+              <span class="text-label-xs color-secondary font-bold" style="letter-spacing:0.04em;" data-i18n="assist_escort_tag">DIRECT FLOOR DISPATCH</span>
+              <h3 class="text-title-md font-bold color-primary" data-i18n="assist_escort_title">Request On-Site Escort or Interpreter</h3>
+            </div>
+          </div>
+
+          <p class="text-body-sm color-text-secondary" data-i18n="assist_escort_desc">
+            Trained municipal greeters and certified Sign Language (ASL/ISL) specialists accompany you through document counters.
+          </p>
+
+          <div style="background:var(--surface-tint); border:1px solid var(--border-subtle); border-radius:var(--radius-sm); padding:10px 14px;">
+            <div class="flow-row items-center gap-1 text-label-xs color-success font-bold" style="margin-bottom:6px;">
+              <span class="material-symbols-outlined" style="font-size:16px;">check_circle</span>
+              <span data-i18n="assist_avail_title">Available at Civic Hall:</span>
+            </div>
+            <div class="flow-grid gap-2" style="grid-template-columns: repeat(2, 1fr); font-size:11px; color:var(--text-body);">
+              <div data-i18n="assist_avail_item1">• Mobility Escort Staff</div>
+              <div data-i18n="assist_avail_item2">• Sign Language Translator</div>
+              <div data-i18n="assist_avail_item3">• Tactile Guide Support</div>
+              <div data-i18n="assist_avail_item4">• Document Read-Out Desk</div>
+            </div>
+          </div>
+
+          <button type="button" class="btn btn--navy btn--full" id="btn-request-escort-modal">
+            <span class="material-symbols-outlined">hiking</span>
+            <span data-i18n="assist_escort_btn">Request Staff Assistance Desk</span>
+          </button>
+        </div>
+
+        <!-- Senior Citizen Support (65+) Card -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row justify-between items-start">
+            <div class="flow-row items-start gap-3">
+              <div class="dept-card__icon-box">
+                <span class="material-symbols-outlined">elderly</span>
+              </div>
+              <div class="flow-col">
+                <div class="flow-row items-center gap-2">
+                  <h3 class="text-title-sm font-bold color-primary" data-i18n="assist_senior_title">Senior Citizen Support (65+)</h3>
+                  <span class="status-pill status-pill--calling" style="font-size:10px; padding:2px 6px;">Fast-Track</span>
+                </div>
+                <span class="text-label-xs color-muted" data-i18n="assist_senior_desc">Automated priority routing reduces standard hall queue times by up to 60%</span>
+              </div>
+            </div>
+            <label class="toggle-switch" aria-label="Toggle Senior Fast-Track">
+              <input type="checkbox" id="toggle-senior-fast-track" />
+              <span class="toggle-switch__slider"></span>
+            </label>
+          </div>
+
+          <div class="flow-row justify-between items-center text-label-xs" style="background:var(--surface-subtle); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
+            <div class="flow-row items-center gap-1 color-primary">
+              <span class="material-symbols-outlined color-secondary" style="font-size:16px;">verified</span>
+              <span data-i18n="assist_senior_lane_label">Senior Fast-Track Routing:</span>
+            </div>
+            <span id="senior-fast-track-status" class="color-muted font-bold" data-i18n="assist_senior_inactive">Inactive (Tap toggle to enable)</span>
+          </div>
+        </div>
+
+        <!-- Disability & Mobility Accommodations -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row items-center gap-3">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">accessible</span>
+            </div>
+            <div class="flow-col">
+              <h3 class="text-title-sm font-bold color-primary" data-i18n="assist_disability_title">Disability & Mobility Accommodations</h3>
+              <span class="text-label-xs color-muted" data-i18n="assist_disability_desc">Automated allocation of lowered counters and ergonomic service desks.</span>
+            </div>
+          </div>
+
+          <div class="flow-grid gap-2" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="hub-metric-col" style="padding:10px 4px; background:var(--surface-subtle); border-radius:var(--radius-control); border:1px solid var(--border-subtle);">
+              <span class="material-symbols-outlined color-secondary" style="font-size:20px; margin-bottom:2px;">table_restaurant</span>
+              <span class="text-label-xs font-bold color-primary" data-i18n="assist_low_counter">Low Counter</span>
+              <span style="font-size:10px; color:var(--text-muted);">Desks 1A & 1B</span>
+            </div>
+            <div class="hub-metric-col" style="padding:10px 4px; background:var(--surface-subtle); border-radius:var(--radius-control); border:1px solid var(--border-subtle);">
+              <span class="material-symbols-outlined color-tertiary" style="font-size:20px; margin-bottom:2px;">stairs</span>
+              <span class="text-label-xs font-bold color-primary" data-i18n="assist_step_free">Step-Free</span>
+              <span style="font-size:10px; color:var(--text-muted);">North Ramp Pass</span>
+            </div>
+            <div class="hub-metric-col" style="padding:10px 4px; background:var(--surface-subtle); border-radius:var(--radius-control); border:1px solid var(--border-subtle);">
+              <span class="material-symbols-outlined color-warning" style="font-size:20px; margin-bottom:2px;">chair</span>
+              <span class="text-label-xs font-bold color-primary" data-i18n="assist_quiet_lounge">Quiet Lounge</span>
+              <span style="font-size:10px; color:var(--text-muted);">Zone Blue (A3)</span>
+            </div>
+          </div>
+
+          <div class="flow-row justify-between items-center text-label-xs" style="background:var(--surface-subtle); padding:8px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
+            <div class="flow-row items-center gap-1 color-primary">
+              <span class="material-symbols-outlined color-secondary" style="font-size:16px;">hearing</span>
+              <span data-i18n="assist_induction_loop">Induction Loop & T-Coil Active Desks</span>
+            </div>
+            <span class="status-pill status-pill--serving" style="font-size:10px; padding:2px 8px;">Counter 1 - 6</span>
+          </div>
+        </div>
+
+        <!-- Prefer In-Person Registration? -->
+        <div class="card card--sm flow-col gap-3">
+          <div class="flow-row items-center gap-3">
+            <div class="dept-card__icon-box">
+              <span class="material-symbols-outlined">storefront</span>
+            </div>
+            <div class="flow-col">
+              <h3 class="text-title-sm font-bold color-primary" data-i18n="assist_kiosk_title">Prefer In-Person Registration?</h3>
+              <span class="text-label-xs color-muted" data-i18n="assist_kiosk_sub">Physical kiosks and dedicated civic greeters ready upon entry.</span>
+            </div>
+          </div>
+
+          <div class="flow-row items-start gap-2 text-body-sm" style="background:var(--surface-subtle); padding:10px 12px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle);">
+            <span class="material-symbols-outlined color-secondary" style="font-size:18px; margin-top:2px;">location_on</span>
+            <span class="color-text-secondary" data-i18n="assist_kiosk_desc">
+              Visit Kiosk Terminals 01-04 located near Entrance Hall A. On-duty civic ambassadors are available to print tactile paper tokens, scan identification cards, or provide immediate spoken direction.
+            </span>
+          </div>
+
+          <div class="flow-row justify-between items-center text-body-sm" style="background:var(--surface-tint); padding:10px 14px; border-radius:var(--radius-sm); border:1px solid var(--border-subtle); color:var(--text-body);">
+            <div class="flow-row items-center gap-2">
+              <span class="material-symbols-outlined color-secondary">call</span>
+              <span data-i18n="assist_hall_call_label">Dial Ext. 402 (Hall Reception Desk)</span>
+            </div>
+            <a href="tel:402" class="color-secondary font-bold" style="font-size:12px; color:var(--accent-text);" data-i18n="assist_hall_call_free">Free Hall Call</a>
+          </div>
+
+          <button type="button" class="btn btn--primary btn--full" id="btn-alert-greeter">
+            <span class="material-symbols-outlined">campaign</span>
+            <span data-i18n="assist_btn_greeter">Tap to Alert Greeter Staff at Hall A</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Note -->
+    <div class="flow-row justify-between items-center text-label-xs color-muted" style="margin-bottom: var(--space-8); padding-top:var(--space-2); border-top:1px solid var(--color-border);">
+      <div class="flow-row items-center gap-1">
+        <span class="material-symbols-outlined" style="font-size:16px; color:var(--color-secondary);">verified</span>
+        <span data-i18n="assist_charter_note">Municipal Disability Charter 2025 Approved</span>
+      </div>
+      <span class="color-secondary font-bold">Assistance ID: CIV-88402</span>
+    </div>
+
+  </main>
+
+  <!-- Shared Bottom Navigation Target -->
+  <nav id="app-bottom-nav"></nav>
+
+  <script type="module">
+    import { initHeader, initBottomNav, showToast, openSheet, closeSheet } from '/assets/js/ui.js';
+    import { A11y, I18N } from '/assets/js/a11y.js';
+
+    // 1. Shared Layout
+    initHeader({
+      subtitle: 'Public Civic Desk • Accessibility Assistance',
+      showLive: true
+    });
+
+    initBottomNav({
+      activeTab: 'assistance'
+    });
+
+    // 2. Dark Mode Toggle, Segmented Control & Dynamic Preview
+    const darkModeToggle = document.getElementById('toggle-dark-mode');
+    const themeSegmented = document.getElementById('theme-mode-segmented');
+    const contrastPreviewBox = document.getElementById('contrast-preview-box');
+    const contrastPreviewTag = document.getElementById('contrast-preview-tag');
+    const contrastPreviewAvatar = document.getElementById('contrast-preview-avatar');
+
+    function syncThemePreview(isDark, mode) {
+      if (darkModeToggle) {
+        darkModeToggle.checked = isDark;
+        darkModeToggle.setAttribute('aria-checked', isDark ? 'true' : 'false');
+      }
+
+      if (themeSegmented) {
+        themeSegmented.querySelectorAll('[data-theme-choice]').forEach(item => {
+          const choice = item.getAttribute('data-theme-choice');
+          const isChosen = choice === mode;
+          item.classList.toggle('segmented-control__item--active', isChosen);
+          item.setAttribute('aria-checked', isChosen ? 'true' : 'false');
+        });
+      }
+
+      if (contrastPreviewTag) {
+        if (isDark) {
+          contrastPreviewTag.textContent = mode === 'auto' ? 'Auto (Dark)' : 'Dark Active';
+          contrastPreviewTag.style.cssText = 'font-size:10px; padding:3px 9px; background-color:rgba(45, 212, 191, 0.15); border:1px solid rgba(45, 212, 191, 0.35); color:#2DD4BF; font-weight:600; border-radius:var(--radius-full);';
+        } else {
+          contrastPreviewTag.textContent = mode === 'auto' ? 'Auto (Light)' : 'Light Active';
+          contrastPreviewTag.style.cssText = 'font-size:10px; padding:3px 9px; background-color:var(--color-success-surface); border:1px solid var(--color-success-border); color:var(--color-success-text); font-weight:600; border-radius:var(--radius-full);';
+        }
+      }
+
+      if (contrastPreviewBox) {
+        if (isDark) {
+          contrastPreviewBox.style.cssText = 'border-radius:var(--radius-sm); padding:10px 12px; background-color:#111B2E; border:1px solid #24344F; color:#E6EDF7; transition:all 200ms ease;';
+        } else {
+          contrastPreviewBox.style.cssText = 'border-radius:var(--radius-sm); padding:10px 12px; background-color:#F1F5F9; border:1px solid var(--color-border); color:var(--color-text); transition:all 200ms ease;';
+        }
+      }
+
+      if (contrastPreviewAvatar) {
+        if (isDark) {
+          contrastPreviewAvatar.style.cssText = 'width:26px; height:26px; font-size:11px; background:#1B3A66; color:#60A5FA; border:1px solid #2C4A7A; font-weight:600;';
+        } else {
+          contrastPreviewAvatar.style.cssText = 'width:26px; height:26px; font-size:11px; background:var(--color-primary); color:#FFF; border:none;';
+        }
+      }
+    }
+
+    // Initialize preview state
+    syncThemePreview(A11y.isDarkMode(), A11y.getThemeMode());
+
+    // Toggle switch listener
+    if (darkModeToggle) {
+      darkModeToggle.addEventListener('change', () => {
+        const targetMode = darkModeToggle.checked ? 'dark' : 'light';
+        A11y.setThemeMode(targetMode);
+        syncThemePreview(A11y.isDarkMode(), targetMode);
+        showToast(`Theme updated to ${targetMode === 'dark' ? 'Dark Mode' : 'Light Mode'}`, 'info');
+      });
+    }
+
+    // Segmented control listener
+    if (themeSegmented) {
+      themeSegmented.addEventListener('click', (e) => {
+        const item = e.target.closest('[data-theme-choice]');
+        if (!item) return;
+        const choice = item.getAttribute('data-theme-choice');
+        A11y.setThemeMode(choice);
+        syncThemePreview(A11y.isDarkMode(), choice);
+        showToast(`Theme mode set to: ${choice.toUpperCase()}`, 'info');
+      });
+    }
+
+    window.addEventListener('queueease_theme_change', (e) => {
+      syncThemePreview(e.detail.isDark, e.detail.mode);
+    });
+
+    // 3. Text Scale Selector
+    const textScaleSelector = document.getElementById('text-scale-selector');
+    const textSizeValPill = document.getElementById('text-size-val-pill');
+    if (textScaleSelector) {
+      const currentSize = A11y.getTextSize();
+      textScaleSelector.querySelectorAll('.segmented-control__item').forEach(item => {
+        const size = item.getAttribute('data-size');
+        const isActive = size === currentSize;
+        item.classList.toggle('segmented-control__item--active', isActive);
+        item.setAttribute('aria-checked', isActive ? 'true' : 'false');
+      });
+
+      textScaleSelector.addEventListener('click', (e) => {
+        const item = e.target.closest('.segmented-control__item');
+        if (!item) return;
+
+        textScaleSelector.querySelectorAll('.segmented-control__item').forEach(i => {
+          i.classList.remove('segmented-control__item--active');
+          i.setAttribute('aria-checked', 'false');
+        });
+
+        item.classList.add('segmented-control__item--active');
+        item.setAttribute('aria-checked', 'true');
+
+        const size = item.getAttribute('data-size');
+        A11y.setTextSize(size);
+
+        if (textSizeValPill) {
+          let label = '100% (Default)';
+          if (size === 'compact') label = '90% (Compact)';
+          if (size === 'large') label = '115% (Large)';
+          if (size === 'xlarge') label = '130% (Extra Large)';
+          textSizeValPill.textContent = label;
+        }
+
+        showToast(`Text scale updated to ${size}`, 'info');
+      });
+    }
+
+    // 4. Auditory Guidance Toggle & Speech Test
+    const audioToggle = document.getElementById('toggle-audio-guidance');
+    if (audioToggle) {
+      audioToggle.checked = A11y.isSpeechEnabled();
+      audioToggle.addEventListener('change', () => {
+        A11y.setSpeechEnabled(audioToggle.checked);
+        showToast(`Auditory Voice Prompts: ${audioToggle.checked ? 'Active' : 'Muted'}`, 'info');
+      });
+    }
+
+    const testSpeechBtn = document.getElementById('btn-test-speech-voice');
+    if (testSpeechBtn) {
+      testSpeechBtn.addEventListener('click', () => {
+        const speechMsg = A11y.t('speech_test');
+        A11y.speak('speech_test');
+        showToast(speechMsg, 'info');
+      });
+    }
+
+    // 5. Multi-Language Selector Grid (English, Hindi, Marathi only)
+    const langGrid = document.getElementById('lang-selector-grid');
+    if (langGrid) {
+      const currentLang = A11y.getLanguage();
+      updateLangButtons(currentLang);
+
+      langGrid.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-lang]');
+        if (!btn) return;
+        const lang = btn.getAttribute('data-lang');
+        A11y.setLanguage(lang);
+        updateLangButtons(lang);
+        showToast(A11y.t('toast_lang_changed', { lang: btn.textContent.trim() }), 'success');
+      });
+
+      window.addEventListener('queueease_language_change', (e) => {
+        updateLangButtons(e.detail.lang);
+      });
+
+      function updateLangButtons(selected) {
+        langGrid.querySelectorAll('button[data-lang]').forEach(b => {
+          const isSelected = b.getAttribute('data-lang') === selected;
+          b.className = isSelected ? 'btn btn--navy btn--sm justify-between' : 'btn btn--ghost btn--sm justify-between';
+          
+          let checkIcon = b.querySelector('.material-symbols-outlined');
+          if (isSelected) {
+            if (!checkIcon) {
+              checkIcon = document.createElement('span');
+              checkIcon.className = 'material-symbols-outlined';
+              checkIcon.style.fontSize = '16px';
+              checkIcon.textContent = 'check';
+              b.appendChild(checkIcon);
+            }
+          } else {
+            if (checkIcon) checkIcon.remove();
+          }
+        });
+      }
+    }
+
+    // 6. Senior Fast-Track Toggle
+    const seniorToggle = document.getElementById('toggle-senior-fast-track');
+    const seniorStatus = document.getElementById('senior-fast-track-status');
+    if (seniorToggle) {
+      seniorToggle.checked = A11y.isSeniorFastTrack();
+      if (seniorStatus) {
+        seniorStatus.textContent = seniorToggle.checked ? 'Active (Priority Lane 1 Enabled)' : 'Inactive (Tap toggle to enable)';
+        seniorStatus.className = seniorToggle.checked ? 'color-success font-bold' : 'color-muted font-bold';
+      }
+
+      seniorToggle.addEventListener('change', () => {
+        A11y.setSeniorFastTrack(seniorToggle.checked);
+        if (seniorStatus) {
+          seniorStatus.textContent = seniorToggle.checked ? 'Active (Priority Lane 1 Enabled)' : 'Inactive (Tap toggle to enable)';
+          seniorStatus.className = seniorToggle.checked ? 'color-success font-bold' : 'color-muted font-bold';
+        }
+        showToast(`Senior Fast-Track routing: ${seniorToggle.checked ? 'Enabled' : 'Disabled'}`, 'success');
+      });
+    }
+
+    // 7. Request Escort Bottom Sheet Modal
+    const escortModalBtn = document.getElementById('btn-request-escort-modal');
+    if (escortModalBtn) {
+      escortModalBtn.addEventListener('click', () => {
+        openSheet(`
+          <div class="flow-col gap-4">
+            <div class="flow-row items-center gap-3">
+              <div class="avatar" style="background:var(--color-primary); color:#FFF;">
+                <span class="material-symbols-outlined">support_agent</span>
+              </div>
+              <div class="flow-col">
+                <span class="text-title-md font-bold color-primary">Request On-Site Escort</span>
+                <span class="text-body-sm color-muted">Civic Center West • Hall B Central</span>
+              </div>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="input-label" for="escort-type-select">Required Assistance Type</label>
+              <select id="escort-type-select" class="input-field">
+                <option>Wheelchair & Step-Free Escort</option>
+                <option>Sign Language (ASL / ISL) Interpreter</option>
+                <option>Tactile & Low-Vision Guide</option>
+                <option>Document Translation & Read-Out</option>
+              </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom:0;">
+              <label class="input-label" for="escort-location-input">Your Current Hall Location</label>
+              <input type="text" id="escort-location-input" class="input-field" value="Hall B Central Waiting Lounge (Near Display 02)" />
+            </div>
+
+            <button type="button" class="btn btn--primary btn--full" id="btn-dispatch-escort-confirm">
+              <span class="material-symbols-outlined">send</span>
+              <span>Confirm & Dispatch Floor Officer</span>
+            </button>
+          </div>
+        `, 'Request Staff Assistance Desk');
+
+        setTimeout(() => {
+          document.getElementById('btn-dispatch-escort-confirm')?.addEventListener('click', () => {
+            closeSheet();
+            showToast('Floor Officer Miller dispatched to Hall B Central Lounge. ETA: 2 mins', 'success', 6000);
+          });
+        }, 100);
+      });
+    }
+
+    // 8. Alert Greeter Staff at Hall A
+    const alertGreeterBtn = document.getElementById('btn-alert-greeter');
+    if (alertGreeterBtn) {
+      alertGreeterBtn.addEventListener('click', () => {
+        showToast('Civic Ambassador alerted at Entrance Hall A Kiosks.', 'success', 5000);
+      });
+    }
+  </script>
+</body>
+</html>

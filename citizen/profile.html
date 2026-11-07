@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <script>
+    (function(){
+      try {
+        var mode = localStorage.getItem('queueease_theme_mode') || 'auto';
+        var isDark = mode === 'dark' || (mode === 'auto' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches);
+        document.documentElement.dataset.theme = isDark ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+
+        var lang = localStorage.getItem('queueease_lang') || 'en';
+        if (['en', 'hi', 'mr'].indexOf(lang) !== -1) {
+          document.documentElement.setAttribute('lang', lang);
+          document.documentElement.lang = lang;
+        }
+      } catch(e) {}
+    })();
+  </script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Citizen Account & Active Passes - QueueEase</title>
+  <meta name="description" content="View your active digital civic passes, token history, notification preferences, and accessibility settings." />
+
+  <!-- Google Fonts & Material Symbols Outlined -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet" />
+
+  <!-- Core Stylesheets -->
+  <link rel="stylesheet" href="/assets/css/tokens.css" />
+  <link rel="stylesheet" href="/assets/css/base.css" />
+  <link rel="stylesheet" href="/assets/css/components.css" />
+  <link rel="stylesheet" href="/assets/css/citizen.css" />
+
+  <style>
+    body {
+      padding-bottom: calc(76px + env(safe-area-inset-bottom));
+      min-height: 100dvh;
+    }
+    .profile-card-hero {
+      background: linear-gradient(135deg, #142D4E 0%, #1E3E68 100%);
+      color: #FFFFFF;
+      border-radius: var(--radius-card-lg, 16px);
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 20px rgba(20, 45, 78, 0.15);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Shared App Header -->
+  <header id="app-header"></header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: var(--space-4);" role="main">
+    <!-- Profile Hero Card -->
+    <section class="profile-card-hero" aria-label="Citizen Account Information">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+        <span class="status-pill status-pill--completed" style="background:rgba(16,185,129,0.2); color:#34D399; font-size:11px;">
+          <span style="width:6px; height:6px; border-radius:50%; background:#34D399;"></span>
+          <span data-i18n="profile_verified">Verified Citizen ID</span>
+        </span>
+        <span style="font-family:var(--font-family-mono); font-size:11px; color:#93C5FD;">CIV-88402</span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px;">
+        <div class="avatar" style="width:52px; height:52px; font-size:18px; background:#2563EB; color:#FFFFFF; font-weight:bold; border:2px solid rgba(255,255,255,0.2);">
+          EV
+        </div>
+        <div>
+          <h1 style="font-size:1.35rem; font-weight:bold; margin:0 0 2px; color:#FFFFFF;" data-i18n="profile_heading">Eleanor Vance</h1>
+          <div style="font-size:12px; color:#93C5FD; font-family:var(--font-family-mono);">+1 (555) 019-2834 • SMS Alerts Active</div>
+        </div>
+      </div>
+
+      <div style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); border-radius:var(--radius-control); padding:10px 14px; display:flex; justify-content:space-between; align-items:center; font-size:12px;">
+        <span style="color:#93C5FD;" data-i18n="home_active_tokens_card">Active Holding Passes:</span>
+        <strong style="color:#FFFFFF; font-family:var(--font-family-mono); font-size:14px;" id="profile-active-passes-count">1 Token In Progress</strong>
+      </div>
+    </section>
+
+    <!-- Active Passes Section -->
+    <section style="margin-bottom:24px;" aria-labelledby="active-passes-heading">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+        <h2 id="active-passes-heading" style="font-size:1.15rem; font-weight:bold; color:var(--text-heading); margin:0;" data-i18n="profile_active_passes_heading">
+          Your Active Digital Pass
+        </h2>
+        <a href="/citizen/track.html" class="btn btn--secondary btn--sm" style="font-size:12px;">
+          <span data-i18n="profile_track_live">Track Live</span>
+          <span class="material-symbols-outlined" style="font-size:16px;">arrow_forward</span>
+        </a>
+      </div>
+
+      <div class="card" style="padding:16px; border-left:4px solid var(--color-secondary); margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
+          <div>
+            <span class="status-pill status-pill--calling" style="font-size:10px;">Queue Position #3</span>
+            <h3 style="font-size:1.4rem; font-weight:bold; color:var(--text-heading); font-family:var(--font-family-mono); margin:4px 0 2px;">
+              Token A008
+            </h3>
+            <div style="font-size:13px; font-weight:600; color:var(--text-body);">Certificate Application</div>
+            <div style="font-size:11px; color:var(--text-muted);">Assigned to Counter 02 • Desk 104</div>
+          </div>
+          <div style="text-align:right;">
+            <span style="font-size:10px; color:var(--text-muted); text-transform:uppercase; font-weight:bold;" data-i18n="token_wait_label">EST. WAIT</span>
+            <div style="font-size:1.35rem; font-weight:bold; color:#059669; font-family:var(--font-family-mono);">15 Mins</div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:8px; margin-top:12px;">
+          <a href="/citizen/track.html?token=tok-a008" class="btn btn--primary" style="flex:1; justify-content:center; font-size:13px; padding:8px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">radar</span>
+            <span data-i18n="token_btn_track">Open Live Tracker</span>
+          </a>
+          <a href="/citizen/token.html?id=tok-a008" class="btn btn--secondary" style="flex:1; justify-content:center; font-size:13px; padding:8px;">
+            <span class="material-symbols-outlined" style="font-size:18px;">qr_code_2</span>
+            <span data-i18n="token_btn_download">View Pass QR</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Past Civic History -->
+    <section style="margin-bottom:24px;" aria-labelledby="history-heading">
+      <h2 id="history-heading" style="font-size:1.15rem; font-weight:bold; color:var(--text-heading); margin:0 0 12px;" data-i18n="profile_history_heading">
+        Past Municipal Records
+      </h2>
+
+      <div class="card" style="padding:0; overflow:hidden;">
+        <div style="padding:12px 16px; border-bottom:1px solid var(--color-border); display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; font-size:13px; color:var(--text-heading);">Document Verification (Apostille)</div>
+            <div style="font-size:11px; color:var(--text-muted);">Token B014 • Counter 03 • Oct 12, 2026</div>
+          </div>
+          <span class="status-pill status-pill--completed" style="font-size:10px;" data-i18n="status_completed">Resolved (8m)</span>
+        </div>
+
+        <div style="padding:12px 16px; display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-weight:700; font-size:13px; color:var(--text-heading);">Zoning & Public Permits</div>
+            <div style="font-size:11px; color:var(--text-muted);">Token C001 • Counter 05 • Sep 28, 2026</div>
+          </div>
+          <span class="status-pill status-pill--completed" style="font-size:10px;" data-i18n="status_completed">Resolved (14m)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Notification Preferences -->
+    <section style="margin-bottom:24px;" aria-labelledby="notif-heading">
+      <h2 id="notif-heading" style="font-size:1.15rem; font-weight:bold; color:var(--text-heading); margin:0 0 12px;" data-i18n="profile_prefs_heading">
+        Notification Preferences
+      </h2>
+
+      <div class="card" style="padding:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <strong style="font-size:13px; color:var(--text-heading);" data-i18n="profile_pref_sms">SMS Dispatch Alerts</strong>
+            <div style="font-size:11px; color:var(--text-muted);" data-i18n="profile_pref_sms_desc">Receive text alerts when 2 citizens remain ahead</div>
+          </div>
+          <input type="checkbox" id="pref-sms" checked style="width:20px; height:20px; accent-color:#2563EB;" />
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <div>
+            <strong style="font-size:13px; color:var(--text-heading);" data-i18n="profile_pref_chime">Audible Ceiling Chimes</strong>
+            <div style="font-size:11px; color:var(--text-muted);" data-i18n="profile_pref_chime_desc">Lounge PA voice announcement when token is summoned</div>
+          </div>
+          <input type="checkbox" id="pref-chime" checked style="width:20px; height:20px; accent-color:#2563EB;" />
+        </div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="font-size:13px; color:var(--text-heading);" data-i18n="profile_pref_vibrate">Push Notification Vibration</strong>
+            <div style="font-size:11px; color:var(--text-muted);" data-i18n="profile_pref_vibrate_desc">Haptic feedback alert on smartphone lockscreen</div>
+          </div>
+          <input type="checkbox" id="pref-vibrate" checked style="width:20px; height:20px; accent-color:#2563EB;" />
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Access Hub Links -->
+    <section style="margin-bottom:20px;" aria-label="Quick Terminal Links">
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(140px, 1fr)); gap:10px;">
+        <a href="/citizen/assist.html" class="btn btn--secondary" style="justify-content:center; font-size:12px; padding:10px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">accessibility_new</span>
+          <span data-i18n="nav_assistance">Accessibility Care</span>
+        </a>
+        <a href="/display/signage.html" class="btn btn--secondary" style="justify-content:center; font-size:12px; padding:10px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">tv</span>
+          <span data-i18n="nav_tv_signage">Lounge Signage</span>
+        </a>
+        <a href="../staff/index.html" class="btn btn--secondary" style="justify-content:center; font-size:12px; padding:10px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">badge</span>
+          <span data-i18n="nav_staff_hub">Staff Portal</span>
+        </a>
+        <a href="../admin/index.html" class="btn btn--secondary" style="justify-content:center; font-size:12px; padding:10px;">
+          <span class="material-symbols-outlined" style="font-size:18px;">admin_panel_settings</span>
+          <span data-i18n="nav_admin_ops">Admin Portal</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <!-- Shared Bottom Navigation -->
+  <nav id="app-bottom-nav"></nav>
+
+  <!-- Scripts -->
+  <script type="module">
+    import { initHeader, initBottomNav, showToast } from '/assets/js/ui.js';
+    import { Store } from '/assets/js/store.js';
+    import '/assets/js/a11y.js';
+
+    initHeader({
+      subtitle: 'Citizen Account & Passes',
+      showLive: true
+    });
+
+    initBottomNav({
+      activeTab: 'profile'
+    });
+
+    // Preferences listeners
+    ['pref-sms', 'pref-chime', 'pref-vibrate'].forEach(id => {
+      document.getElementById(id)?.addEventListener('change', (e) => {
+        showToast('Notification settings updated.', 'success');
+      });
+    });
+  </script>
+</body>
+</html>

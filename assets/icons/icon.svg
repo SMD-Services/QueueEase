@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#142D4E" />
+      <stop offset="100%" stop-color="#2563EB" />
+    </linearGradient>
+  </defs>
+  <!-- Background with safe zone -->
+  <rect width="512" height="512" rx="112" fill="url(#grad)" />
+  <!-- Ticket Icon Silhouette -->
+  <g fill="#FFFFFF" transform="translate(106, 106)">
+    <!-- Ticket outline with scalloped edge notches -->
+    <path d="M260 20 H40 C17.9 20 0 37.9 0 60 V120 C22.1 120 40 137.9 40 160 C40 182.1 22.1 200 0 200 V260 C0 282.1 17.9 300 40 300 H260 C282.1 300 300 282.1 300 260 V200 C277.9 200 260 182.1 260 160 C260 137.9 277.9 120 300 120 V60 C300 37.9 282.1 20 260 20 Z" opacity="0.95"/>
+    <!-- Center Q Glyph / Queue Bars -->
+    <rect x="75" y="80" width="150" height="30" rx="8" fill="#142D4E" />
+    <rect x="75" y="130" width="100" height="20" rx="6" fill="#2563EB" />
+    <rect x="75" y="170" width="125" height="20" rx="6" fill="#14B8A6" />
+    <!-- Number 01 badge -->
+    <circle cx="215" cy="180" r="28" fill="#2563EB" />
+    <text x="215" y="188" font-family="system-ui, sans-serif" font-weight="bold" font-size="20" fill="#FFFFFF" text-anchor="middle">#1</text>
+  </g>
+</svg>
